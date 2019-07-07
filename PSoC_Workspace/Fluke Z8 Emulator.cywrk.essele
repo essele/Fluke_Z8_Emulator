@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CyXmlSerializer>
+<!--This file is machine generated and read. It is not intended to be edited by hand.-->
+<!--Due to this, there is no schema for this file.-->
+<CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtWrkspcCustomData" version="4">
+<CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997 type_name="CyDesigner.Common.Base.CyCustomData" version="2">
+<userData>
+<dataGuid v="1b906a0f-a7b6-4e4d-a428-82f98b53cb35">
+<CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35 type_name="CyDesigner.Common.ProjMgmt.GUI.CyExplorerWindow+CyExplorerWindowState" version="3" SelectedTab="Source">
+<TreeKeys>
+<v>Source</v>
+<v>Components</v>
+<v>Output</v>
+</TreeKeys>
+<TreeStates>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="Fluke Z8 Emulator\Fluke Z8 Emulator">
+<ExpandedNodeIds>
+<v>Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\TopDesign</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Pins</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Analog</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\DMA</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Clocks</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Interrupts</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\System</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Directives</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Flash Security</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Header Files</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Header Files\cyapicallbacks.h</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Header Files\emulator.h</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Source Files</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Source Files\emulator.c</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Source Files\main.c</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\TopDesign</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Pins</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Analog</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\DMA</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Clocks</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Interrupts</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\System</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Directives</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Flash Security</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Header Files</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Header Files\cyapicallbacks.h</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Header Files\emulator.h</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Source Files</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Source Files\emulator.c</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Source Files\main.c</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\AS</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\Clock_1</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\Clock_2</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\CTRL1</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\CTRL2</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cy_boot</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cy_dmac</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cy_lfclk</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\DATA1</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\DM</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\DS</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\Em_EEPROM_Dynamic</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\P0</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\P0H</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\P1</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\P2</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\P30</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\P31</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\P35</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\P36</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\PWM_1</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\RW</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\Timer_1</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART_SCBCLK</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\XTAL1</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cycodeshareexport.ld</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cycodeshareimport.ld</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cycodeshareimport.scat</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cydevice_trm.h</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cydevicegnu_trm.inc</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cydeviceiar_trm.inc</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cydevicerv_trm.inc</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cydisabledsheets.h</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\TopDesign</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\TopDesign\TopDesign.cysch</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Z8ExtBus</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Z8ExtBus\Z8ExtBus.cysym</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Z8ExtBus\Z8ExtBus.v</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\TopDesign</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\TopDesign\TopDesign.cysch</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Z8ExtBus</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Z8ExtBus\Z8ExtBus.cysym</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Z8ExtBus\Z8ExtBus.v</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Fluke Z8 Emulator.elf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Fluke Z8 Emulator.hex</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Fluke Z8 Emulator.map</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.gpdsc</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.rpt</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator_timing.html</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Fluke Z8 Emulator.elf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Fluke Z8 Emulator.hex</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Fluke Z8 Emulator.map</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.gpdsc</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.rpt</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator_timing.html</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStates>
+<TreeKeysV2>
+<v>Datasheet</v>
+</TreeKeysV2>
+<TreeStatesV2>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\PSoC 4 Architecture TRM</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\PSoC 4200L Family Datasheet</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\System Reference Guides</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\System Reference Guides\cy_boot_v5_80</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\System Reference Guides\cy_dmac_v1_10</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\System Reference Guides\cy_lfclk_v1_20</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\cy_clock_v2_20</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\cy_clock_v2_20\cy_clock_v2_20.pdf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\cy_constant_v1_0</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\cy_constant_v1_0\cy_constant_v1_0.pdf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\cy_pins_v2_20</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CyControlReg_v1_80</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CyControlReg_v1_80\CyControlReg_v1_80.pdf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CyStatusReg_v1_90.pdf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\SCB_P4_v4_0.pdf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\TCPWM_P4_v2_10</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\TCPWM_P4_v2_10\TCPWM_P4_v2_10.pdf</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\PSoC 4 Architecture TRM</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\PSoC 4200L Family Datasheet</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\System Reference Guides</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\System Reference Guides\cy_boot_v5_80</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\System Reference Guides\cy_dmac_v1_10</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\System Reference Guides\cy_lfclk_v1_20</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\cy_clock_v2_20</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\cy_clock_v2_20\cy_clock_v2_20.pdf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\cy_constant_v1_0</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\cy_constant_v1_0\cy_constant_v1_0.pdf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\cy_pins_v2_20</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CyControlReg_v1_80</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CyControlReg_v1_80\CyControlReg_v1_80.pdf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CyStatusReg_v1_90.pdf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\SCB_P4_v4_0.pdf</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\TCPWM_P4_v2_10</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\TCPWM_P4_v2_10\TCPWM_P4_v2_10.pdf</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStatesV2>
+</CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35>
+</dataGuid>
+</userData>
+</CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997>
+<Unloaded />
+<OpenDocs />
+<config v="" />
+<AutoUpdate v="true" />
+</CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>
+</CyXmlSerializer>
