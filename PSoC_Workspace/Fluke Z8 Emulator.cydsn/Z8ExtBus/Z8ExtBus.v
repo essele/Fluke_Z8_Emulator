@@ -36,6 +36,7 @@ reg ds; assign DS = ds;
 reg p1_oe; assign P1_OE = p1_oe;
 reg dvalid; assign DVALID = dvalid;     // TODO: this could be a state based wire?
 reg dm; assign DM = dm;
+// TODO: do we need ex as a register?
 
 // We will need to keep data state for writes...
 reg [7:0] data;
@@ -44,7 +45,7 @@ reg [7:0] data;
 wire seta; assign seta = CONTROL[15];                   // NOTE: this should be strobed
 wire setd; assign setd = CONTROL[14];                   // NOTE: this should be strobed
 wire setdm; assign setdm = CONTROL[13];                 // data memory (low for data)
-wire setrw; assign setrw = CONTROL[12];                 // read or write (low for write)
+wire setex; assign setex = CONTROL[12];                 // do we want extended bus timing (only for read for now)
 
 // Map a registered AD[11:0] to P0 and P1
 reg [11:0] ad; assign P1 = ad[7:0]; assign P0 = ad[11:8];
@@ -91,7 +92,11 @@ always @(posedge CLK) begin
         3'b011: begin   // TRISTATE and take DS low
                         p1_oe <= 0;
                         ds <= 0;
-                        state <= 3'b110;            // for a read, one delay cycle needed
+                        if (setex) begin
+                            state <= 3'b101;            // extra delay of one cycle if ex
+                        end else begin
+                            state <= 3'b110;            // for a read, one delay cycle needed
+                        end
                 end
         3'b100: begin 
                         // WRITE1:   data out, nothing else

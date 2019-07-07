@@ -19,37 +19,33 @@ uint8_t resp[64];
     Read the external bus ...
         addr - 16 bit address
         dm - is is data memory (0=dm)
+        ex - should we use extended timing (1=extend)
 
 */
-uint8_t bus_read(uint16_t addr, int dm) {
+uint8_t bus_read(uint16_t addr, int dm, int ex) {
     uint8_t hn;
     uint8_t rc;
     
     hn = (uint8_t)((addr & 0x0f00) >> 8);
     hn |= 0x80;                     // address
-    hn |= 0x10;                     // read
+//    hn |= 0x10;                     // read
+    if(ex) hn |= 0x10;              // extended bus timing
     if(dm) hn |= 0x20;              // dm
 
     // TODO: 16 bit reg write??
-    //CyGlobalIntDisable;
     
     uint8_t saveInts = CyEnterCriticalSection();
     
     CTRL1_Write((uint8_t)(addr&0xff));
     CTRL2_Write(hn);
     
-    // Seem to need a 21 cycle delay min before reading is ok
-    // using 22 to give a bit of a margin
-    // TODO: loop of some kind
-    asm("nop; nop; nop; nop;");
-    asm("nop; nop; nop; nop;");
-    asm("nop; nop; nop; nop;");
-    asm("nop; nop; nop; nop;");
-    asm("nop; nop; nop; nop;");
-    asm("nop; nop;");
-
+    // We need a delay to ensure the data is ready to read, this seems
+    // to be a minimum of 8 (we'll go 10) for the non-extended and an extra
+    // 4 for extended. (Be careful with anything that changes the execution
+    // time here. The time to do the math is important!)
+    CyDelayCycles(10 + (ex * 4));
+    
     rc = DATA1_Read();
-    //CyGlobalIntEnable;
     CyExitCriticalSection(saveInts); 
     return rc;
 }
@@ -107,7 +103,7 @@ int main(void)
         
         for(int x=0; x < 32; x++) {
 //           resp[x] = DATA1_Read();
-            resp[x] = bus_read((uint16_t)x, 1);
+            resp[x] = bus_read((uint16_t)x, 1, 0);
         }
         
         
