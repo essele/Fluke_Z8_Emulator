@@ -123,10 +123,10 @@ int main(void)
   
         CyDelay(10);
         
-//        bus_write(0x1800, 0x08, 0);
-//        bus_write(0x1800, 0x80, 0);
-//        bus_write(0x1800, 0x08, 0);
-//        bus_write(0x1800, 0x80, 0);
+        bus_write(0x1800, 0x08, 0);
+        bus_write(0x1800, 0x80, 0);
+        bus_write(0x1800, 0x08, 0);
+        bus_write(0x1800, 0x80, 0);
     
       
         bus_write(0x1800, 0x00, 0);

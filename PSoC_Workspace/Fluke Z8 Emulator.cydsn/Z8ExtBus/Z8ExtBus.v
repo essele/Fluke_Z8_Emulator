@@ -66,10 +66,10 @@ always @(posedge CLK) begin
                     dvalid <= 0;
                     state <= 3'b001;
                 end
-        3'b001: begin   // SETUP ADDRESS
+        3'b001: begin   // SETUP ADDRESS OR DATA (setting data sets mode to write)
                     if (seta) begin
                         ad <= CONTROL[11:0];        // put address on ports
-                        rw <= setrw;                // read or write
+//                        rw <= setrw;                // read or write
                         as <= 0;                    // address strobe low
                         ds <= 1;                    // no change to DS
                         p1_oe <= 1;                 // enable the output
@@ -77,6 +77,7 @@ always @(posedge CLK) begin
                         state <= 3'b010;
                     end else if (setd) begin
                         data <= CONTROL[7:0];
+                        rw <= 0;                    // it's a write if we set data first
                     end
                 end
         3'b010: begin   // BRING BACK AS
