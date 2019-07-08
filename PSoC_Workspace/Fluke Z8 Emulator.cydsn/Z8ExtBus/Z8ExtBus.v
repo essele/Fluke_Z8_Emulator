@@ -53,12 +53,14 @@ reg [11:0] ad; assign P1 = ad[7:0]; assign P0 = ad[11:8];
 // State register...
 reg [2:0] state;
 
+//   29/82 macros
 
 // Let's go...
 always @(posedge CLK) begin
 
     case (state)
-        3'b000: begin   // RESET
+        // INITIAL STATE -- resets to default values and moves to WAIT STATE
+        3'b000: begin
                     p1_oe <= 0;
                     rw <= 1;            // Default - inactive high state
                     ds <= 1;            // Not data strobe (inactive high state)
@@ -67,7 +69,10 @@ always @(posedge CLK) begin
                     dvalid <= 0;
                     state <= 3'b001;
                 end
-        3'b001: begin   // SETUP ADDRESS OR DATA (setting data sets mode to write)
+                
+        // WAIT STATE -- waits for either a seta or a setd and sets up accordingly
+        //               moves to FINISH AS.
+        3'b001: begin
                     if (seta) begin
                         ad <= CONTROL[11:0];        // put address on ports
 //                        rw <= setrw;                // read or write
@@ -81,6 +86,8 @@ always @(posedge CLK) begin
                         rw <= 0;                    // it's a write if we set data first
                     end
                 end
+                
+        // FINISH AS STATE -- brings back AS and then starts the relevant cycle (read or write)
         3'b010: begin   // BRING BACK AS
                     as <= 1;
                     if (rw == 1'b0) begin
@@ -89,31 +96,38 @@ always @(posedge CLK) begin
                         state <= 3'b011;            // READ CYCLE
                     end
                 end
+                
+        // READ1 -- tristate, take DS low, then go to the right delay depending on ex
         3'b011: begin   // TRISTATE and take DS low
                         p1_oe <= 0;
                         ds <= 0;
                         if (setex) begin
-                            state <= 3'b101;            // extra delay of one cycle if ex
+                            state <= 3'b100;            // extra delay of two cycles if ex (was 101)
                         end else begin
                             state <= 3'b110;            // for a read, one delay cycle needed
                         end
                 end
+                
+        // WRITE1 -- put the data on the line (will be a delay for READ with ex, OE is not high)
         3'b100: begin 
-                        // WRITE1:   data out, nothing else
                         ad[7:0] <= data;
                         state <= 3'b101;
                 end
-                
+        
+        // WRITE2 -- take DS low again to show data valid
         3'b101: begin
                         // WRITE2:   ds low
                         ds <= 0;
                         state <= 3'b110;
                 end
-                
+        
+        // DELAY -- simply delay by one cycle
         3'b110: begin   // DELAY CYCLE
+                    //ds <= ds;  -- ds=0 costs 1
                     state <= 3'b111;
                 end
 
+        // FINISH -- take DS back up, and trigger data read if we were a read.
         3'b111: begin   // DS back high, read DATA, go to beginning
                     ds <= 1;
                     dvalid <= rw;               // read data if it was a read (rw=high)

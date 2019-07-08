@@ -28,7 +28,6 @@ uint8_t bus_read(uint16_t addr, int dm, int ex) {
     
     hn = (uint8_t)((addr & 0x0f00) >> 8);
     hn |= 0x80;                     // address
-//    hn |= 0x10;                     // read
     if(ex) hn |= 0x10;              // extended bus timing
     if(dm) hn |= 0x20;              // dm
 
@@ -43,7 +42,7 @@ uint8_t bus_read(uint16_t addr, int dm, int ex) {
     // to be a minimum of 8 (we'll go 10) for the non-extended and an extra
     // 4 for extended. (Be careful with anything that changes the execution
     // time here. The time to do the math is important!)
-    CyDelayCycles(10 + (ex * 4));
+    CyDelayCycles(10 + (ex * 8));
     
     rc = DATA1_Read();
     CyExitCriticalSection(saveInts); 
@@ -60,7 +59,7 @@ void bus_write(uint16_t addr, uint8_t data, int dm) {
     
     hn = (uint8_t)((addr & 0x0f00) >> 8);
     hn |= 0x80;                     // address (bit 15 = 1)
-    hn |= 0x00;                     // write (bit 12 = 0)
+    hn |= 0x00;                     // don't set extended timing (bit 12 = 0)
     if(dm) hn |= 0x20;              // dm (bit 13)
     
     CTRL1_Write((uint8_t)(addr&0xff));
@@ -69,12 +68,8 @@ void bus_write(uint16_t addr, uint8_t data, int dm) {
     
     // Now we probably need to wait for some considerable time before this is
     // processed ... we should probably wait at least 30 cycles for now.
-    asm("nop; nop; nop; nop; nop; nop; nop; nop;");
-    asm("nop; nop; nop; nop; nop; nop; nop; nop;");
-    asm("nop; nop; nop; nop; nop; nop; nop; nop;");
-    asm("nop; nop; nop; nop; nop; nop; nop; nop;");
-    
-    CyDelay(1);
+    // TODO: need to figure out how to optimise this
+    CyDelayCycles(30);
 }
 
 
@@ -84,6 +79,9 @@ int main(void)
 
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
     PWM_1_Start();
+    
+    Timer_1_Start();
+    
     
     setup_emulator();
     
@@ -98,14 +96,14 @@ int main(void)
     //    CTRL1_Write(0x1c);
     //    CTRL2_Write(0xb0);      // 15=address, 14=data, 13=dm, 12=rw (w=0)
         
-    //    asm("nop; nop; nop; nop;");
-    //    asm("nop; nop; nop; nop;");
         
         for(int x=0; x < 32; x++) {
-//           resp[x] = DATA1_Read();
             resp[x] = bus_read((uint16_t)x, 1, 0);
         }
         
+//        for(int x=0; x < 5; x++) {
+//            resp[x] = bus_read((uint16_t)0x1f00, 0, 1);
+//        }
         
 
         CyDelay(500);
