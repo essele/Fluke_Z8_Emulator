@@ -53,11 +53,20 @@ uint8_t             code[4096] = {
 // flags register we'll have to pull them together
 int                 C, Z, S, V, D, H;
 
+// We use a special flag to indicate whether we run with interrupts disabled (post DI)
+// or enabled (post EI)
+int                 interrupts_disabled;
+
+// Do we need to use extended bus timing for read accesses to the external bus
+int                 extended_bus_timing;
+
 /**
  * Defines to allow us to get at register types
  */
 #define PRE0        reg[0xf5]
+#define P2M         reg[0xf6]
 
+#define P01M        reg[0xf8]
 #define IPR         reg[0xf9]
 #define IRQ         reg[0xfa]
 #define IMR         reg[0xfb]
@@ -76,6 +85,9 @@ int                 C, Z, S, V, D, H;
 
 // Some useful helpers...
 #define PUSH16(v)   reg[--SPL] = (v & 0x00ff); reg[--SPL] = (v & 0xff00) >> 8;
+
+#define BKPT        asm("BKPT");
+
 
 // ----------------------------------------------------------------------
 // We need to be able to combine the flags for a register read or write
@@ -101,6 +113,22 @@ void write_FLAGS(uint8_t val) {
     D = ((val & 0x08) == 0x08);
     H = ((val & 0x04) == 0x04);
 }
+
+// ----------------------------------------------------------------------
+// If we try to write a value to a register that we can't support then
+// we end up here, with some helpful local variables and a breakpoint to
+// the debugger.
+// ----------------------------------------------------------------------
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
+void REG_FAIL(uint8_t __attribute__((unused)) reg, uint8_t __attribute__((unused)) val) {
+    uint16_t    __attribute__((unused)) pc_after = pc;
+    
+    BKPT;
+}
+#pragma GCC pop_options
+
+
 // ----------------------------------------------------------------------
 // P01M -- controlling port 0 and port 1 (write only!)
 // 
@@ -110,7 +138,6 @@ void write_FLAGS(uint8_t val) {
 // Bit 2:   Stack (0=external, 1=internal)                    [INTERNAL only]
 // Bit 1/0: P00-P03 mode (00=output, 01=input, 1X=A8-A11)
 // 
-//
 // KNOWN VALUES for 8840A
 //
 // 06 -- A8-A11 addressing, internal stack, P04-P07 outputs, P1 byte output
@@ -118,6 +145,37 @@ void write_FLAGS(uint8_t val) {
 // 36 -- A0-A11 addressing, internal stack, P04-P07 outputs, P1 Addr/Data (EXTBUS)
 // ----------------------------------------------------------------------
 void write_P01M(uint8_t val) {
+    switch(val) {
+        case 0x06:      
+                        *(uint32_t *)CYREG_HSIOM_PORT_SEL1 = 0x00000000;    // GPIO control
+                        extended_bus_timing = 0;
+            break;
+        case 0x16:      
+                        *(uint32_t *)CYREG_HSIOM_PORT_SEL1 = 0x22222222;    // DSI pin and OE
+                        extended_bus_timing = 0;
+            break;
+        case 0x36:
+                        *(uint32_t *)CYREG_HSIOM_PORT_SEL1 = 0x22222222;    // DSI pin and OE
+                        extended_bus_timing = 1;
+            break;
+        default:           
+                        REG_FAIL(P01M, val);
+    }
+    
+    // Always have P00 to P03 connected to DSI, and P04 to P07 as GPIO
+    *(uint32_t *)CYREG_HSIOM_PORT_SEL0 = 0x00003333;
+
+    // Always have P00 to P03 as inputs (although not used for that) and P04 to P07 as outputs
+    // This is done by the top level design, so don't actually need to do it here...
+    /*
+    P0_PC = (
+        (0x01 << 0) | (0x01 << 3) | (0x01 << 6) | (0x01 << 9) |         // P00 to P03 as input
+        (0x06 << 12) | (0x06 << 15) | (0x06 << 18) | (0x06 << 21));     // P04 to P07 as output
+
+    P1_PC = (
+        (0x06 << 0) | (0x06 << 3) | (0x06 << 6) | (0x06 << 9) | 
+        (0x06 << 12) | (0x06 << 15) | (0x06 << 18) | (0x06 << 21));     // all outputs
+    */
 }
 // ----------------------------------------------------------------------
 // P2M -- controlling port 2 (write only)
@@ -131,6 +189,22 @@ void write_P01M(uint8_t val) {
 // ----------------------------------------------------------------------
 void write_P2M(uint8_t val) {
     // TODO: write to correct PSoC register
+    switch(val) {
+        case 0xfb:      // All inputs apart from P22
+                        P2_PC = (
+                            (0x01 << 0) | (0x01 << 3) | (0x06 << 6) |
+                            (0x01 << 9) | (0x01 << 12) | (0x01 << 15) |
+                            (0x01 << 18) | (0x01 << 21)); 
+            break;
+        case 0x0b:      // P20/21/23 input, P22 output, P24/25/26/27 output
+                        P2_PC = (
+                            (0x01 << 0) | (0x01 << 3) | (0x06 << 6) |
+                            (0x01 << 9) | (0x06 << 12) | (0x06 << 15) |
+                            (0x06 << 18) | (0x06 << 21)); 
+            break;
+        default:
+                        REG_FAIL(P2M, val);
+    }
 }
 // ----------------------------------------------------------------------
 // P3M - controlling port 3 (write only)
@@ -149,7 +223,24 @@ void write_P2M(uint8_t val) {
 //              port 2 pullups active
 // ----------------------------------------------------------------------
 void write_P3M(uint8_t val) {
-    // TODO: single setting
+    // TODO: single setting of C9
+    //
+    
+    if (val == 0xC9) {
+        // P31/P32/P33 as inputs (these are all actually from Port 4 P40/41/42
+
+        // P34 DM (no action needed, it's the only option) -- TODO: control from software?
+        
+        // Serial Parity On
+        // TODO: need a UART init for this ... looks horrible
+        
+        // P35/P36 output
+        
+        // TODO: do we need to do anything with a pull-up?
+    }
+    
+    
+    
     //
     // P36 appears to be a timer output (timer1)A
     // R241 (TMR) ...83 sets timer1 out, but loads and starts timer0
@@ -178,6 +269,9 @@ void write_IMR(uint8_t val) {
 
     // Write the value so that we can read it back
     IMR = val;
+    
+    // Update the main signal so we know whether enable ints or not
+    interrupts_disabled = ((val & 0x80) == 0x80);
 }
 // ----------------------------------------------------------------------
 // IPR - interrupt priority register
@@ -195,6 +289,8 @@ void write_IMR(uint8_t val) {
 // ----------------------------------------------------------------------
 void write_IPR(uint8_t val) {
     // TODO: set priorities as above (if possible)
+    
+    // TODO: bit 7 is the master (interrupts_disabled)???
 }
 // ----------------------------------------------------------------------
 // PRE0 - Prescaler 0 (write only) [likely serial clock]
@@ -724,6 +820,7 @@ void RET() {
 }
 // ----------------------------------------------------------------------
 void IRET() { 
+    // TODO: do we need to re-enable interrupts? Yes I think we do.
     write_FLAGS(reg[SPL++]); 
     pc = (reg[SPL] << 8) | reg[SPL+1]; 
     SPL += 2; 
@@ -873,12 +970,25 @@ OPn(INC, r1, inc, 12); OPn(INC, r1, inc, 13); OPn(INC, r1, inc, 14); OPn(INC, r1
 // *F
 
 
+
+// ----------------------------------------------------------------------
+// If we execute an illegal opcode, just bring some values into local scope 
+// so they are easy to see in the debugger, and then cause a breakpoint.
+// ----------------------------------------------------------------------
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
 void ILLEGAL() {
-    fprintf(stderr, "INVALID OPCODE\n");
-    exit(1);
+    uint16_t    from_pc = pc-1;
+    uint8_t     failed_opcode __attribute__((unused)) = code[from_pc];
+    
+    BKPT;
 }
+#pragma GCC pop_options
 
 
+// ----------------------------------------------------------------------
+// The main array of op-codes to function calls
+// ----------------------------------------------------------------------
 void (*map[256])() = {
 // 00
     DEC_R1, DEC_IR1, ADD_r1_r2, ADD_r1_Ir2, ADD_R2_R1, ADD_IR2_R1, ADD_R1_IM, ADD_IR1_IM, 
@@ -930,19 +1040,62 @@ void (*map[256])() = {
         LD_r1_R2_15, LD_r2_R1_15, DJNZ_r1_RA_15, JR_cc_RA_15, LD_r1_IM_15, JP_cc_DA_15, INC_r1_15, NOP,
 };
 
+
+CY_ISR(Handle_IRQ_P4) {
+    // TODO:  in this handler
+    //        I should push pc, and flags, and then set the PC
+    //        to the correct IRQ handler, and then return
+    //        (TODO: read up about what is disabled etc and re-enabled on a ret)
+    int x;
+    x++;
+    
+}
+
+
+
 void setup_emulator() {
     pc = 0x00;
     SPL = 0x80;
+    
+    // PORT 0 SETUP
+    
+    // PORT 1 SETUP
+    
+    // PORT 2 SETUP
+    
+    // PORT 3 SETUP (a mismash on here, P31/32/33 are from Port 4 (0/1/2)...
+    P4_IRQ_Disable();
+    P4_IRQ_SetVector(&Handle_IRQ_P4);
+    P4_IRQ_SetPriority((uint8)P4_IRQ_INTC_PRIOR_NUMBER);
+
+    // Make sure they all start with no interrupts enabled
+    P4_SetInterruptMode(P4_P31_INTR, P4_INTR_NONE);
+    P4_SetInterruptMode(P4_P32_INTR, P4_INTR_NONE);
+    P4_SetInterruptMode(P4_P33_INTR, P4_INTR_NONE);
+    
+    // Now we can enable to IRQ for this group of three pins
+    P4_IRQ_Enable();
+    
+    interrupts_disabled = 1;        // TODO: needs to be done by flags defaults
+    extended_bus_timing = 1;        // Default is to start with extended bus timing
 }
 
 void execute() {
 //    uint8_t opcode = code[pc++];
-    while (code[pc] != 0x0f) {
-   //     uint16_t ppc = pc;
-   //     uint8_t opc = code[pc];
+//    while (code[pc] != 0x0f) {
+
+    for(;;) {
+    
         CyGlobalIntDisable;
         map[code[pc++]]();
-        CyGlobalIntEnable;
+        
+        // Now we can give ourselves a short window to acknowledge IRQ's if they are
+        // enabled.
+        if (interrupts_disabled) {
+            CyGlobalIntDisable;
+        } else {
+            CyGlobalIntEnable;
+        }
     }
     // STOP HERE
 }

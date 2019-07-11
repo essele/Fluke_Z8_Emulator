@@ -75,13 +75,24 @@ void bus_write(uint16_t addr, uint8_t data, int dm) {
 
 int main(void)
 {
-    CyGlobalIntEnable; /* Enable global interrupts. */
+    //CyGlobalIntEnable; /* Enable global interrupts. */
+    
+    
+    // Check a few values...
+    volatile uint32_t p0 = *(uint32_t *)CYREG_HSIOM_PORT_SEL0;
+    volatile uint32_t p1 = *(uint32_t *)CYREG_HSIOM_PORT_SEL1;
+    volatile uint32_t p2 = *(uint32_t *)CYREG_HSIOM_PORT_SEL2;
+    volatile uint32_t p3 = *(uint32_t *)CYREG_HSIOM_PORT_SEL3;
+    volatile uint32_t p4 = *(uint32_t *)CYREG_HSIOM_PORT_SEL4;
+    
+    volatile uint32_t pp0 = P0_PC;
+    volatile uint32_t pp1 = P1_PC;
+    volatile uint32_t pp2 = P2_PC;
 
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
     PWM_1_Start();
     
     Timer_1_Start();
-    
     
     setup_emulator();
     
