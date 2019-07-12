@@ -19,7 +19,7 @@
 #define ARG_Ir(n)   (reg[ARG_r(n)])
 
 // Some useful helpers...
-#define PUSH16(v)   reg[--SPL] = (v & 0x00ff); reg[--SPL] = (v & 0xff00) >> 8;
+//#define PUSH16(v)   reg[--SPL] = (v & 0x00ff); reg[--SPL] = (v & 0xff00) >> 8;
 
 // NOTE: these assume we are clear of control registers etc.
 #define LOAD_VAL_FROM_REGPAIR(r)    ((reg[r]<<8) | (reg[r+1]))

@@ -14,9 +14,14 @@
 /**
  * Defines to allow us to get at register types
  */
+#define SIO         reg[0xf0]
+#define TMR         reg[0xf1]
+#define T1          reg[0xf2]
+#define PRE1        reg[0xf3]
+#define T0          reg[0xf4]
 #define PRE0        reg[0xf5]
 #define P2M         reg[0xf6]
-
+#define P3M         reg[0xf7]
 #define P01M        reg[0xf8]
 #define IPR         reg[0xf9]
 #define IRQ         reg[0xfa]
@@ -27,6 +32,13 @@
 #define SPL         reg[0xff]
 
 #define BKPT        asm("BKPT");
+
+// Some useful helpers...
+#define PUSH16(v)   reg[--SPL] = (v & 0x00ff); reg[--SPL] = (v & 0xff00) >> 8;
+#define PUSH(v)     reg[--SPL] = v;
+
+extern void         DI();
+extern void         EI();
 
 extern uint8_t      code[];
 extern uint16_t     pc;

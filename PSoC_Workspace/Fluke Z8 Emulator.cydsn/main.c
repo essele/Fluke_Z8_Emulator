@@ -92,9 +92,24 @@ int main(void)
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
     PWM_1_Start();
     
-    Timer_1_Start();
+    Timer1_Init();
     
+    UART_Start();
+
     setup_emulator();
+
+   
+            bus_write(0x1801, 0x29, 0);
+        bus_write(0x1801, 0x00, 0);
+        bus_write(0x1801, 0xc2, 0);
+        bus_write(0x1801, 0xA0, 0);             // Blanking ... A0 = unblank, A3 = blank (I think)
+        bus_write(0x1801, 0x90, 0);
+  
+        CyDelay(10);
+        
+        bus_write(0x1800, 0x08, 0);
+        bus_write(0x1800, 0x80, 0);
+    
     
     execute();
     
