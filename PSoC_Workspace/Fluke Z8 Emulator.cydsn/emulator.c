@@ -290,12 +290,11 @@ void write_IMR(uint8_t val) {
     // Write the value so that we can read it back
     IMR = val;
     
+    return;
+    
     
     // TODO: delta rather than everything, plus maybe turn of or clear pending on P4??
     
-    if(val & 0x02) {
-        asm("nop");
-    }
     
     // Bit 1 is the keyboard
     P4_SetInterruptMode(P4_P33_INTR, ((val & 0x02) ? P4_INTR_FALLING : P4_INTR_NONE));
@@ -356,6 +355,13 @@ void write_PRE0(uint8_t val) {
 //        the read of IRQ.
 // ----------------------------------------------------------------------
 void write_IRQ(uint8_t val) { 
+    
+    
+    // NEW VERSION .. just clear pending bits...
+    
+    IRQ = val;          // keep the value for reading
+    
+    
     // Bit 1 maps to keyboard (P33 which is P42
     if ((val & 0x02) == 0) { 
         // Clear pending bit...
@@ -381,7 +387,19 @@ void write_IRQ(uint8_t val) {
     }
 }
 uint8_t read_IRQ() {
-    uint8_t val = 0;
+    
+    // NEW VERSION ... just return the value, but we will or in the serial TX
+    // since we don't have an ISR dealing with that.
+    
+    // We will handle the serial TX as a polled item since we don't have
+    // a running ISR for that (could be added)
+    uint8_t val = IRQ & 0xef;
+   
+    if (UART_INTR_TX_REG & 0x00000002) val |= 0x10;
+    
+    return val;
+    
+//    uint8_t val = 0;
     
     if (P4_INTSTAT & 0x04) val |= 0x02;
     if (P4_INTSTAT & 0x01) val |= 0x04;
@@ -501,7 +519,17 @@ void (*reg_write[256])(uint8_t) = {
 };
 
 
-
+/**
+ * Thinking about a model for IRQs...
+ *
+ * 1. Always leave the PSoC interrupt handler active, regardless of IMR.
+ * 2. In the PSoC IRQ handler set the appropriate bits of IRQ and clear the pending bits
+ * 3. If the IRQ is not masked, then run the Z8 ISR
+ * 4. If bits are cleared in IRQ then update the pending bits as well
+ *
+ * The only issue is if the ADC and KB happen at the same time, if neither are masked
+ * then the ADC one will run, how do we ensure the KB one stays pending?
+ */
 
 
 CY_ISR(Handle_IRQ_P4) {
@@ -512,10 +540,46 @@ CY_ISR(Handle_IRQ_P4) {
     
     // I can read the pending status stuff from GPIO_PRT4_INTR, writing a 1 clears the
     // bit, so I'll check the ADC pin first, then the keyboard... 
+
     
+    // TODO: if IRQ is pending and we enable IMR then we should cause a interrupt
+    //       also if we EI() ... hmmm.
+    int allow_keyboard = 1;
     
-    // We don't really want to be interrupted since the whole priority thing isn't going
-    // to work well the way I'm doing this...
+    if (P4_INTSTAT & 0x01) {
+        // We have an ADC interrupt... IRQ2
+        IRQ |= 0x04;
+        P4_INTSTAT = 0x01;     // turn off this pend... so we don't retrigger          
+        
+        // If we are enabled in the IMR then setup for the Z8 ISR
+        if (IMR & 0x04) {
+            CyGlobalIntDisable;
+            PUSH16(pc);
+            PUSH(FLAGS);
+            pc = (code[0x0004] << 8) | code[0x0005];
+            DI();
+            allow_keyboard = 0;
+        }
+    }
+    if (P4_INTSTAT & 0x04) {
+        // We have a keyboard interrupt ... IRQ1
+        IRQ |= 0x02;
+        
+        // Don't turn of the pend for the keyboard unless we actually process, this was we
+        // will keep re-triggering so they keyboard is more responsive. There is probably
+        // a performance impact, but the alternative is processing EI() and IMR changes
+        // and having multiple ways into an ISR which I'd prefer to avoid.
+        if (allow_keyboard && (IMR & 0x02)) {
+            CyGlobalIntDisable;
+            P4_INTSTAT = 0x04;
+            PUSH16(pc);
+            PUSH(FLAGS);
+            pc = (code[0x0002] << 8) | code[0x0003];
+            DI();
+        }
+    }    
+    return;
+    
     CyGlobalIntDisable;
     
     uint32_t p4is = P4_INTSTAT;
@@ -548,21 +612,35 @@ CY_ISR(Handle_IRQ_P4) {
 }
 
 CY_ISR(Handle_IRQ_Timer1) {     // IRQ 5
-    CyGlobalIntDisable;
     
-    PUSH16(pc);
-    PUSH(FLAGS);
-    pc = (code[0x000a] << 8) | code[0x000b];
-    DI();    
+    // Set the IRQ bit
+    IRQ |= 0x20;
+    
+    // If we are enabled in the IMR then call the Z8 ISR
+    if (IMR & 0x20) {
+        CyGlobalIntDisable;
+    
+        PUSH16(pc);
+        PUSH(FLAGS);
+        pc = (code[0x000a] << 8) | code[0x000b];
+        DI();
+    }
 }
 
 CY_ISR(Handle_IRQ_Serial) {     // IRQ 3
-    CyGlobalIntDisable;
     
-    PUSH16(pc);
-    PUSH(FLAGS);
-    pc = (code[0x0006] << 8) | code[0x0007];
-    DI();    
+    // Set the IRQ bit
+    IRQ |= 0x08;
+    
+    // If we are enabled in the IMR then call the Z8 ISR
+    if (IMR & 0x08) {
+        CyGlobalIntDisable;
+    
+        PUSH16(pc);
+        PUSH(FLAGS);
+        pc = (code[0x0006] << 8) | code[0x0007];
+        DI();
+    }
 }
 
 
@@ -594,9 +672,9 @@ void setup_emulator() {
     IRQ_P4_SetPriority((uint8)IRQ_P4_INTC_PRIOR_NUMBER);
 
     // Make sure they all start with no interrupts enabled
-    P4_SetInterruptMode(P4_P31_INTR, P4_INTR_NONE);
+    P4_SetInterruptMode(P4_P31_INTR, P4_INTR_FALLING);
     P4_SetInterruptMode(P4_P32_INTR, P4_INTR_NONE);
-    P4_SetInterruptMode(P4_P33_INTR, P4_INTR_NONE);
+    P4_SetInterruptMode(P4_P33_INTR, P4_INTR_FALLING);
 
     // Ensure there are no pending interrupts on the port itself
     P4_ClearInterrupt();
