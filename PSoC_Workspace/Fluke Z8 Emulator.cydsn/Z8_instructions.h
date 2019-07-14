@@ -128,7 +128,7 @@
 // Only used by call and jump, so we can load as if a DA (need to use intermediate
 // variable to ensure ordering is correct with load from regpair
 #define args_IRR1 \
-    uint16_t rs = ARG_IR; \
+    uint16_t rs = ARG_R; \
     uint16_t da = LOAD_VAL_FROM_REGPAIR(rs);
 
 #define args_DA \
@@ -170,13 +170,14 @@
 #define func_ld             STORE_VAL_IN_REG(dst, src);
 // ----------------------------------------------------------------------
 // This one is optimised to only process RA if we actually take the jump
-#define func_djnz           uint8_t v = LOAD_VAL_FROM_REG(dst) + 1; \
-                            if (v == 0) { \
+#define func_djnz           uint8_t v = LOAD_VAL_FROM_REG(dst) - 1; \
+                            if (v != 0) { \
                                 int8_t ra = (int8_t)ARG_IM; \
                                 pc += ra; \
                             } else { \
                                 pc++; \
-                            }
+                            } \
+                            STORE_VAL_IN_REG(dst, v);
 // ----------------------------------------------------------------------
 // This one is optimised to only process RA if we actually take the jump
 #define func_jr(cond)       if (cond) { \
@@ -229,8 +230,9 @@
                             Z = (new == 0); \
                             S = ((new & 0x80) == 0x80); \
                             V = (((d & 0x80) != (src & 0x80)) && ((new & 0x80) == (src & 0x80))); \
-                            D = 0; \
+                            D = 1; \
                             H = !(((d & 0x1f) == 0x0f) && ((new & 0x1f) == 0x10)); \
+                            STORE_VAL_IN_REG(dst, new);
 // ----------------------------------------------------------------------
 #define func_sbc            uint8_t     d = LOAD_VAL_FROM_REG(dst); \
                             uint16_t    new = d - src - C; \
@@ -240,7 +242,7 @@
                             Z = (new == 0); \
                             S = ((new & 0x80) == 0x80); \
                             V = (((d & 0x80) != (src & 0x80)) && ((new & 0x80) == (src & 0x80))); \
-                            D = 0; \
+                            D = 1; \
                             H = !(((d & 0x1f) == 0x0f) && ((new & 0x1f) == 0x10)); \
                             STORE_VAL_IN_REG(dst, new);
 // ----------------------------------------------------------------------
@@ -276,7 +278,7 @@
                             V = 0;
 // ----------------------------------------------------------------------
 #define func_rl             uint8_t v = LOAD_VAL_FROM_REG(dst); \
-                            uint8_t new = (v << 1) | ((v & 0x80) == 1); \
+                            uint8_t new = (v << 1) | ((v & 0x80) == 0x80); \
                             C = ((v & 0x80) == 0x80); \
                             Z = (new == 0); \
                             S = ((new & 0x80) == 0x80); \
@@ -308,7 +310,7 @@
                             STORE_VAL_IN_REG(dst, new);
 // ----------------------------------------------------------------------
 #define func_sra            uint8_t v = LOAD_VAL_FROM_REG(dst); \
-                            uint8_t new = (v & 0x80) | ((v >> 1) & 0x7f); \
+                            uint8_t new = (v & 0x80) | ((v >> 1) & 0x7f);         /* NOT SURE THE & 0x7F is needed?? */ \
                             C = (v & 0x01); \
                             Z = (new == 0); \
                             S = ((new & 0x80) == 0x80); \

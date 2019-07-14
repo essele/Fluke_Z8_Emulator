@@ -88,6 +88,9 @@ int main(void)
     volatile uint32_t pp0 = P0_PC;
     volatile uint32_t pp1 = P1_PC;
     volatile uint32_t pp2 = P2_PC;
+    volatile uint32_t pp3 = P35_PC;
+    
+    volatile uint8_t dmm = (P35_PC & (0x07 << 15)) >> 15;
 
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
     PWM_1_Start();
@@ -97,19 +100,6 @@ int main(void)
     UART_Start();
 
     setup_emulator();
-
-   
-            bus_write(0x1801, 0x29, 0);
-        bus_write(0x1801, 0x00, 0);
-        bus_write(0x1801, 0xc2, 0);
-        bus_write(0x1801, 0xA0, 0);             // Blanking ... A0 = unblank, A3 = blank (I think)
-        bus_write(0x1801, 0x90, 0);
-  
-        CyDelay(10);
-        
-        bus_write(0x1800, 0x08, 0);
-        bus_write(0x1800, 0x80, 0);
-    
     
     execute();
     

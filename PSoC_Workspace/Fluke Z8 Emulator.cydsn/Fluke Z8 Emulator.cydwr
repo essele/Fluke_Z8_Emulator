@@ -15,6 +15,11 @@
       <Data key="c1bf9875-b22b-4f99-abe7-14cb2a5dc618" value="Clock_1" />
       <Data key="ca8017be-e214-4c46-840d-ff8e00fa6eb5" value="Clock_1" />
     </Group>
+    <Group key="Interrupt">
+      <Data key="149ba66b-421e-41ce-9e03-0cc6fe05f839" value="IRQ_Serial" />
+      <Data key="bfd183fd-4e06-4fea-a6ef-95cd142838d6" value="IRQ_Timer1" />
+      <Data key="f0239c4a-537f-46dd-ac72-29b68d02d3f7" value="IRQ_P4" />
+    </Group>
     <Group key="Pin">
       <Data key="7a0f187b-e290-4950-8917-b0c8b2e20cca" value="P36" />
       <Data key="8a8de7bf-4cbf-4079-b9d8-156bc902888b" value="P3" />
@@ -3112,6 +3117,22 @@
       </Group>
       <Group key="1024">
         <Data key="LevelKey" value="0" />
+      </Group>
+    </Group>
+  </Group>
+  <Group key="Interrupt">
+    <Group key="149ba66b-421e-41ce-9e03-0cc6fe05f839">
+      <Group key="CortexM0">
+        <Data key="Assigned" value="True" />
+        <Data key="Priority" value="2" />
+        <Data key="Vector" value="-1" />
+      </Group>
+    </Group>
+    <Group key="f0239c4a-537f-46dd-ac72-29b68d02d3f7">
+      <Group key="CortexM0">
+        <Data key="Assigned" value="True" />
+        <Data key="Priority" value="1" />
+        <Data key="Vector" value="-1" />
       </Group>
     </Group>
   </Group>

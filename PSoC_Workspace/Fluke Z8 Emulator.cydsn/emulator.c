@@ -26,10 +26,6 @@ uint8_t             reg[256];
 // flags register we'll have to pull them together
 int                 C, Z, S, V, D, H;
 
-// We use a special flag to indicate whether we run with interrupts disabled (post DI)
-// or enabled (post EI)
-int                 interrupts_disabled;
-
 // Do we need to use extended bus timing for read accesses to the external bus
 int                 extended_bus_timing;
 
@@ -195,11 +191,17 @@ void write_P3M(uint8_t val) {
 }
 void write_port3(uint8_t val) {
     // The only adjustable outputs is P35, but we can probably just write to the reg
-    P35_DR = (uint32_t)val & 0x20; 
+
+    
+    // WHY IS THIS A PROBLEM   
+    P35_DR = (P35_DR & 0xffffffdf) | (uint32_t)(val & 0x20); 
 }
 uint8_t read_port3() {
     // We need to read P31/2/3 (which are actually PSoC P40/1/2)
-    return (uint8_t)((P4_DR & 0x03) << 1);
+    
+    uint8_t vv = (uint8_t)((P4_PS & 0x07) << 1);
+    return vv;
+//    return (uint8_t)((P4_PS & 0x07) << 1);
 }
 
 // ----------------------------------------------------------------------
@@ -228,17 +230,19 @@ void write_TMR(uint8_t val) {
         case 0x00:      break;      // do nothing here
         default:        REG_FAIL(TMR, val);
     }
-    // Bit 3 enable (1) or disable (0) T1
-    if (val & 0x08) {
-        Timer1_Enable();
-    } else {
-        Timer1_Stop();
-    }
+
     // Bit 2 load T1
     if (val & 0x04) {
         // can set values here, but how do we make it happen on reload?
         
         Timer1_WriteCounter(0);    
+    }    
+    
+    // Bit 3 enable (1) or disable (0) T1
+    if (val & 0x08) {
+        Timer1_Enable();
+    } else {
+        Timer1_Stop();
     }
     // Bit 1 and 0 we will ignore because T0 is not used separately
     TMR = val & 0xfa;       // clear the load bits
@@ -286,24 +290,28 @@ void write_IMR(uint8_t val) {
     // Write the value so that we can read it back
     IMR = val;
     
-    // Update the main signal so we know whether enable ints or not
-    interrupts_disabled = ((val & 0x80) == 0x80);
-
+    
+    // TODO: delta rather than everything, plus maybe turn of or clear pending on P4??
+    
+    if(val & 0x02) {
+        asm("nop");
+    }
+    
     // Bit 1 is the keyboard
-    P4_SetInterruptMode(P4_P33_INTR, ((val & 0x01) ? P4_INTR_FALLING : P4_INTR_NONE));
+    P4_SetInterruptMode(P4_P33_INTR, ((val & 0x02) ? P4_INTR_FALLING : P4_INTR_NONE));
 
     // Bit 2 is the ADC
-    P4_SetInterruptMode(P4_P31_INTR, ((val & 0x02) ? P4_INTR_FALLING : P4_INTR_NONE));
+    P4_SetInterruptMode(P4_P31_INTR, ((val & 0x04) ? P4_INTR_FALLING : P4_INTR_NONE));
     
     // Bit 3 is the serial IRQ
-    if ((val & 0x04)) {
+    if ((val & 0x08)) {
         IRQ_Serial_Enable();
     } else {
         IRQ_Serial_Disable();
     }
     
     // Bit 5 is the timer
-    if ((val & 0x10)) {
+    if ((val & 0x20)) {
         IRQ_Timer1_Enable();
     } else {
         IRQ_Timer1_Disable();
@@ -351,12 +359,12 @@ void write_IRQ(uint8_t val) {
     // Bit 1 maps to keyboard (P33 which is P42
     if ((val & 0x02) == 0) { 
         // Clear pending bit...
-        P4_INTSTAT |= 0x04;
+        P4_INTSTAT = 0x04;
     }
     // Bit 2 maps to the ADC (P31 which is P40)
     if ((val & 0x04) == 0) {
         // Clear pending bit...
-        P4_INTSTAT |= 0x01;
+        P4_INTSTAT = 0x01;
     }
     // Bit 3 is serial in...
     if ((val & 0x08) == 0) {
@@ -401,22 +409,33 @@ uint8_t read_SIO() {
 //         the higher four bits will be valid.
 // ----------------------------------------------------------------------
 uint8_t read_port0() { return (uint8_t)(P0_PS | 0x0F); }
-void write_port0(uint8_t val) { P0_DR = (uint32_t)val; }
+//void write_port0(uint8_t val) { P0_DR = (uint32_t)val & 0xFF; }
+
+// If we & 0xF0 then the extra bits don't go off!!
+void write_port0(uint8_t val) { 
+    P0_DR = (P0_DR & 0xffffff0f) | (val & 0xf0);
+}
 
 // ----------------------------------------------------------------------
 // Port 1: This is either all on the DSI (returning 0xFF) or all set as
 //         byte output, in which case we should return the normal register.
 //         Writing is totally standard.
 // ----------------------------------------------------------------------
-uint8_t read_port1() { return (bus_enabled ? 0xFF : (uint8_t)P1_PS); }
-void write_port1(uint8_t val) { P0_DR = (uint32_t)val; }
+uint8_t read_port1() { return (bus_enabled ? 0xff : (uint8_t)P1_PS); }
+//void write_port1(uint8_t val) { P1_DR = (uint32_t)val; }
+void write_port1(uint8_t val) {
+    P1_DR = (P1_DR & 0xffffff00) | val;
+}
+
 
 // ----------------------------------------------------------------------
 // Port 2: this is a simple 8 bit controllable port, so the easy approach
 // ----------------------------------------------------------------------
-void write_port2(uint8_t val) { P2_DR = (uint32_t)val; }
+//void write_port2(uint8_t val) { P2_DR = (uint32_t)val; }
 uint8_t read_port2() { return (uint8_t)P2_PS; }
-
+void write_port2(uint8_t val) {
+    P2_DR = (P2_DR & 0xffffff00) | val;
+}
 
 
 uint8_t (*reg_read[256])() = {
@@ -499,6 +518,7 @@ CY_ISR(Handle_IRQ_P4) {
     // to work well the way I'm doing this...
     CyGlobalIntDisable;
     
+    uint32_t p4is = P4_INTSTAT;
 
     if(P4_INTSTAT & 0x01) {
         // We have an ADC interrupt pending... IRQ2
@@ -507,6 +527,7 @@ CY_ISR(Handle_IRQ_P4) {
         pc = (code[0x0004] << 8) | code[0x0005];
         DI();
         
+        P4_INTSTAT = 0x01;     // TODO: this should be done by IRQ write!!!
         // Clear the bit... P4_INTSTAT |= 0x01 ... will be done by Z8 write to IRQ
         
     } else if (P4_INTSTAT & 0x04) {
@@ -516,7 +537,8 @@ CY_ISR(Handle_IRQ_P4) {
         PUSH(FLAGS);
         pc = (code[0x0002] << 8) | code[0x0003];
         DI();
-        
+      
+        P4_INTSTAT = 0x04;      // TODO: wrong here, but why does it work!
         // Clear the bit... P4_INTSTAT |= 0x04 ... will be done by Z8 write to IRQ
     } else if(P4_INTSTAT & 0xff) {
         // Error condition
@@ -566,7 +588,6 @@ void setup_emulator() {
     IRQ_Timer1_SetPriority((uint8)IRQ_Timer1_INTC_PRIOR_NUMBER);
     IRQ_Timer1_ClearPending();
     
-    
     // PORT 3 SETUP (a mismash on here, P31/32/33 are from Port 4 (0/1/2)...
     IRQ_P4_Disable();
     IRQ_P4_SetVector(&Handle_IRQ_P4);
@@ -575,7 +596,7 @@ void setup_emulator() {
     // Make sure they all start with no interrupts enabled
     P4_SetInterruptMode(P4_P31_INTR, P4_INTR_NONE);
     P4_SetInterruptMode(P4_P32_INTR, P4_INTR_NONE);
-    P4_SetInterruptMode(P4_P33_INTR, P4_INTR_FALLING);
+    P4_SetInterruptMode(P4_P33_INTR, P4_INTR_NONE);
 
     // Ensure there are no pending interrupts on the port itself
     P4_ClearInterrupt();
@@ -586,8 +607,8 @@ void setup_emulator() {
     // Now we can enable the IRQ for this group of three pins
     IRQ_P4_Enable();
     
-    interrupts_disabled = 1;        // TODO: needs to be done by flags defaults
-    IMR &= 0x7f;
+    write_IMR(0x00);                // Disable everything at the start
+
     extended_bus_timing = 1;        // Default is to start with extended bus timing
     bus_enabled = 1;                // We start with bus enabled
 }
@@ -600,21 +621,13 @@ void execute() {
     for (;;) {
         while(!(IMR & 0x80)) {
             CyGlobalIntDisable;
-            map[code[pc++]]();
             CyGlobalIntDisable;
-            
-            if(pc == 0x062d) {
-                // stop here
-                asm("NOP");
-            }
+            map[code[pc++]]();
         }            
         while((IMR & 0x80)) {
+            CyGlobalIntEnable;
             CyGlobalIntDisable;
             map[code[pc++]]();
-            CyGlobalIntEnable;
-            if(pc == 0x062d) {
-                BKPT;
-            }
         }            
     }
     
