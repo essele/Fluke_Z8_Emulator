@@ -21,6 +21,8 @@ uint8_t resp[64];
         dm - is is data memory (0=dm)
         ex - should we use extended timing (1=extend)
 
+    TODO: move this code into the component API, but that will mean moving the
+          control and status registers into there as well.
 */
 uint8_t bus_read(uint16_t addr, int dm, int ex) {
     uint8_t hn;
@@ -72,86 +74,25 @@ void bus_write(uint16_t addr, uint8_t data, int dm) {
     CyDelayCycles(30);
 }
 
-
+/**
+ * MAIN entry point
+ */
 int main(void)
 {
-    //CyGlobalIntEnable; /* Enable global interrupts. */
+    // Start the external 8Mhz clock generator
+    PWM8M_Start();
     
-    
-    // Check a few values...
-    volatile uint32_t p0 = *(uint32_t *)CYREG_HSIOM_PORT_SEL0;
-    volatile uint32_t p1 = *(uint32_t *)CYREG_HSIOM_PORT_SEL1;
-    volatile uint32_t p2 = *(uint32_t *)CYREG_HSIOM_PORT_SEL2;
-    volatile uint32_t p3 = *(uint32_t *)CYREG_HSIOM_PORT_SEL3;
-    volatile uint32_t p4 = *(uint32_t *)CYREG_HSIOM_PORT_SEL4;
-    
-    volatile uint32_t pp0 = P0_PC;
-    volatile uint32_t pp1 = P1_PC;
-    volatile uint32_t pp2 = P2_PC;
-    volatile uint32_t pp3 = P35_PC;
-    
-    volatile uint8_t dmm = (P35_PC & (0x07 << 15)) >> 15;
-
-    /* Place your initialization/startup code here (e.g. MyInst_Start()) */
-    PWM_1_Start();
-    
+    // Setup timer1 (as per Z8 timer1)
     Timer1_Init();
     
+    // Setup the UART with the default 8840A settings...
     UART_Start();
 
+    // Prepare the CPU emulator and setup IRQ's...
     setup_emulator();
     
+    // Run the emulator forever...
     execute();
-    
-    while(1) {
-    
-        
-        CyDelay(500);       // little delay
-        
-        // Address read of 0x000c (hopefully)
-    //    CTRL1_Write(0x1c);
-    //    CTRL2_Write(0xb0);      // 15=address, 14=data, 13=dm, 12=rw (w=0)
-        
-        
-        for(int x=0; x < 32; x++) {
-            resp[x] = bus_read((uint16_t)x, 1, 0);
-        }
-        
-//        for(int x=0; x < 5; x++) {
-//            resp[x] = bus_read((uint16_t)0x1f00, 0, 1);
-//        }
-        
-
-        CyDelay(500);
-        
-        // Now attempt some display stuff...
-        bus_write(0x1801, 0x29, 0);
-        bus_write(0x1801, 0x00, 0);
-        bus_write(0x1801, 0xc2, 0);
-        bus_write(0x1801, 0xA0, 0);             // Blanking ... A0 = unblank, A3 = blank (I think)
-        bus_write(0x1801, 0x90, 0);
-  
-        CyDelay(10);
-        
-        bus_write(0x1800, 0x08, 0);
-        bus_write(0x1800, 0x80, 0);
-        bus_write(0x1800, 0x08, 0);
-        bus_write(0x1800, 0x80, 0);
-    
-      
-        bus_write(0x1800, 0x00, 0);
-        bus_write(0x1800, 0x0A, 0);
-        bus_write(0x1800, 0x00, 0);
-        bus_write(0x1800, 0x14, 0);
-        bus_write(0x1800, 0x00, 0);
-        bus_write(0x1800, 0x7b, 0);
-        bus_write(0x1800, 0x01, 0);
-        bus_write(0x1800, 0x99, 0);
-        
-        CyDelay(10);
-    }
-        
-   //PWM_1_Stop(); 
 }
 
 /* [] END OF FILE */

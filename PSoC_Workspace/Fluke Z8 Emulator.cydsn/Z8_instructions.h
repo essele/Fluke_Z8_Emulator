@@ -18,9 +18,6 @@
 #define ARG_r(n)    (RP|n)
 #define ARG_Ir(n)   (reg[ARG_r(n)])
 
-// Some useful helpers...
-//#define PUSH16(v)   reg[--SPL] = (v & 0x00ff); reg[--SPL] = (v & 0xff00) >> 8;
-
 // NOTE: these assume we are clear of control registers etc.
 #define LOAD_VAL_FROM_REGPAIR(r)    ((reg[r]<<8) | (reg[r+1]))
 
@@ -351,15 +348,6 @@
                             S = ((new & 0x80) == 0x80); \
                             V = (((v & 0x80) != (src & 0x80)) && ((new & 0x80) == (src & 0x80)));
 // ----------------------------------------------------------------------
-#define func_lde ;
-#define func_ldei ;
-// ----------------------------------------------------------------------
-// Load to and from code, we need to trap stuff that would be in firmware
-// and return the code from our memory, anything else will need to be an
-// external read!
-#define func_ldc ;
-#define func_ldci ;
-// ----------------------------------------------------------------------
 #define func_swap           uint8_t v = LOAD_VAL_FROM_REG(dst); \
                             v = (v << 4) | (v >> 4); \
                             Z = (v == 0); \
@@ -369,6 +357,5 @@
 #define func_call           PUSH16(pc); \
                             pc = da;
 // ----------------------------------------------------------------------
-
 
 /* [] END OF FILE */

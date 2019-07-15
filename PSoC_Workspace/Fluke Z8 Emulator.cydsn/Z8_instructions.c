@@ -48,10 +48,10 @@ static inline void STORE_VAL_IN_REG(uint8_t r, uint8_t val) {
     }
 }
 
-// ----------------------------------------------------------------------
-// If we execute an illegal opcode, just bring some values into local scope 
-// so they are easy to see in the debugger, and then cause a breakpoint.
-// ----------------------------------------------------------------------
+/**
+ * If we execute an illegal opcode, just bring some values into local scope 
+ * so they are easy to see in the debugger, and then cause a breakpoint.
+ */
 #pragma GCC push_options
 #pragma GCC optimize ("O0")
 void ILLEGAL() {
@@ -86,6 +86,7 @@ void LDC_read() {   // OPCODE C2
         STORE_VAL_IN_REG(dst, bus_read(addr, 1, extended_bus_timing));
     }
 }
+// ----------------------------------------------------------------------
 void LDCI_read() {  // OPCODE C3
     uint8_t tmp = ARG_IM;
     uint8_t dst = ARG_r(tmp >> 4);
@@ -117,6 +118,7 @@ void LDC_write() {      // OPCODE D2
         bus_write(addr, LOAD_VAL_FROM_REG(src), 1);
     }
 }
+// ----------------------------------------------------------------------
 void LDCI_write() {     // OPCODE D3
     uint8_t tmp = ARG_IM;
     uint8_t src = ARG_r(tmp >> 4);
@@ -134,8 +136,7 @@ void LDCI_write() {     // OPCODE D3
     STORE_VAL_IN_REG(src, isrc + 1);
     STORE_VAL_IN_REGPAIR(dst, (addr + 1));
 }
-
-
+// ----------------------------------------------------------------------
 void LDE_read() {   // OPCODE 82
     uint8_t tmp = ARG_IM;
     uint8_t dst = ARG_r(tmp >> 4);
@@ -145,6 +146,7 @@ void LDE_read() {   // OPCODE 82
     // dm=0 (means dm .. i.e. data)
     STORE_VAL_IN_REG(dst, bus_read(addr, 0, extended_bus_timing));
 }
+// ----------------------------------------------------------------------
 void LDEI_read() {  // OPCODE 83
     uint8_t tmp = ARG_IM;
     uint8_t dst = ARG_r(tmp >> 4);
@@ -168,6 +170,7 @@ void LDE_write() {      // OPCODE 92
     
     bus_write(addr, LOAD_VAL_FROM_REG(src), 0);
 }
+// ----------------------------------------------------------------------
 void LDEI_write() {     // OPCODE 93
     uint8_t tmp = ARG_IM;
     uint8_t src = ARG_r(tmp >> 4);
@@ -182,18 +185,13 @@ void LDEI_write() {     // OPCODE 93
     STORE_VAL_IN_REGPAIR(dst, (addr + 1));
 }
 
-// ----------------------------------------------------------------------
 
 /**
  * Function definitions for non-arg opcodes
  */
-void DI() {
-    write_IMR(IMR & 0x7f);
-}
+void DI() { write_IMR(IMR & 0x7f); }
 // ----------------------------------------------------------------------
-void EI() {
-    write_IMR(IMR | 0x80);
-}
+void EI() { write_IMR(IMR | 0x80); }
 // ----------------------------------------------------------------------
 void RET() { 
     pc = (reg[SPL] << 8) | reg[SPL+1]; 
@@ -213,7 +211,7 @@ void SCF() { C = 1; }
 // ----------------------------------------------------------------------
 void CCF() { C = !C; }
 // ----------------------------------------------------------------------
-// TODO: need to benchmark this, just guessing at the moment
+// TODO: probably need to benchmark this, just guessing at the moment
 void NOP() { CyDelayCycles((6 * 4 * 6) - 8); }
 // ----------------------------------------------------------------------
 
@@ -270,9 +268,9 @@ OP(TCM, R2_R1, tcm); OP(TCM, IR2_R1, tcm); OP(TCM, R1_IM, tcm); OP(TCM, IR1_IM, 
 OP(PUSH, R2, push); OP(PUSH, IR2, push); OP(TM, r1_r2, tm); OP(TM, r1_Ir2, tm);
 OP(TM, R2_R1, tm); OP(TM, IR2_R1, tm); OP(TM, R1_IM, tm); OP(TM, IR1_IM, tm);
 // 80 - 87
-OP(DECW, RR1, decw); OP(DECW, IR1, decw); OP(LDE, r1_Irr2, lde); OP(LDEI, Ir1_Irr2, ldei);
+OP(DECW, RR1, decw); OP(DECW, IR1, decw);
 // 90 - 97
-OP(RL, R1, rl); OP(RL, IR1, rl); OP(LDE, Irr1, lde); OP(LDEI, Ir2_Irr1, ldei);
+OP(RL, R1, rl); OP(RL, IR1, rl); 
 // A0 - A7
 OP(INCW, RR1, incw); OP(INCW, IR1, incw); OP(CP, r1_r2, cp); OP(CP, r1_Ir2, cp);
 OP(CP, R2_R1, cp); OP(CP, IR2_R1, cp); OP(CP, R1_IM, cp); OP(CP, IR1_IM, cp);
@@ -280,9 +278,9 @@ OP(CP, R2_R1, cp); OP(CP, IR2_R1, cp); OP(CP, R1_IM, cp); OP(CP, IR1_IM, cp);
 OP(CLR, R1, clr); OP(CLR, IR1, clr); OP(XOR, r1_r2, xor); OP(XOR, r1_Ir2, xor);
 OP(XOR, R2_R1, xor); OP(XOR, IR2_R1, xor); OP(XOR, R1_IM, xor); OP(XOR, IR1_IM, xor);
 // C0 - C7
-OP(RRC, R1, rrc); OP(RRC, IR1, rrc); OP(LDC, r1_Irr2, ldc); OP(LDCI, Ir1_Irr2, ldci);
+OP(RRC, R1, rrc); OP(RRC, IR1, rrc); 
 // D0 - D7
-OP(SRA, R1, sra); OP(SRA, IR1, sra); OP(LDC, r2_Irr1, ldc); OP(LDCI, Ir2_Irr1, ldci);
+OP(SRA, R1, sra); OP(SRA, IR1, sra);
 OP(CALL, IRR1, call); OP(CALL, DA, call);
 // E0 - E7
 OP(RR, R1, rr); OP(RR, IR1, rr); OP(LD, r1_Ir2, ld); OP(LD, R2_R1, ld);
@@ -349,8 +347,6 @@ OPn(INC, r1, inc, 4); OPn(INC, r1, inc, 5); OPn(INC, r1, inc, 6); OPn(INC, r1, i
 OPn(INC, r1, inc, 8); OPn(INC, r1, inc, 9); OPn(INC, r1, inc, 10); OPn(INC, r1, inc, 11);
 OPn(INC, r1, inc, 12); OPn(INC, r1, inc, 13); OPn(INC, r1, inc, 14); OPn(INC, r1, inc, 15);
 // *F
-
-
 
 
 // ----------------------------------------------------------------------
