@@ -87,7 +87,7 @@ int main(void)
     
     // Setup the UART with the default 8840A settings...
     UART_Start();
-
+    
     // Prepare the CPU emulator and setup IRQ's...
     setup_emulator();
     

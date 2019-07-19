@@ -42,7 +42,7 @@ extern void         EI();
 
 extern uint8_t      code[];
 extern uint16_t     pc;
-extern uint8_t      reg[];
+extern volatile uint8_t      reg[];
 
 extern int          C, Z, S, V, D, H;
 extern int          interrupts_disabled;
