@@ -34,7 +34,7 @@
 #define BKPT        asm("BKPT");
 
 // Some useful helpers...
-#define PUSH16(v)   reg[--SPL] = (v & 0x00ff); reg[--SPL] = (v & 0xff00) >> 8;
+#define PUSH16(v)   reg[--SPL] = (v & 0xff); reg[--SPL] = (v >> 8);
 #define PUSH(v)     reg[--SPL] = v;
 
 extern void         DI();
@@ -42,7 +42,7 @@ extern void         EI();
 
 extern uint8_t      code[];
 extern uint16_t     pc;
-extern volatile uint8_t      reg[];
+extern uint8_t      reg[];
 
 extern int          C, Z, S, V, D, H;
 extern int          interrupts_disabled;

@@ -66,12 +66,12 @@ void bus_write(uint16_t addr, uint8_t data, int dm) {
     
     CTRL1_Write((uint8_t)(addr&0xff));
     CTRL2_Write(hn);
-    CyExitCriticalSection(saveInts); 
     
     // Now we probably need to wait for some considerable time before this is
     // processed ... we should probably wait at least 30 cycles for now.
     // TODO: need to figure out how to optimise this
     CyDelayCycles(30);
+    CyExitCriticalSection(saveInts); 
 }
 
 /**

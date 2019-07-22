@@ -15,23 +15,19 @@
 #include <stdlib.h>
 #include "emulator.h"
 
-
-// CyGlobalIntDisable; \
-
 // Generic IRQ calling macro
 #define     CALL_IRQ(n)     PUSH16(pc) \
                             PUSH(FLAGS) \
                             pc = code[(n*2)] << 8 | code[(n*2)+1]; \
-                            CyGlobalIntDisable; \
-                            IRQ = IRQ & (0xff ^ (1 << n)); \
-                            CyGlobalIntEnable; \
-                            IMR &= 0x7f;    /* DI */
+                            IRQ &= ~(1 << n); \
+                            IMR &= 0x7f;
+
                        
 /**
  * Globals that represent the main state of the CPU
  */
 uint16_t            pc;
-volatile uint8_t             reg[256];
+uint8_t             reg[256];
 
 // We use ints for the flags and keep them independently for speed, when accessing the
 // flags register we'll have to pull them together
@@ -260,6 +256,7 @@ void write_T1(uint8_t val) {
     T1 = val;       // store for later use
     
     uint32_t period = ((PRE1 & 0xfc) >> 2) * T1;
+    
     Timer1_WritePeriod(period);
     Timer1_WriteCompare(period >> 1);
     Timer1_WriteCounter(0);
@@ -271,6 +268,7 @@ void write_PRE1(uint8_t val) {
     if(!(val&0x01)) REG_FAIL(PRE1, val);
 
     uint32_t period = ((PRE1 & 0xfc) >> 2) * T1;
+    
     Timer1_WritePeriod(period);
     Timer1_WriteCompare(period >> 1);
     Timer1_WriteCounter(0);
@@ -287,55 +285,70 @@ void write_PRE1(uint8_t val) {
 // bit 4 = not used
 // bit 5 = timer
 // ----------------------------------------------------------------------
-void write_IMR(uint8_t val) {
-    // Write the value so that we can read it back
-    IMR = val;
 
-    /*
-    if (IMR & 0x01) { // IRQ 0 -- not used
-    }
-    if (IMR & 0x02) { // IRQ 1 -- keyboard (P42/P33)
-        P4_SetInterruptMode(P4_P33_INTR, P4_INTR_FALLING);
+
+// This could be called as part of a pop, therefore we could cause an IRQ
+// half way through a pop function!
+
+int imr_tag = 0;
+
+void write_IMR(uint8_t val) {
+    IMR = val;
+    
+    if (IMR & 0x80) {
+ //       CyGlobalIntEnable;
     } else {
-        P4_SetInterruptMode(P4_P33_INTR, P4_INTR_NONE);
-        P4_INTSTAT = 0x04;
+ //       CyGlobalIntDisable;
     }
-    if (IMR & 0x04) { // IRQ 2 -- ADC (P40/P31)
-        P4_SetInterruptMode(P4_P31_INTR, P4_INTR_FALLING);
+    
+    if (IMR & 0x20) {
+        IRQ_Timer1_Enable(); 
     } else {
-        P4_SetInterruptMode(P4_P31_INTR, P4_INTR_NONE);
-        P4_INTSTAT = 0x01;
+        IRQ_Timer1_Disable();
     }
-    if (IMR & 0x08) { // IRQ 3 -- Serial Input
+    
+    if (IMR & 0x10) {
+    } else {
+    }
+    
+    if (IMR & 0x08) {
         IRQ_Serial_Enable();
     } else {
         IRQ_Serial_Disable();
-        IRQ_Serial_ClearPending();
     }
-    if (IMR & 0x10) { // IRQ 4 -- Serial Output (not used)
-    }
-    if (IMR & 0x20) { // IRQ 5 -- Timer
-    }
-    */
     
+    if (IMR & 0x04) {
+        IRQ_P4_Enable();
+    } else {
+        IRQ_P4_Disable();
+    }
+    
+    if (IMR & 0x02) {
+  //      IRQ_P4_Enable();
+    } else {
+  //      IRQ_P4_Disable();
+    }
     return;
-    
+
     // If interrupts are enabled then check if we need to run anything
     // (in priority order.)
-    if (IMR & 0x80) {
-        if (IMR & IRQ & 0x04) {
-            CALL_IRQ(2);
-        } else if (IMR & IRQ & 0x01) {
-            CALL_IRQ(0);
-        } else if (IMR & IRQ & 0x02) {
+    if ((IMR & 0xaf) > 0x80) {
+        imr_tag = 1;
+        /*
+        if (IMR & IRQ & 0x02) {
             CALL_IRQ(1);
-        } else if (IMR & IRQ & 0x10) {
-            CALL_IRQ(4);
+//        } else if (IMR & IRQ & 0x10) {
+//            CALL_IRQ(4);
+        } else if (IMR & IRQ & 0x04) {
+            CALL_IRQ(2);
+//        } else if (IMR & IRQ & 0x01) {
+//            CALL_IRQ(0);
         } else if (IMR & IRQ & 0x08) {
             CALL_IRQ(3);
         } else if (IMR & IRQ & 0x20) {
             CALL_IRQ(5);
         }
+        */
     }
 }
 
@@ -368,22 +381,44 @@ void write_PRE0(uint8_t val) {
 }
 
 uint8_t read_IRQ() {
-    uint8_t val = IRQ & 0xef;
+    uint8_t val = 0;
     
-    if ((UART_INTR_TX_REG & UART_INTR_TX_EMPTY)) {
-        val |= 0x10;
-        UART_INTR_TX_REG = UART_INTR_TX_EMPTY;
+    if (P4_INTSTAT & 0x04) {
+        val |= 0x02;
     }
-    
-    return val; // | 0x10;
+    if (P4_INTSTAT & 0x01) {
+        val |= 0x04;
+    }
+    if (UART_INTR_RX_REG & UART_INTR_RX_NOT_EMPTY) {
+        val |= 0x08;
+    }
+    if (UART_INTR_TX_REG & UART_INTR_TX_UART_DONE) {
+        val |= 0x10;
+    }
+    if (Timer1_INTERRUPT_REQ_REG & Timer1_INTR_MASK_CC_MATCH) {
+        val |= 0x20;
+    }
+    return val;
 }
 
 void write_IRQ(uint8_t val) {
-    uint8_t saveInts = CyEnterCriticalSection();
     
-    IRQ = val;
-    
-    CyExitCriticalSection(saveInts);
+    if (!(val & 0x02)) {
+        P4_INTSTAT = 0x04;
+    }
+    if (!(val & 0x04)) {
+        P4_INTSTAT = 0x01;
+    }
+    if (!(val & 0x08)) {
+  //      UART_INTR_RX_REG = UART_INTR_RX_NOT_EMPTY;
+  //      IRQ_Serial_ClearPending();
+    }
+    if (!(val & 0x10)) {
+        UART_INTR_TX_REG = UART_INTR_TX_UART_DONE;
+    }
+    if (!(val & 0x20)) {
+        Timer1_INTERRUPT_REQ_REG = Timer1_INTR_MASK_CC_MATCH;
+    }
 }
 
 /**
@@ -394,22 +429,25 @@ void write_IRQ(uint8_t val) {
  * to check if things are ok, and disabled serial if there are problems.
  */
 void write_SIO(uint8_t val) {
-    UART_TX_FIFO_WR_REG = val;     
-    UART_INTR_TX_REG = UART_INTR_TX_EMPTY;
-    
-    // Re-enable the interrupt for empty tx fifo...
-    //UART_INTR_TX_MASK_REG |= UART_INTR_TX_EMPTY;
+    UART_TX_FIFO_WR_REG = val;
 }
 
-uint8_t last100[100];
-int32_t     scount = 0;
-
 uint8_t read_SIO() {
-    //IRQ &= 0xF7;
-    uint8_t val = SIO;
-    last100[scount++] = val;
-    if(scount==100) scount = 0;
+    uint8_t n = UART_RX_FIFO_STATUS_REG & 0x1f;
+    uint8_t val = 0;
     
+    // Read all, keep the last one...
+    for(int i=0; i < n; i++) {
+        val = UART_RX_FIFO_RD_REG;
+    }
+    UART_INTR_RX_REG = UART_INTR_RX_NOT_EMPTY;
+    IRQ_Serial_ClearPending();
+    
+    // Handle parity...
+    if(UART_INTR_RX_REG & UART_INTR_RX_PARITY_ERROR) {
+        val |= 0x80;
+        UART_INTR_RX_REG = UART_INTR_RX_PARITY_ERROR;
+    }
     return val;
 }
 
@@ -511,22 +549,47 @@ void (*reg_write[256])(uint8_t) = {
  * order (ADC first!)
  */
 
-CY_ISR(Handle_IRQ_P4) {
-    uint8_t saveInts = CyEnterCriticalSection();
-    
-    uint32_t is = P4_INTSTAT;
-    uint32_t is_cfg = P4_INTCFG;
+uint32_t p4count = 0;
 
-    if (P4_INTSTAT & 0x04) {
+
+CY_ISR(Handle_IRQ_P4) {
+    CyGlobalIntDisable;
+
+    p4count++;
+    
+    if (P4_INTSTAT & 0x04) {    // IRQ 1
         P4_INTSTAT = 0x04;
-        IRQ |= 0x02;
+        CALL_IRQ(1);
     }
+    
+    if (P4_INTSTAT & 0x01) {    // IRQ 2
+        P4_INTSTAT = 0x01;
+        CALL_IRQ(2);
+    }
+    
+    
+    
+    /*
     if (P4_INTSTAT & 0x01) {
         P4_INTSTAT = 0x01;
-        IRQ |= 0x04;
+        IRQ |= 0x04;            // IRQ 2
     }
-
-    CyExitCriticalSection(saveInts);    
+    if (P4_INTSTAT & 0x04) {
+        P4_INTSTAT = 0x04;
+        IRQ |= 0x02;            // IRQ 1
+    }
+    
+    // Now see if we need to run an ISR
+    if ((IMR & 0x80)) {
+        if (IMR & IRQ & 0x02) {
+            //CALL_IRQ(1);
+            imr_tag=1;
+        } else if (IMR & IRQ & 0x04) {
+            //CALL_IRQ(2);
+            imr_tag=1;
+        }
+    }
+    */
 }
 
 /**
@@ -534,10 +597,26 @@ CY_ISR(Handle_IRQ_P4) {
  * properly enabled.
  ( (This never seems to get triggered by the 8840A)
  */
+
+uint32_t tcount = 0;
+
 CY_ISR(Handle_IRQ_Timer1) {     // IRQ 5
-    uint8_t saveInts = CyEnterCriticalSection();
-    IRQ |= 0x20;
-    CyExitCriticalSection(saveInts);
+    CyGlobalIntDisable;
+
+    tcount++;
+  
+    Timer1_INTERRUPT_REQ_REG = Timer1_INTR_MASK_CC_MATCH;
+    CALL_IRQ(5);
+    
+//    Timer1_ClearInterrupt(Timer1_INTR_MASK_CC_MATCH);
+//    IRQ_Timer1_ClearPending();
+    
+//    IRQ |= 0x20;
+    
+//    if ((IMR & 0xa0) == 0xa0) {
+        //CALL_IRQ(5);
+//        imr_tag=1;
+//    }
 }
 
 
@@ -555,39 +634,51 @@ uint32_t    sicount = 0;
 int         serial_rx_pending = 0;
 
 CY_ISR(Handle_IRQ_Serial) {
-    uint8_t saveInts = CyEnterCriticalSection();
-
-    /* This should only be for a received byte */
+    CyGlobalIntDisable;
+    
+    sicount++;
+    
     if (UART_INTR_RX_REG & UART_INTR_RX_NOT_EMPTY) {
-/*        
-        uint8_t sz = UART_RX_FIFO_STATUS_REG;
-        uint8_t val;
+        IRQ_Serial_ClearPending();
+        CALL_IRQ(3);
+    } else {       
+        uint32_t cause = UART_INTR_CAUSE_REG;
+        uint32_t rx = UART_INTR_RX_REG;
+        uint32_t rxmask = UART_INTR_RX_MASK_REG;
+        uint32_t tx = UART_INTR_TX_REG;
+        uint32_t txmask = UART_INTR_TX_MASK_REG;
+        asm("nop");
+    }
 
-        // Read all the bytes in the fifo!
-        for (int i=0; i < sz; i++) {
-            val = UART_RX_FIFO_RD_REG;
-        }
+
+    
+    return;
+    // Process the TX stuff...
+//    if (UART_INTR_TX_REG & UART_INTR_TX_UART_DONE) {
+//        IRQ |= 0x10;
+//        UART_INTR_TX_REG = UART_INTR_TX_UART_DONE;
+//    }
+
+    // If we receive a byte we must read it, even if we don't use it, otherwise
+    // the fifo will just fill and we'll get chars behind.
+    if (UART_INTR_RX_REG & UART_INTR_RX_NOT_EMPTY) {
+        uint8_t val = UART_RX_FIFO_RD_REG;
         
         if(UART_INTR_RX_REG & UART_INTR_RX_PARITY_ERROR) {
             val |= 0x80;
         }
-        
-        SIO = val;
-*/
-        SIO = UART_RX_FIFO_RD_REG;
-        // Clear the pending bit...
         UART_INTR_RX_REG = UART_INTR_RX_NOT_EMPTY | UART_INTR_RX_PARITY_ERROR;
+
+        SIO = val;
+        IRQ |= 0x08;
         
-        // Set the IRQ bit...
-        IRQ |= 0x08;                // IRQ 3
-//        CALL_IRQ(3);
-    } else {
-        uint32_t rx = UART_INTR_RX_REG;
-        uint32_t rxmast = UART_INTR_RX_MASK_REG;
-        
-        BKPT;
+        // Now see if we need to call the ISR, we can do it in here since we know
+        // that TX is not used.
+        if ((IMR & 0x88) == 0x88) {
+            //CALL_IRQ(3);
+            imr_tag = 1;
+        }
     }
-    CyExitCriticalSection(saveInts);
 }
 
 void setup_emulator() {
@@ -606,13 +697,17 @@ void setup_emulator() {
     IRQ_Serial_SetVector(&Handle_IRQ_Serial);
     IRQ_Serial_SetPriority((uint8)IRQ_Serial_INTC_PRIOR_NUMBER);
     IRQ_Serial_ClearPending();
-    IRQ_Serial_Enable();
+//    IRQ_Serial_Enable();
+    
+    // So we can send the first char...
+    UART_SetTxInterrupt(UART_INTR_TX_UART_DONE);
 
     // Setup the timer IRQ...
     IRQ_Timer1_Disable();
     IRQ_Timer1_SetVector(&Handle_IRQ_Timer1);
     IRQ_Timer1_SetPriority((uint8)IRQ_Timer1_INTC_PRIOR_NUMBER);
     IRQ_Timer1_ClearPending();
+//    IRQ_Timer1_Enable();
     
     // Setup IRQ's for Port 3 (mapped to Port4 PSoC)...
     IRQ_P4_Disable();
@@ -631,14 +726,14 @@ void setup_emulator() {
     IRQ_P4_ClearPending();
     
     // Now we can enable the IRQ for this group of three pins
-    IRQ_P4_Enable();
+//    IRQ_P4_Enable();
     
     write_IMR(0x00);                // Disable everything at the start
 
     extended_bus_timing = 1;        // Default is to start with extended bus timing
     bus_enabled = 1;                // We start with bus enabled
     
-//    IRQ |= 0x10;                    // TX UART DONE (so we can send)
+ //   IRQ |= 0x10;                    // TX UART DONE (so we can send)
 }
 
 
@@ -648,31 +743,20 @@ void setup_emulator() {
  * disabled.
  */
 
-uint16_t    pcs[32];
-int pcx = 0;
-
+uint16_t ppc[200];
+int ccc = 0;
+int32_t ticks = 0;
 
 void execute() {
-    uint8_t xxx;
-    
-    CyGlobalIntEnable;
-    
     for (;;) {
-        if (IMR > 0x80) {
-            if (IMR & IRQ & 0x04) {
-                CALL_IRQ(2);
-            } else if (IMR & IRQ & 0x02) {
-                CALL_IRQ(1);
-            } else if (IMR & IRQ & 0x08) {
-                CALL_IRQ(3);
-            } else if (IMR & IRQ & 0x20) {
-                CALL_IRQ(5);
-            }
-        }
+        // Allow the IRQ's to run...
+        if (IMR & 0x80) CyGlobalIntEnable;
+        CyGlobalIntDisable;
+        
+        // Execute the instruction...
         map[code[pc++]]();
+        
     }
 }
-
-
 
 /* [] END OF FILE */

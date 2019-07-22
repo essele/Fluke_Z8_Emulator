@@ -195,11 +195,13 @@ void EI() { write_IMR(IMR | 0x80); }
 // ----------------------------------------------------------------------
 void RET() { 
     pc = (reg[SPL] << 8) | reg[SPL+1]; 
+    if (pc > 0x2000) BKPT;
     SPL += 2; 
 }
 // ----------------------------------------------------------------------
 void IRET() { 
-    write_FLAGS(reg[SPL++]); 
+    write_FLAGS(reg[SPL++]);
+    
     pc = (reg[SPL] << 8) | reg[SPL+1]; 
     SPL += 2;
     EI();

@@ -6,7 +6,7 @@
 <CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997 type_name="CyDesigner.Common.Base.CyCustomData" version="2">
 <userData>
 <dataGuid v="1b906a0f-a7b6-4e4d-a428-82f98b53cb35">
-<CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35 type_name="CyDesigner.Common.ProjMgmt.GUI.CyExplorerWindow+CyExplorerWindowState" version="3" SelectedTab="Output">
+<CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35 type_name="CyDesigner.Common.ProjMgmt.GUI.CyExplorerWindow+CyExplorerWindowState" version="3" SelectedTab="Source">
 <TreeKeys>
 <v>Source</v>
 <v>Components</v>
@@ -42,6 +42,38 @@
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART</v>
 </ExpandedNodeIds>
 <VisibleNodeIds>
+<v>Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\TopDesign</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Pins</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Analog</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\DMA</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Clocks</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Interrupts</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\System</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Directives</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.cydwr\Flash Security</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Header Files</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Header Files\cyapicallbacks.h</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Header Files\emulator.h</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Header Files\Z8_instructions.h</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Source Files</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Source Files\emulator.c</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Source Files\firmware_8840A_v23.c</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Source Files\main.c</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Source Files\Z8_instructions.c</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\AS</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\Clock_1</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\Clock_2</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\CTRL1</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\CTRL2</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cy_boot</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cy_dmac</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cy_lfclk</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\DATA1</v>
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\DM</v>
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\DM\DM.c</v>
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\DM\DM.h</v>
@@ -64,38 +96,6 @@
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\PWM8M</v>
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\RW</v>
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\Timer1</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART.c</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART.h</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART_BOOT.c</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART_BOOT.h</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART_PINS.h</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART_PM.c</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART_PVT.h</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART_SPI_UART.c</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART_SPI_UART.h</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART_SPI_UART_INT.c</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART_SPI_UART_PVT.h</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART_UART.c</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART\UART_UART_BOOT.c</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\UART_SCBCLK</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\XTAL1</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cycodeshareexport.ld</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cycodeshareimport.ld</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cycodeshareimport.scat</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cydevice_trm.h</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cydevicegnu_trm.inc</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cydeviceiar_trm.inc</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cydevicerv_trm.inc</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cydisabledsheets.h</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cyfitter.h</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cyfitter_cfg.c</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cyfitter_cfg.h</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cyfittergnu.inc</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cyfitteriar.inc</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cyfitterrv.inc</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\cymetadata.c</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Generated_Source\PSoC4\project.h</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 <CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
@@ -190,6 +190,8 @@
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Listing Files\UART_UART_BOOT.lst</v>
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Listing Files\XTAL1.lst</v>
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Listing Files\XTAL1_PM.lst</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Listing Files\XTAL2.lst</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Listing Files\XTAL2_PM.lst</v>
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Listing Files\Z8_instructions.lst</v>
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Fluke Z8 Emulator.elf</v>
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\CortexM0\ARM_GCC_541\Debug\Fluke Z8 Emulator.hex</v>
@@ -199,8 +201,8 @@
 <v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator_timing.html</v>
 </ExpandedNodeIds>
 <VisibleNodeIds>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator.rpt</v>
-<v>Fluke Z8 Emulator\Fluke Z8 Emulator\Fluke Z8 Emulator_timing.html</v>
+<v>Fluke Z8 Emulator</v>
+<v>Fluke Z8 Emulator\Fluke Z8 Emulator</v>
 </VisibleNodeIds>
 </CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
 </TreeStates>
@@ -281,7 +283,7 @@
   Copyright (c) 2001-2016 Actipro Software LLC.  All rights reserved.
   http://www.actiprosoftware.com
 
---><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1281, 815" SelectedTabbedMdiWindow="097dcb29-b98b-410f-83b5-305080884894"><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\TopDesign\TopDesign.cysch" Guid="6a105bce-e55f-496a-930c-df0eb5431628" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\main.c" Guid="5ae311d5-ab64-4545-83d8-42b9ada36c01" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\emulator.c" Guid="097dcb29-b98b-410f-83b5-305080884894" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Z8ExtBus\Z8ExtBus.v" Guid="4445b917-e28b-4ce8-b090-4c9f4200cf0e" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Fluke Z8 Emulator.cydwr" Guid="a5066944-a3b1-4204-a834-2ecbd0e2d9ba" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\emulator.h" Guid="2281c479-1ae6-4dd2-854a-88d38ba4626c" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Z8_instructions.c" Guid="b8b7d6c3-dc1b-4d58-a2bc-cc550e784498" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Z8_instructions.h" Guid="54c339d5-0fdb-4f82-a2c0-5cae1812b8f7" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\firmware_8840A_v23.c" Guid="9f9fb897-cbc6-4572-b93e-ecdf9e66e3cc" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Generated_Source\PSoC4\Cm0Start.c" Guid="eece1fdc-4956-480a-bbaf-f72fba512f7b" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Generated_Source\PSoC4\CyBootAsmGnu.s" Guid="8ab8d611-e746-4b29-b33a-9292f99cb96e" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Generated_Source\PSoC4\P4.h" Guid="5f1fad6b-09e5-4a57-90c9-26c6e5089216" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Generated_Source\PSoC4\cyfitter.h" Guid="5199d049-0586-4f5b-968e-f1a43a64b561" /><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="6b4ece5d-c0ac-4f04-965d-dcd2b0bb4b7f" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
+--><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1535, 815" SelectedTabbedMdiWindow="a5066944-a3b1-4204-a834-2ecbd0e2d9ba"><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\TopDesign\TopDesign.cysch" Guid="6a105bce-e55f-496a-930c-df0eb5431628" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\main.c" Guid="5ae311d5-ab64-4545-83d8-42b9ada36c01" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\emulator.c" Guid="097dcb29-b98b-410f-83b5-305080884894" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Z8ExtBus\Z8ExtBus.v" Guid="4445b917-e28b-4ce8-b090-4c9f4200cf0e" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Fluke Z8 Emulator.cydwr" Guid="a5066944-a3b1-4204-a834-2ecbd0e2d9ba" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\emulator.h" Guid="2281c479-1ae6-4dd2-854a-88d38ba4626c" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Z8_instructions.c" Guid="b8b7d6c3-dc1b-4d58-a2bc-cc550e784498" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Z8_instructions.h" Guid="54c339d5-0fdb-4f82-a2c0-5cae1812b8f7" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\firmware_8840A_v23.c" Guid="9f9fb897-cbc6-4572-b93e-ecdf9e66e3cc" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Generated_Source\PSoC4\Cm0Start.c" Guid="eece1fdc-4956-480a-bbaf-f72fba512f7b" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Generated_Source\PSoC4\CyBootAsmGnu.s" Guid="8ab8d611-e746-4b29-b33a-9292f99cb96e" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Generated_Source\PSoC4\P4.h" Guid="5f1fad6b-09e5-4a57-90c9-26c6e5089216" /><DocumentWindow Key="\\Mac\Home\Documents\dev\Fluke_Z8_Emulator\PSoC_Workspace\Fluke Z8 Emulator.cydsn\Generated_Source\PSoC4\cyfitter.h" Guid="5199d049-0586-4f5b-968e-f1a43a64b561" /><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="6b4ece5d-c0ac-4f04-965d-dcd2b0bb4b7f" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
 <config v="" />
 <AutoUpdate v="true" />
 </CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>

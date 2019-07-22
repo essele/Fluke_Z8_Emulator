@@ -262,7 +262,12 @@
 // ----------------------------------------------------------------------
 #define func_push           reg[--SPL] = src;
 // ----------------------------------------------------------------------
-#define func_pop            STORE_VAL_IN_REG(dst, reg[SPL++]);
+// Need to be very careful here, since IMR writes could cause an IRQ and
+// hence stack updates, so make sure we pop first, then update the reg.
+//#define func_pop            STORE_VAL_IN_REG(dst, reg[SPL++]);
+#define func_pop            uint8_t v = reg[SPL]; \
+                            SPL++; \
+                            STORE_VAL_IN_REG(dst, v);
 // ----------------------------------------------------------------------
 #define func_tcm            uint8_t v = (LOAD_VAL_FROM_REG(dst) ^ 0xff) & src; \
                             Z = (v == 0); \
