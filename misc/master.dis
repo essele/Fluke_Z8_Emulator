@@ -20,19 +20,19 @@
 0025: 76 02 80  TM   P2, #80h           // See if upper 4 bits of P2 are set
 0028: 6d 0e f2  JP   Z, 0EF2h           // if so, jump to test routines?
 002b: 6c 0b     LD   R6, #0Bh
-002d: d6 0e 39  CALL 0E39h		// clear P2 (exc. AC) and setup for address mode
+002d: d6 0e 39  CALL 0E39h		        // clear P2 (exc. AC) and setup for address mode
 0030: 8d 1b d5  JP   1BD5h
-0033: 9f        EI   
+0033: 9f        EI                      // MAIN LOOP -- non=irq loop
 0034: d6 07 a7  CALL 07A7h
 0037: 8f        DI   
 0038: 76 4d 04  TM   4Dh, #04h
 003b: 6b 0e     JR   Z, 004Bh
-003d: 76 02 02  TM   P2, #02h           // this is front/rear sense
-0040: eb 09     JR   NZ, 004Bh
-0042: 56 fb fb  AND  IMR, #FBh
-0045: 9f        EI   
+003d: 76 02 02  TM   P2, #02h           // P21 -- this is front/rear sense? Doesn't make sense?
+0040: eb 09     JR   NZ, 004Bh          // if REAR? goto 0x004b
+0042: 56 fb fb  AND  IMR, #FBh          // turn off IRQ2 (ADC)
+0045: 9f        EI                      
 0046: d6 04 fb  CALL 04FBh
-0049: 8b e8     JR   0033h
+0049: 8b e8     JR   0033h              // LOOP BACK TO MAIN LOOP (0x0033)  
 004b: 46 fb 04  OR   IMR, #04h
 004e: 9f        EI   
 004f: 76 4f 08  TM   4Fh, #08h
