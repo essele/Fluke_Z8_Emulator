@@ -1,0 +1,3503 @@
+0000: 00 00     IRQ0 Vector 0000h
+0002: 03 e2     IRQ1 Vector 03E2h
+0004: 00 80     IRQ2 Vector 0080h
+0006: 07 7a     IRQ3 Vector 077Ah
+0008: 00 00     IRQ4 Vector 0000h
+000a: 00 d7     IRQ5 Vector 00D7h
+000c: 8f        DI                      // Main entry point
+000d: 31 f0     SRP  #F0h
+000f: bc 00     LD   R11, #00h
+0011: 9f        EI   
+0012: 9c 31     LD   R9, #31h
+0014: ac 10     LD   R10, #10h
+0016: 7c c9     LD   R7, #C9h
+0018: e6 03 20  LD   P3, #20h
+001b: fc 80     LD   R15, #80h
+001d: 4c 01     LD   R4, #01h
+001f: 5c 05     LD   R5, #05h
+0021: 1c 83     LD   R1, #83h
+0023: 6c fb     LD   R6, #FBh
+0025: 76 02 80  TM   P2, #80h           // See if upper 4 bits of P2 are set
+0028: 6d 0e f2  JP   Z, 0EF2h           // if so, jump to test routines?
+002b: 6c 0b     LD   R6, #0Bh
+002d: d6 0e 39  CALL 0E39h		// clear P2 (exc. AC) and setup for address mode
+0030: 8d 1b d5  JP   1BD5h
+0033: 9f        EI   
+0034: d6 07 a7  CALL 07A7h
+0037: 8f        DI   
+0038: 76 4d 04  TM   4Dh, #04h
+003b: 6b 0e     JR   Z, 004Bh
+003d: 76 02 02  TM   P2, #02h           // this is front/rear sense
+0040: eb 09     JR   NZ, 004Bh
+0042: 56 fb fb  AND  IMR, #FBh
+0045: 9f        EI   
+0046: d6 04 fb  CALL 04FBh
+0049: 8b e8     JR   0033h
+004b: 46 fb 04  OR   IMR, #04h
+004e: 9f        EI   
+004f: 76 4f 08  TM   4Fh, #08h
+0052: 6b 08     JR   Z, 005Ch
+0054: 76 4f 80  TM   4Fh, #80h
+0057: eb 03     JR   NZ, 005Ch
+0059: d6 0e 1d  CALL 0E1Dh
+005c: 76 03 04  TM   P3, #04h
+005f: eb 0e     JR   NZ, 006Fh
+0061: 76 4f 04  TM   4Fh, #04h
+0064: eb cd     JR   NZ, 0033h
+0066: 8f        DI   
+0067: d6 0e 39  CALL 0E39h		// clear P2 (exc. AC) and setup for address mode
+006a: d6 11 ec  CALL 11ECh
+006d: 8b 0c     JR   007Bh
+006f: 76 4f 04  TM   4Fh, #04h
+0072: 6b bf     JR   Z, 0033h
+0074: 8f        DI   
+0075: d6 0e 39  CALL 0E39h		// clear P2 (exc. AC) and setup for address mode
+0078: d6 12 1f  CALL 121Fh
+007b: d6 0e 49  CALL 0E49h
+007e: 8b b3     JR   0033h
+0080: d6 0e 39  CALL 0E39h		// IRQ2 entry ADC: clear P2 (exc. AC) and setup for address mode
+0083: 8d 10 00  JP   1000h
+0086: d6 1b 23  CALL 1B23h
+0089: d6 1b 95  CALL 1B95h
+008c: d6 0e 49  CALL 0E49h
+008f: 56 4f 7f  AND  4Fh, #7Fh
+0092: 76 fe 10  TM   SPH, #10h
+0095: 6b 06     JR   Z, 009Dh
+0097: d6 05 04  CALL 0504h
+009a: 56 fe ef  AND  SPH, #EFh
+009d: 24 34 ed  SUB  R13, 34h
+00a0: 34 33 ec  SBC  R12, 33h
+00a3: 34 32 eb  SBC  R11, 32h
+00a6: 70 38     PUSH 38h
+00a8: b0 26     CLR  26h
+00aa: d6 0e 63  CALL 0E63h
+00ad: 50 38     POP  38h
+00af: b8 32     LD   R11, 32h
+00b1: c8 33     LD   R12, 33h
+00b3: d8 34     LD   R13, 34h
+00b5: 24 3a ed  SUB  R13, 3Ah
+00b8: 34 39 ec  SBC  R12, 39h
+00bb: 34 38 eb  SBC  R11, 38h
+00be: 76 fe 08  TM   SPH, #08h
+00c1: 6d 03 c4  JP   Z, 03C4h
+00c4: d6 0e 49  CALL 0E49h
+00c7: e6 26 02  LD   26h, #02h
+00ca: 42 bb     OR   R11, R11
+00cc: db 09     JR   PL, 00D7h          // jump to timer IRQ (with IRET??)
+00ce: 0c 03     LD   R0, #03h
+00d0: 1c 1d     LD   R1, #1Dh
+00d2: d6 0d e4  CALL 0DE4h
+00d5: b0 26     CLR  26h
+00d7: 00 49     DEC  49h                // entry point for timer irq??
+00d9: eb 15     JR   NZ, 00F0h
+00db: b6 fe 80  XOR  SPH, #80h
+00de: e6 49 10  LD   49h, #10h
+00e1: 76 fb 20  TM   IMR, #20h
+00e4: 6b 02     JR   Z, 00E8h
+00e6: 90 49     RL   49h
+00e8: 76 fe 40  TM   SPH, #40h
+00eb: 6b 03     JR   Z, 00F0h
+00ed: d6 06 4e  CALL 064Eh
+00f0: 76 fb 20  TM   IMR, #20h
+00f3: 6b 01     JR   Z, 00F6h
+00f5: bf        IRET 
+00f6: 7c 1f     LD   R7, #1Fh
+00f8: 8c ff     LD   R8, #FFh
+00fa: 9c ff     LD   R9, #FFh
+00fc: 44 4b 4b  OR   4Bh, 4Bh
+00ff: 6b 18     JR   Z, 0119h
+0101: 7c 20     LD   R7, #20h
+0103: 8c cc     LD   R8, #CCh
+0105: 9c cc     LD   R9, #CCh
+0107: 76 4d 02  TM   4Dh, #02h
+010a: 6b 0d     JR   Z, 0119h
+010c: 7c 21     LD   R7, #21h
+010e: 8c 99     LD   R8, #99h
+0110: 9c 99     LD   R9, #99h
+0112: a6 4e 04  CP   4Eh, #04h
+0115: 1b 02     JR   LT, 0119h
+0117: 7c 11     LD   R7, #11h
+0119: d6 01 d9  CALL 01D9h                  // 24 bit subtraction of R7/8/9 - R11/12/13
+011c: db 57     JR   PL, 0175h
+011e: 46 08 02  OR   08h, #02h
+0121: 76 08 40  TM   08h, #40h
+0124: 6b 77     JR   Z, 019Dh
+0126: 88 4e     LD   R8, 4Eh
+0128: 8f        DI   
+0129: 20 4e     INC  4Eh
+012b: d6 04 ba  CALL 04BAh
+012e: 9f        EI   
+012f: a4 4e e8  CP   R8, 4Eh
+0132: eb 05     JR   NZ, 0139h
+0134: 56 08 eb  AND  08h, #EBh
+0137: 8b 64     JR   019Dh
+0139: 76 08 08  TM   08h, #08h
+013c: 6b 02     JR   Z, 0140h
+013e: 20 4a     INC  4Ah
+0140: 46 08 04  OR   08h, #04h
+0143: 56 08 e7  AND  08h, #E7h
+0146: a6 4a 03  CP   4Ah, #03h
+0149: 7b 0a     JR   C, 0155h
+014b: 56 08 bf  AND  08h, #BFh
+014e: 76 08 08  TM   08h, #08h
+0151: eb 02     JR   NZ, 0155h
+0153: 8b 61     JR   01B6h
+0155: 46 3b 04  OR   3Bh, #04h
+0158: d6 0c d3  CALL 0CD3h
+015b: e6 22 10  LD   22h, #10h
+015e: a6 4d 01  CP   4Dh, #01h
+0161: eb 03     JR   NZ, 0166h
+0163: e6 22 54  LD   22h, #54h
+0166: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+0169: d6 07 74  CALL 0774h
+016c: d6 06 24  CALL 0624h
+016f: d6 05 60  CALL 0560h
+0172: 8d 03 c4  JP   03C4h
+0175: 76 08 40  TM   08h, #40h
+0178: 6b 66     JR   Z, 01E0h
+017a: 7c 02     LD   R7, #02h
+017c: 8c e1     LD   R8, #E1h
+017e: 9c 40     LD   R9, #40h
+0180: 44 4b 4b  OR   4Bh, 4Bh
+0183: 6b 10     JR   Z, 0195h
+0185: 76 4d 02  TM   4Dh, #02h
+0188: 6b 0b     JR   Z, 0195h
+018a: a6 4e 04  CP   4Eh, #04h
+018d: 1b 06     JR   LT, 0195h
+018f: 7c 01     LD   R7, #01h
+0191: 8c 70     LD   R8, #70h
+0193: 9c a3     LD   R9, #A3h
+0195: d6 01 d9  CALL 01D9h              // 24 bit subtraction of R7/8/9 - R11/12/13
+0198: db 05     JR   PL, 019Fh
+019a: 56 08 ef  AND  08h, #EFh
+019d: 8b 41     JR   01E0h
+019f: 76 08 10  TM   08h, #10h
+01a2: eb 12     JR   NZ, 01B6h
+01a4: 46 08 10  OR   08h, #10h
+01a7: 76 08 20  TM   08h, #20h
+01aa: 6b 34     JR   Z, 01E0h
+01ac: a6 4e 00  CP   4Eh, #00h
+01af: 6b 2f     JR   Z, 01E0h
+01b1: d6 0c d3  CALL 0CD3h
+01b4: 8b b6     JR   016Ch
+01b6: 88 4e     LD   R8, 4Eh
+01b8: 8f        DI   
+01b9: 00 4e     DEC  4Eh
+01bb: d6 04 ba  CALL 04BAh
+01be: 9f        EI   
+01bf: a4 4e e8  CP   R8, 4Eh
+01c2: eb 05     JR   NZ, 01C9h
+01c4: 56 08 e7  AND  08h, #E7h
+01c7: 8b 17     JR   01E0h
+01c9: 76 08 04  TM   08h, #04h
+01cc: 6b 02     JR   Z, 01D0h
+01ce: 20 4a     INC  4Ah
+01d0: 46 08 08  OR   08h, #08h
+01d3: 56 08 eb  AND  08h, #EBh
+01d6: 8d 01 46  JP   0146h
+01d9: 22 9d     SUB  R9, R13            // 24 bit subtraction of R7/8/9 - R11/12/13
+01db: 32 8c     SBC  R8, R12
+01dd: 32 7b     SBC  R7, R11
+01df: af        RET  
+01e0: 76 08 20  TM   08h, #20h
+01e3: 6b 1c     JR   Z, 0201h
+01e5: b0 22     CLR  22h
+01e7: e6 23 01  LD   23h, #01h
+01ea: d6 05 8b  CALL 058Bh
+01ed: d6 0c d3  CALL 0CD3h
+01f0: d6 06 22  CALL 0622h
+01f3: e6 22 02  LD   22h, #02h
+01f6: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+01f9: 56 08 df  AND  08h, #DFh
+01fc: d6 05 13  CALL 0513h
+01ff: 8b 28     JR   0229h
+0201: 44 4b 4b  OR   4Bh, 4Bh
+0204: 6b 26     JR   Z, 022Ch
+0206: b0 ea     CLR  R10
+0208: b0 eb     CLR  R11
+020a: b0 ec     CLR  R12
+020c: b0 ed     CLR  R13
+020e: 76 08 10  TM   08h, #10h
+0211: eb 16     JR   NZ, 0229h
+0213: 76 3b 04  TM   3Bh, #04h
+0216: 6b 11     JR   Z, 0229h
+0218: 56 3b fb  AND  3Bh, #FBh
+021b: d6 0c d3  CALL 0CD3h
+021e: 76 00 20  TM   P0, #20h
+0221: 6b 06     JR   Z, 0229h
+0223: e6 22 8b  LD   22h, #8Bh
+0226: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+0229: 8d 03 c4  JP   03C4h
+022c: d6 06 22  CALL 0622h
+022f: 56 fe bf  AND  SPH, #BFh
+0232: a6 4e 04  CP   4Eh, #04h
+0235: eb 38     JR   NZ, 026Fh
+0237: a6 4d 00  CP   4Dh, #00h
+023a: eb 08     JR   NZ, 0244h
+023c: 7c 10     LD   R7, #10h
+023e: 8c 04     LD   R8, #04h
+0240: 9c 18     LD   R9, #18h
+0242: 8b 0b     JR   024Fh
+0244: a6 4d 01  CP   4Dh, #01h
+0247: eb 26     JR   NZ, 026Fh
+0249: 7c 0b     LD   R7, #0Bh
+024b: 8c 38     LD   R8, #38h
+024d: b0 e9     CLR  R9
+024f: d6 01 d9  CALL 01D9h                  // 24 bit subtraction of R7/8/9 - R11/12/13
+0252: db 1b     JR   PL, 026Fh
+0254: 46 fe 40  OR   SPH, #40h
+0257: 76 4f 08  TM   4Fh, #08h
+025a: 6b 13     JR   Z, 026Fh
+025c: 76 4f 80  TM   4Fh, #80h
+025f: eb 0e     JR   NZ, 026Fh
+0261: 8f        DI   
+0262: 46 fb 20  OR   IMR, #20h
+0265: 56 fa df  AND  IRQ, #DFh
+0268: 56 f1 7f  AND  TMR, #7Fh              // turn off T1 output
+026b: 46 f1 08  OR   TMR, #08h              // enable T1
+026e: 9f        EI   
+026f: 76 08 80  TM   08h, #80h
+0272: 6b 06     JR   Z, 027Ah
+0274: 46 08 c0  OR   08h, #C0h
+0277: d6 0e 5d  CALL 0E5Dh
+027a: b0 ee     CLR  R14
+027c: b0 ef     CLR  R15
+027e: b0 20     CLR  20h
+0280: 9c 18     LD   R9, #18h
+0282: cf        RCF  
+0283: 0c 1b     LD   R0, #1Bh
+0285: 4c 07     LD   R4, #07h
+0287: c1 e0     RRC  @R0
+0289: 0e        INC  R0
+028a: 4a fb     DJNZ R4, 0287h
+028c: a6 e9 04  CP   R9, #04h
+028f: 2b 1d     JR   LE, 02AEh
+0291: 0c 1d     LD   R0, #1Dh
+0293: 4c 03     LD   R4, #03h
+0295: 0e        INC  R0
+0296: 67 e0 08  TCM  @R0, #08h
+0299: eb 06     JR   NZ, 02A1h
+029b: 57 e0 f7  AND  @R0, #F7h
+029e: 07 e0 05  ADD  @R0, #05h
+02a1: 67 e0 80  TCM  @R0, #80h
+02a4: eb 06     JR   NZ, 02ACh
+02a6: 57 e0 7f  AND  @R0, #7Fh
+02a9: 07 e0 50  ADD  @R0, #50h
+02ac: 4a e7     DJNZ R4, 0295h
+02ae: 9a d2     DJNZ R9, 0282h
+02b0: 8f        DI   
+02b1: e9 40     LD   40h, R14
+02b3: f9 41     LD   41h, R15
+02b5: e4 20 42  LD   42h, 20h
+02b8: e4 26 43  LD   43h, 26h
+02bb: 46 08 01  OR   08h, #01h
+02be: 76 08 02  TM   08h, #02h
+02c1: 6b 03     JR   Z, 02C6h
+02c3: 46 40 40  OR   40h, #40h
+02c6: 9f        EI   
+02c7: d6 0e 4f  CALL 0E4Fh
+02ca: fd 03 45  JP   NC, 0345h
+02cd: e4 44 32  LD   32h, 44h
+02d0: e4 3c 33  LD   33h, 3Ch
+02d3: e4 3d 34  LD   34h, 3Dh
+02d6: 08 4e     LD   R0, 4Eh
+02d8: 24 3f e0  SUB  R0, 3Fh
+02db: 5b 11     JR   MI, 02EEh
+02dd: 6b 24     JR   Z, 0303h
+02df: 90 e0     RL   R0
+02e1: 90 e0     RL   R0
+02e3: cf        RCF  
+02e4: c0 32     RRC  32h
+02e6: c0 33     RRC  33h
+02e8: c0 34     RRC  34h
+02ea: 0a f7     DJNZ R0, 02E3h
+02ec: 8b 15     JR   0303h
+02ee: 60 e0     COM  R0
+02f0: 0e        INC  R0
+02f1: 90 e0     RL   R0
+02f3: 90 e0     RL   R0
+02f5: cf        RCF  
+02f6: 10 34     RLC  34h
+02f8: 10 33     RLC  33h
+02fa: 10 32     RLC  32h
+02fc: fb 03     JR   NC, 0301h
+02fe: 46 08 02  OR   08h, #02h
+0301: 0a f2     DJNZ R0, 02F5h
+0303: a6 26 02  CP   26h, #02h
+0306: 6b 05     JR   Z, 030Dh
+0308: 1c 20     LD   R1, #20h
+030a: d6 0e 0d  CALL 0E0Dh
+030d: a6 45 00  CP   45h, #00h
+0310: 6b 05     JR   Z, 0317h
+0312: 1c 34     LD   R1, #34h
+0314: d6 0e 0d  CALL 0E0Dh
+0317: 04 34 20  ADD  20h, 34h
+031a: 40 20     DA   20h
+031c: 14 33 ef  ADC  R15, 33h
+031f: 40 ef     DA   R15
+0321: 14 32 ee  ADC  R14, 32h
+0324: 40 ee     DA   R14
+0326: 58 26     LD   R5, 26h
+0328: e6 26 02  LD   26h, #02h
+032b: b4 45 e5  XOR  R5, 45h
+032e: 6b 04     JR   Z, 0334h
+0330: fb 0b     JR   NC, 033Dh
+0332: 8b 02     JR   0336h
+0334: 7b 07     JR   C, 033Dh
+0336: b0 26     CLR  26h
+0338: 1c 20     LD   R1, #20h
+033a: d6 0e 0d  CALL 0E0Dh
+033d: a6 1e 20  CP   1Eh, #20h
+0340: 7b 03     JR   C, 0345h
+0342: 46 08 02  OR   08h, #02h
+0345: 8f        DI   
+0346: e9 46     LD   46h, R14
+0348: f9 47     LD   47h, R15
+034a: e4 20 48  LD   48h, 20h
+034d: a6 26 02  CP   26h, #02h
+0350: 6b 03     JR   Z, 0355h
+0352: 46 46 80  OR   46h, #80h
+0355: 76 08 02  TM   08h, #02h
+0358: 6b 03     JR   Z, 035Dh
+035a: 46 46 40  OR   46h, #40h
+035d: 76 4f 02  TM   4Fh, #02h
+0360: 6b 06     JR   Z, 0368h
+0362: 46 20 0f  OR   20h, #0Fh
+0365: 56 48 f0  AND  48h, #F0h
+0368: 9f        EI   
+0369: 46 5a 80  OR   5Ah, #80h
+036c: d6 07 a7  CALL 07A7h
+036f: d6 06 70  CALL 0670h
+0372: 76 08 02  TM   08h, #02h
+0375: eb 05     JR   NZ, 037Ch
+0377: 76 fe 40  TM   SPH, #40h
+037a: 6b 03     JR   Z, 037Fh
+037c: 46 2a 20  OR   2Ah, #20h
+037f: 76 4f 40  TM   4Fh, #40h
+0382: eb 33     JR   NZ, 03B7h
+0384: 76 08 02  TM   08h, #02h
+0387: eb 09     JR   NZ, 0392h
+0389: 31 00     SRP  #00h
+038b: cc 1e     LD   R12, #1Eh
+038d: dc 29     LD   R13, #29h
+038f: d6 0d bd  CALL 0DBDh
+0392: 31 20     SRP  #20h
+0394: b0 e5     CLR  R5
+0396: 76 4d 03  TM   4Dh, #03h
+0399: 6b 07     JR   Z, 03A2h
+039b: d6 0e 4f  CALL 0E4Fh
+039e: 7b 02     JR   C, 03A2h
+03a0: 5c 04     LD   R5, #04h
+03a2: 04 26 e5  ADD  R5, 26h
+03a5: 76 e9 01  TM   R9, #01h
+03a8: 6b 01     JR   Z, 03ABh
+03aa: 5e        INC  R5
+03ab: 06 e5 18  ADD  R5, #18h
+03ae: 4c 0f     LD   R4, #0Fh
+03b0: c2 14     LDC  R1, @RR4
+03b2: 56 e9 f0  AND  R9, #F0h
+03b5: 42 91     OR   R9, R1
+03b7: 76 4f 08  TM   4Fh, #08h
+03ba: 6b 08     JR   Z, 03C4h
+03bc: 76 4f 80  TM   4Fh, #80h
+03bf: eb 03     JR   NZ, 03C4h
+03c1: d6 06 4e  CALL 064Eh
+03c4: d6 0e 49  CALL 0E49h
+03c7: 8f        DI   
+03c8: 46 fb 04  OR   IMR, #04h
+03cb: 56 fa fb  AND  IRQ, #FBh
+03ce: 76 fe 08  TM   SPH, #08h
+03d1: 6d 0e 01  JP   Z, 0E01h
+03d4: e6 ff 80  LD   SPL, #80h
+03d7: 76 4d 08  TM   4Dh, #08h
+03da: eb 03     JR   NZ, 03DFh
+03dc: 46 fb 02  OR   IMR, #02h
+03df: 8d 00 33  JP   0033h
+03e2: 70 fd     PUSH RP                 // Keyboard IRQ entry
+03e4: d6 0e 3f  CALL 0E3Fh              // setup bus
+03e7: 31 00     SRP  #00h
+03e9: 4c 18     LD   R4, #18h           // Setup for write to 1801
+03eb: 5c 01     LD   R5, #01h
+03ed: 6c 40     LD   R6, #40h           // use 0x40
+03ef: 92 64     LDE  @RR4, R6           // Seems to be "READ FIFO/SENSOR address 0"
+03f1: 82 64     LDE  R6, @RR4           // Read back status word
+03f3: 76 e6 10  TM   R6, #10h           // make sure it's not an underrun
+03f6: 6b 09     JR   Z, 0401h
+03f8: 50 fd     POP  RP
+03fa: d6 06 4e  CALL 064Eh
+03fd: 56 fa f9  AND  IRQ, #F9h          // Clear both IRQ1 and IRQ2? Why?
+0400: bf        IRET 
+0401: 5c 00     LD   R5, #00h           // now read from 1800
+0403: 82 54     LDE  R5, @RR4           // read a char into R5
+0405: 76 59 01  TM   59h, #01h
+0408: 6b 07     JR   Z, 0411h
+040a: a6 e5 01  CP   R5, #01h
+040d: 3b 61     JR   ULE, 0470h
+040f: 8b e7     JR   03F8h
+0411: 76 4f 04  TM   4Fh, #04h
+0414: 6b 11     JR   Z, 0427h
+0416: d6 0e 39  CALL 0E39h		// clear P2 (exc. AC) and setup for address mode
+0419: e6 ff 80  LD   SPL, #80h
+041c: 56 fb d1  AND  IMR, #D1h
+041f: d6 12 35  CALL 1235h
+0422: 46 fb 0e  OR   IMR, #0Eh
+0425: 8b 5c     JR   0483h
+0427: 76 4d 08  TM   4Dh, #08h
+042a: 6b 0f     JR   Z, 043Bh
+042c: a6 e5 00  CP   R5, #00h
+042f: eb c7     JR   NZ, 03F8h
+0431: d6 0e 1d  CALL 0E1Dh
+0434: 76 fa 02  TM   IRQ, #02h
+0437: 6b f8     JR   Z, 0431h
+0439: 8b bd     JR   03F8h
+043b: e6 ff 80  LD   SPL, #80h
+043e: a6 e5 00  CP   R5, #00h
+0441: eb 2a     JR   NZ, 046Dh
+0443: 31 20     SRP  #20h
+0445: 7c 64     LD   R7, #64h
+0447: e6 22 18  LD   22h, #18h
+044a: d6 06 2d  CALL 062Dh                  // kb/disp init
+044d: 1c 04     LD   R1, #04h
+044f: 92 14     LDE  @RR4, R1               // write display 04
+0451: 1c e0     LD   R1, #E0h
+0453: 92 14     LDE  @RR4, R1               // write display E0
+0455: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+0458: e6 22 08  LD   22h, #08h
+045b: d6 0e 1d  CALL 0E1Dh
+045e: 82 14     LDE  R1, @RR4
+0460: 76 e1 40  TM   R1, #40h
+0463: 6b 08     JR   Z, 046Dh
+0465: 7a ee     DJNZ R7, 0455h
+0467: d6 0e 39  CALL 0E39h		// clear P2 (exc. AC) and setup for address mode
+046a: 8d 1d 44  JP   1D44h
+046d: d6 0c c5  CALL 0CC5h
+0470: 31 00     SRP  #00h
+0472: 76 e5 08  TM   R5, #08h
+0475: 6b 1b     JR   Z, 0492h
+0477: d6 04 b3  CALL 04B3h
+047a: d6 07 74  CALL 0774h
+047d: 56 08 fe  AND  08h, #FEh
+0480: d6 0c d3  CALL 0CD3h
+0483: d6 0e 49  CALL 0E49h
+0486: 46 5a 02  OR   5Ah, #02h
+0489: d6 06 4e  CALL 064Eh
+048c: 56 fa f9  AND  IRQ, #F9h
+048f: 8d 00 33  JP   0033h
+0492: 76 e5 10  TM   R5, #10h           // is this the keyboard input? (or status?)
+0495: 6b 05     JR   Z, 049Ch
+0497: d6 04 d9  CALL 04D9h
+049a: 8b de     JR   047Ah
+049c: 90 e5     RL   R5                 // double the value
+049e: 06 e5 26  ADD  R5, #26h           // add 0x26 
+04a1: 4c 0f     LD   R4, #0Fh           // RR4 is 0F26 + (2*original R5 value)
+04a3: c2 64     LDC  R6, @RR4           // get the address from there
+04a5: a0 e4     INCW RR4                // and the next
+04a7: c2 74     LDC  R7, @RR4           // byte into R6/R7, then call @RR6
+04a9: d4 e6     CALL @RR6               // (this is the only @RR call)
+04ab: 76 59 01  TM   59h, #01h
+04ae: 6b ca     JR   Z, 047Ah
+04b0: 8d 03 f8  JP   03F8h
+04b3: 56 e5 07  AND  R5, #07h
+04b6: 59 4e     LD   4Eh, R5
+04b8: b0 08     CLR  08h
+04ba: a6 4e 05  CP   4Eh, #05h
+04bd: 1b 0a     JR   LT, 04C9h
+04bf: e6 4e 05  LD   4Eh, #05h
+04c2: 76 4d 02  TM   4Dh, #02h
+04c5: eb 02     JR   NZ, 04C9h
+04c7: 00 4e     DEC  4Eh
+04c9: 44 4e 4e  OR   4Eh, 4Eh
+04cc: db 02     JR   PL, 04D0h
+04ce: b0 4e     CLR  4Eh
+04d0: a6 4d 04  CP   4Dh, #04h
+04d3: 7b 03     JR   C, 04D8h
+04d5: e6 4e 04  LD   4Eh, #04h
+04d8: af        RET  
+04d9: 56 e5 07  AND  R5, #07h
+04dc: a6 e5 01  CP   R5, #01h
+04df: 6b 05     JR   Z, 04E6h
+04e1: a6 e5 05  CP   R5, #05h
+04e4: eb 0b     JR   NZ, 04F1h
+04e6: 76 e2 08  TM   R2, #08h
+04e9: 6b 06     JR   Z, 04F1h
+04eb: e6 09 30  LD   09h, #30h
+04ee: 8d 07 07  JP   0707h
+04f1: a6 e5 04  CP   R5, #04h
+04f4: 7b 0a     JR   C, 0500h
+04f6: 76 e2 02  TM   R2, #02h
+04f9: eb 05     JR   NZ, 0500h
+04fb: e6 09 31  LD   09h, #31h
+04fe: 8b ee     JR   04EEh
+0500: 59 4d     LD   4Dh, R5
+0502: 8b b6     JR   04BAh
+0504: 76 4f 08  TM   4Fh, #08h
+0507: 6b 6d     JR   Z, 0576h
+0509: 76 08 80  TM   08h, #80h
+050c: 6b 05     JR   Z, 0513h
+050e: 46 08 20  OR   08h, #20h
+0511: 8b 4d     JR   0560h
+0513: 76 4f 20  TM   4Fh, #20h
+0516: 6b 48     JR   Z, 0560h
+0518: 58 4d     LD   R5, 4Dh
+051a: a6 4d 03  CP   4Dh, #03h
+051d: eb 02     JR   NZ, 0521h
+051f: 00 e5     DEC  R5
+0521: 56 e5 03  AND  R5, #03h
+0524: 90 e5     RL   R5
+0526: 90 e5     RL   R5
+0528: 06 e5 e0  ADD  R5, #E0h
+052b: 4c 0f     LD   R4, #0Fh
+052d: 68 4f     LD   R6, 4Fh
+052f: 56 e6 03  AND  R6, #03h
+0532: 76 4d 02  TM   4Dh, #02h
+0535: 6b 09     JR   Z, 0540h
+0537: 90 e6     RL   R6
+0539: 90 e6     RL   R6
+053b: 90 e6     RL   R6
+053d: 04 4e e6  ADD  R6, 4Eh
+0540: 02 56     ADD  R5, R6
+0542: c2 64     LDC  R6, @RR4
+0544: a6 4d 00  CP   4Dh, #00h
+0547: eb 0c     JR   NZ, 0555h
+0549: a6 4e 00  CP   4Eh, #00h
+054c: eb 07     JR   NZ, 0555h
+054e: 76 4f 01  TM   4Fh, #01h
+0551: 6b 02     JR   Z, 0555h
+0553: 6c 0f     LD   R6, #0Fh
+0555: e6 22 02  LD   22h, #02h
+0558: e6 23 3b  LD   23h, #3Bh
+055b: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+055e: 6a f5     DJNZ R6, 0555h
+0560: 46 4f 80  OR   4Fh, #80h
+0563: e4 fb 07  LD   07h, IMR
+0566: 8f        DI   
+0567: 56 07 df  AND  07h, #DFh
+056a: 56 fa df  AND  IRQ, #DFh
+056d: 46 f1 88  OR   TMR, #88h          // turn T1 output on, and enable T1
+0570: e4 07 fb  LD   IMR, 07h
+0573: 56 fe bf  AND  SPH, #BFh
+0576: af        RET  
+0577: b6 4f 08  XOR  4Fh, #08h
+057a: 76 4f 08  TM   4Fh, #08h
+057d: 6b 20     JR   Z, 059Fh
+057f: 46 4f 20  OR   4Fh, #20h
+0582: e6 22 0a  LD   22h, #0Ah
+0585: d6 07 74  CALL 0774h
+0588: 56 4f 7f  AND  4Fh, #7Fh
+058b: 56 f1 f7  AND  TMR, #F7h          // stops T1
+058e: e6 f3 01  LD   PRE1, #01h         // sets T1 to repeat (0 prescaler)
+0591: e6 f2 01  LD   T1, #01h           // sets T1 count to 1
+0594: 46 f1 04  OR   TMR, #04h          // loads T1
+0597: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+059a: 56 fa fb  AND  IRQ, #FBh
+059d: 8b 12     JR   05B1h
+
+
+
+// Looks like SPH is used as a bit of a mode indicator as it decides below whether to
+// set the FAST(100Hz) sample rate or not, then 3Bh seems to be the line speed indicator
+// 
+// 3Bh -- bit 1 seems to be set for 60Hz line
+// 3Bh -- but 0 seems to be set for 50Hz line
+//
+
+059f: 56 08 df  AND  08h, #DFh          // ENTRY?
+05a2: 56 4f 7f  AND  4Fh, #7Fh
+05a5: 8b bc     JR   0563h
+05a7: 20 4f     INC  4Fh                // ENTRY?
+05a9: 66 4f 03  TCM  4Fh, #03h
+05ac: eb 03     JR   NZ, 05B1h
+05ae: 56 4f fc  AND  4Fh, #FCh
+05b1: 76 4f 02  TM   4Fh, #02h
+05b4: 6b 0c     JR   Z, 05C2h           // (set slow/med speeds)
+05b6: 76 fe 08  TM   SPH, #08h
+05b9: 6b 07     JR   Z, 05C2h           // (set slow/med speeds)
+05bb: e6 f3 67  LD   PRE1, #67h         // set sample timer 67/C8 = 5000 (100Hz) [fast all lines]
+05be: e6 f2 c8  LD   T1, #C8h
+05c1: af        RET  
+05c2: e6 f3 67  LD   PRE1, #67h         // set sample timer 67/FA = 6250 (80Hz)  [60Hz line slow/med]
+05c5: e6 f2 fa  LD   T1, #FAh
+05c8: 76 3b 02  TM   3Bh, #02h
+05cb: eb 0e     JR   NZ, 05DBh          // (ret)
+05cd: e6 f3 7b  LD   PRE1, #7Bh         // set sample timer 7B/DA = 7500 (66.67Hz)  [50Hz line slow/med]
+05d0: 76 3b 01  TM   3Bh, #01h
+05d3: eb 06     JR   NZ, 05DBh          // (ret)
+05d5: e6 f3 8b  LD   PRE1, #8Bh         // set sample timer 8B/C1 = 6562 (76.19Hz)  [400Hz line slow/med]
+05d8: e6 f2 c1  LD   T1, #C1h
+05db: af        RET  
+05dc: d6 0e 4f  CALL 0E4Fh
+05df: fb 04     JR   NC, 05E5h
+05e1: 56 4f ef  AND  4Fh, #EFh
+05e4: af        RET  
+05e5: 76 08 01  TM   08h, #01h
+05e8: 6b 1c     JR   Z, 0606h
+05ea: 76 40 40  TM   40h, #40h
+05ed: eb 17     JR   NZ, 0606h
+05ef: 46 4f 10  OR   4Fh, #10h
+05f2: 31 30     SRP  #30h
+05f4: e4 40 44  LD   44h, 40h
+05f7: 56 44 bf  AND  44h, #BFh
+05fa: c8 41     LD   R12, 41h
+05fc: d8 42     LD   R13, 42h
+05fe: e4 43 45  LD   45h, 43h
+0601: e8 4d     LD   R14, 4Dh
+0603: f8 4e     LD   R15, 4Eh
+0605: af        RET  
+0606: e6 09 32  LD   09h, #32h
+0609: 8d 07 07  JP   0707h
+060c: 46 5a 08  OR   5Ah, #08h
+060f: af        RET  
+0610: 46 5a 04  OR   5Ah, #04h
+0613: af        RET  
+0614: b6 08 80  XOR  08h, #80h
+0617: 76 08 80  TM   08h, #80h
+061a: eb 03     JR   NZ, 061Fh
+061c: b0 08     CLR  08h
+061e: af        RET  
+061f: 46 08 40  OR   08h, #40h
+0622: b0 4a     CLR  4Ah
+0624: b0 35     CLR  35h
+0626: b0 36     CLR  36h
+0628: b0 37     CLR  37h
+062a: b0 38     CLR  38h
+062c: af        RET  
+062d: 4c 18     LD   R4, #18h               // Looks like KB/DISP init
+062f: 5c 01     LD   R5, #01h
+0631: 1c 29     LD   R1, #29h
+0633: 92 14     LDE  @RR4, R1               // set clock prescaler to /9 (111kHz)
+0635: 1c 00     LD   R1, #00h
+0637: 92 14     LDE  @RR4, R1               // 8 bit left entry, encoded scan kb
+0639: 1c c2     LD   R1, #C2h               
+063b: 92 14     LDE  @RR4, R1               // clr ram rows (just fifo?)
+063d: 1c a0     LD   R1, #A0h
+063f: 66 fe c0  TCM  SPH, #C0h              // test high nibble of stack pointer?
+0642: eb 03     JR   NZ, 0647h              // if not set carry on
+0644: 46 e1 03  OR   R1, #03h               // use A3 (otherwise A0)
+0647: 92 14     LDE  @RR4, R1               // set blanking?
+0649: 1c 90     LD   R1, #90h               
+064b: 92 14     LDE  @RR4, R1               // setup for write display (auto inc)
+064d: af        RET  
+064e: 70 fb     PUSH IMR                    // Major Routine -- is it the display update??
+0650: 8f        DI                          // reads 8 bytes from reg28 onwards
+0651: 70 fd     PUSH RP                     // and writes them to display
+0653: 31 20     SRP  #20h
+0655: 7c 08     LD   R7, #08h
+0657: d6 0e 3f  CALL 0E3Fh                  // setup bus
+065a: d6 06 2d  CALL 062Dh                  // kb/disp init? (RR4 = disp)
+065d: 5c 00     LD   R5, #00h
+065f: 6c 28     LD   R6, #28h
+0661: e3 16     LD   R1, @R6
+0663: 92 14     LDE  @RR4, R1               // copy 8 bytes from reg28 onwards
+0665: 6e        INC  R6
+0666: 7a f9     DJNZ R7, 0661h
+0668: 50 fd     POP  RP
+066a: d6 0c c0  CALL 0CC0h                  // potentially zero P1
+066d: 50 fb     POP  IMR
+066f: af        RET  
+0670: 70 fd     PUSH RP
+0672: 31 20     SRP  #20h
+0674: d6 07 50  CALL 0750h
+0677: 88 59     LD   R8, 59h
+0679: f0 e8     SWAP R8
+067b: 46 e8 0f  OR   R8, #0Fh
+067e: 76 4d 08  TM   4Dh, #08h
+0681: 6b 05     JR   Z, 0688h
+0683: 56 e8 fb  AND  R8, #FBh
+0686: 8b 62     JR   06EAh
+0688: 76 4d 06  TM   4Dh, #06h
+068b: eb 0b     JR   NZ, 0698h
+068d: 46 ee 80  OR   R14, #80h
+0690: a6 4e 00  CP   4Eh, #00h
+0693: eb 03     JR   NZ, 0698h
+0695: 46 ee 40  OR   R14, #40h
+0698: 5c 20     LD   R5, #20h
+069a: 04 4d e5  ADD  R5, 4Dh
+069d: 4c 0f     LD   R4, #0Fh
+069f: c2 f4     LDC  R15, @RR4
+06a1: 66 4d 02  TCM  4Dh, #02h
+06a4: eb 12     JR   NZ, 06B8h
+06a6: a6 4e 00  CP   4Eh, #00h
+06a9: 6b 0d     JR   Z, 06B8h
+06ab: a6 4e 05  CP   4Eh, #05h
+06ae: eb 05     JR   NZ, 06B5h
+06b0: 46 ef 20  OR   R15, #20h
+06b3: 8b 03     JR   06B8h
+06b5: 46 ef 40  OR   R15, #40h
+06b8: 4c 28     LD   R4, #28h
+06ba: 04 4e e4  ADD  R4, 4Eh
+06bd: a6 4e 00  CP   4Eh, #00h
+06c0: eb 03     JR   NZ, 06C5h
+06c2: 06 e4 03  ADD  R4, #03h
+06c5: a6 4e 05  CP   4Eh, #05h
+06c8: eb 03     JR   NZ, 06CDh
+06ca: 26 e4 03  SUB  R4, #03h
+06cd: 47 e4 10  OR   @R4, #10h
+06d0: 1c 20     LD   R1, #20h
+06d2: 76 4f 03  TM   4Fh, #03h
+06d5: 6b 09     JR   Z, 06E0h
+06d7: 90 e1     RL   R1
+06d9: 76 4f 01  TM   4Fh, #01h
+06dc: eb 02     JR   NZ, 06E0h
+06de: 90 e1     RL   R1
+06e0: 42 91     OR   R9, R1
+06e2: 76 4f 04  TM   4Fh, #04h
+06e5: 6b 05     JR   Z, 06ECh
+06e7: 46 ec 20  OR   R12, #20h
+06ea: 8b 18     JR   0704h
+06ec: 76 4f 08  TM   4Fh, #08h
+06ef: 6b 03     JR   Z, 06F4h
+06f1: 56 e8 f2  AND  R8, #F2h
+06f4: 76 08 80  TM   08h, #80h
+06f7: 6b 03     JR   Z, 06FCh
+06f9: 46 ed 20  OR   R13, #20h
+06fc: d6 0e 4f  CALL 0E4Fh
+06ff: fb 03     JR   NC, 0704h
+0701: 46 ee 20  OR   R14, #20h
+0704: 50 fd     POP  RP
+0706: af        RET  
+0707: 46 5a 01  OR   5Ah, #01h          // MAJOR ENTRY
+070a: d6 07 a7  CALL 07A7h
+070d: d6 07 50  CALL 0750h
+0710: e4 59 28  LD   28h, 59h
+0713: f0 28     SWAP 28h
+0715: 46 28 0f  OR   28h, #0Fh
+0718: 54 09 2e  AND  2Eh, 09h
+071b: e4 09 2d  LD   2Dh, 09h
+071e: f0 2d     SWAP 2Dh
+0720: 56 2d 0f  AND  2Dh, #0Fh
+0723: 46 2b 20  OR   2Bh, #20h
+0726: 76 4d 08  TM   4Dh, #08h
+0729: 6b 03     JR   Z, 072Eh
+072b: 56 28 fb  AND  28h, #FBh
+072e: d6 07 59  CALL 0759h
+0731: 76 4d 08  TM   4Dh, #08h
+0734: eb 19     JR   NZ, 074Fh
+0736: 76 fe 08  TM   SPH, #08h
+0739: ed 07 74  JP   NZ, 0774h
+073c: 70 fd     PUSH RP
+073e: d6 06 70  CALL 0670h
+0741: 31 00     SRP  #00h
+0743: cc 46     LD   R12, #46h
+0745: dc 29     LD   R13, #29h
+0747: d6 0d bd  CALL 0DBDh
+074a: d6 06 4e  CALL 064Eh
+074d: 50 fd     POP  RP
+074f: af        RET  
+0750: e6 0e 0f  LD   0Eh, #0Fh
+0753: e6 0d 28  LD   0Dh, #28h
+0756: 8d 0d d7  JP   0DD7h
+0759: d6 06 4e  CALL 064Eh
+075c: e6 22 ff  LD   22h, #FFh
+075f: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+0762: d6 07 6e  CALL 076Eh
+0765: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+0768: d6 07 6e  CALL 076Eh
+076b: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+076e: d6 0e 1d  CALL 0E1Dh
+0771: 8d 0c ba  JP   0CBAh
+0774: d6 06 70  CALL 0670h
+0777: 8d 06 4e  JP   064Eh
+077a: e4 f0 5c  LD   5Ch, SIO           // read a  byte from serial port
+077d: 76 fa 08  TM   IRQ, #08h          // is there another?
+0780: 6b 06     JR   Z, 0788h           // if not goto 788
+0782: e4 f0 5c  LD   5Ch, SIO           // read the other serial byte
+0785: 56 fa f7  AND  IRQ, #F7h          // turn off the IRQ line
+0788: a6 5c 80  CP   5Ch, #80h          // compare byte with 0x80
+078b: eb 09     JR   NZ, 0796h
+078d: 76 59 80  TM   59h, #80h
+0790: eb 04     JR   NZ, 0796h
+0792: 56 fb f7  AND  IMR, #F7h          // turn off mask for serial? this would stop any input??
+0795: bf        IRET 
+0796: 70 fd     PUSH RP
+0798: 31 50     SRP  #50h
+079a: a6 ec 48  CP   R12, #48h          // R12 here is 5Ch (so serial input byte)
+079d: 6b 02     JR   Z, 07A1h           // if byte is 0x48 then goto 7a1
+079f: 30 56     JP   @56h               // else jump to the address in @56h
+07a1: 46 ea 02  OR   R10, #02h          // if 0x48 ... detect of GPIB card? 
+07a4: 8d 09 da  JP   09DAh              // setups RR56 to 180a
+07a7: 70 fb     PUSH IMR
+07a9: 8f        DI   
+07aa: b0 fb     CLR  IMR
+07ac: 70 fd     PUSH RP
+07ae: 31 50     SRP  #50h
+07b0: 76 e9 60  TM   R9, #60h
+07b3: eb 0b     JR   NZ, 07C0h
+07b5: d6 07 c6  CALL 07C6h
+07b8: a6 58 00  CP   58h, #00h
+07bb: 6b 03     JR   Z, 07C0h
+07bd: d6 09 0c  CALL 090Ch
+07c0: 50 fd     POP  RP
+07c2: 8f        DI   
+07c3: 50 fb     POP  IMR
+07c5: af        RET  
+07c6: b0 e8     CLR  R8
+07c8: dc 09     LD   R13, #09h
+07ca: c8 eb     LD   R12, R11
+07cc: c0 ec     RRC  R12
+07ce: c8 ea     LD   R12, R10
+07d0: fb 02     JR   NC, 07D4h
+07d2: 88 ed     LD   R8, R13
+07d4: 10 ec     RLC  R12
+07d6: da f8     DJNZ R13, 07D0h
+07d8: d8 e8     LD   R13, R8
+07da: 90 ed     RL   R13
+07dc: 06 ed a6  ADD  R13, #A6h
+07df: cc 0f     LD   R12, #0Fh
+07e1: 70 ee     PUSH R14
+07e3: c2 ec     LDC  R14, @RR12
+07e5: a0 ec     INCW RR12
+07e7: c2 dc     LDC  R13, @RR12
+07e9: c8 ee     LD   R12, R14
+07eb: 50 ee     POP  R14
+07ed: 30 ec     JP   @RR12
+07ef: 2c 29     LD   R2, #29h
+07f1: e4 09 67  LD   67h, 09h
+07f4: e4 09 66  LD   66h, 09h
+07f7: f0 66     SWAP 66h
+07f9: af        RET  
+07fa: 2c 55     LD   R2, #55h
+07fc: 31 60     SRP  #60h
+07fe: 38 4d     LD   R3, 4Dh
+0800: 3e        INC  R3
+0801: 48 4e     LD   R4, 4Eh
+0803: 4e        INC  R4
+0804: 76 4d 08  TM   4Dh, #08h
+0807: 6b 02     JR   Z, 080Bh
+0809: b0 e4     CLR  R4
+080b: 58 4f     LD   R5, 4Fh
+080d: 56 e5 03  AND  R5, #03h
+0810: 5e        INC  R5
+0811: 76 4f 20  TM   4Fh, #20h
+0814: eb 03     JR   NZ, 0819h
+0816: 46 e5 08  OR   R5, #08h
+0819: b0 e6     CLR  R6
+081b: 76 4f 08  TM   4Fh, #08h
+081e: 6b 03     JR   Z, 0823h
+0820: 46 e6 01  OR   R6, #01h
+0823: 76 08 80  TM   08h, #80h
+0826: eb 03     JR   NZ, 082Bh
+0828: 46 e6 04  OR   R6, #04h
+082b: 76 02 02  TM   P2, #02h
+082e: eb 03     JR   NZ, 0833h
+0830: 46 e6 02  OR   R6, #02h
+0833: d6 0e 4f  CALL 0E4Fh
+0836: fb 03     JR   NC, 083Bh
+0838: 46 e6 08  OR   R6, #08h
+083b: b0 e7     CLR  R7
+083d: 76 4f 04  TM   4Fh, #04h
+0840: 6b 1f     JR   Z, 0861h
+0842: 76 3b 80  TM   3Bh, #80h
+0845: eb 05     JR   NZ, 084Ch
+0847: 46 e7 02  OR   R7, #02h
+084a: 8b 0d     JR   0859h
+084c: 76 fe 20  TM   SPH, #20h
+084f: eb 05     JR   NZ, 0856h
+0851: 46 e7 04  OR   R7, #04h
+0854: 8b 03     JR   0859h
+0856: 46 e7 08  OR   R7, #08h
+0859: 76 fe 08  TM   SPH, #08h
+085c: 6b 03     JR   Z, 0861h
+085e: 46 e7 01  OR   R7, #01h
+0861: af        RET  
+0862: 2c 03     LD   R2, #03h
+0864: af        RET  
+0865: 2c 04     LD   R2, #04h
+0867: af        RET  
+0868: 2c 78     LD   R2, #78h
+086a: cc 06     LD   R12, #06h
+086c: dc 29     LD   R13, #29h
+086e: ec 61     LD   R14, #61h
+0870: e3 fd     LD   R15, @R13
+0872: f3 ef     LD   @R14, R15
+0874: 57 ee 0f  AND  @R14, #0Fh
+0877: a7 ee 09  CP   @R14, #09h
+087a: 3b 02     JR   ULE, 087Eh
+087c: b1 ee     CLR  @R14
+087e: de        INC  R13
+087f: ee        INC  R14
+0880: ca ee     DJNZ R12, 0870h
+0882: 31 60     SRP  #60h
+0884: 66 29 0f  TCM  29h, #0Fh
+0887: 6b 1a     JR   Z, 08A3h
+0889: b0 e1     CLR  R1
+088b: 76 29 01  TM   29h, #01h
+088e: eb 03     JR   NZ, 0893h
+0890: 46 e1 01  OR   R1, #01h
+0893: 66 29 0c  TCM  29h, #0Ch
+0896: eb 03     JR   NZ, 089Bh
+0898: 46 e1 01  OR   R1, #01h
+089b: 76 29 02  TM   29h, #02h
+089e: 6b 03     JR   Z, 08A3h
+08a0: 46 e1 08  OR   R1, #08h
+08a3: 8b 56     JR   08FBh
+08a5: 2c 8a     LD   R2, #8Ah
+08a7: 76 e9 10  TM   R9, #10h
+08aa: eb 04     JR   NZ, 08B0h
+08ac: ec 11     LD   R14, #11h
+08ae: fc a0     LD   R15, #A0h
+08b0: 46 e9 10  OR   R9, #10h
+08b3: dc 64     LD   R13, #64h
+08b5: cc 04     LD   R12, #04h
+08b7: d6 0e 3f  CALL 0E3Fh                  // setup bus
+08ba: 83 de     LDEI @R13, @RR14
+08bc: ca fc     DJNZ R12, 08BAh
+08be: d6 0c c0  CALL 0CC0h                  // potentially zero p1
+08c1: a6 e8 09  CP   R8, #09h
+08c4: 6b 02     JR   Z, 08C8h
+08c6: a0 ee     INCW RR14
+08c8: 70 ee     PUSH R14
+08ca: 70 ef     PUSH R15
+08cc: fc 08     LD   R15, #08h
+08ce: cc 64     LD   R12, #64h
+08d0: dc 60     LD   R13, #60h
+08d2: d6 0d bf  CALL 0DBFh
+08d5: 50 ef     POP  R15
+08d7: 50 ee     POP  R14
+08d9: af        RET  
+08da: 2c 01     LD   R2, #01h
+08dc: af        RET  
+08dd: 2c 77     LD   R2, #77h
+08df: cc 46     LD   R12, #46h
+08e1: dc 61     LD   R13, #61h
+08e3: d6 0d bd  CALL 0DBDh
+08e6: 31 60     SRP  #60h
+08e8: 56 e1 01  AND  R1, #01h
+08eb: 76 46 80  TM   46h, #80h
+08ee: eb 03     JR   NZ, 08F3h
+08f0: 46 e1 08  OR   R1, #08h
+08f3: 76 46 40  TM   46h, #40h
+08f6: 6b 03     JR   Z, 08FBh
+08f8: 46 e1 02  OR   R1, #02h
+08fb: 78 4e     LD   R7, 4Eh
+08fd: 7e        INC  R7
+08fe: af        RET  
+08ff: 2c 8b     LD   R2, #8Bh
+0901: 76 e9 10  TM   R9, #10h
+0904: eb aa     JR   NZ, 08B0h
+0906: ec 10     LD   R14, #10h
+0908: fc 00     LD   R15, #00h
+090a: 8b a4     JR   08B0h
+090c: 70 fc     PUSH FLAGS
+090e: 70 fd     PUSH RP
+0910: 31 50     SRP  #50h
+0912: b0 e3     CLR  R3
+0914: b0 e4     CLR  R4
+0916: cc 0f     LD   R12, #0Fh
+0918: 52 c2     AND  R12, R2
+091a: 42 c4     OR   R12, R4
+091c: 46 ec 60  OR   R12, #60h
+091f: 46 e9 20  OR   R9, #20h
+0922: d6 0a 04  CALL 0A04h                  // Send serial from R12 (with IRET)
+0925: 18 ec     LD   R1, R12
+0927: 46 e9 80  OR   R9, #80h
+092a: 76 e1 90  TM   R1, #90h
+092d: ed 09 ea  JP   NZ, 09EAh
+0930: 76 e1 40  TM   R1, #40h
+0933: 6d 09 ea  JP   Z, 09EAh
+0936: 76 e1 20  TM   R1, #20h
+0939: eb 09     JR   NZ, 0944h
+093b: 76 e1 0f  TM   R1, #0Fh
+093e: ed 0a 18  JP   NZ, 0A18h
+0941: 8d 09 c1  JP   09C1h
+0944: b2 c1     XOR  R12, R1
+0946: 76 ec 0f  TM   R12, #0Fh
+0949: ed 09 ea  JP   NZ, 09EAh
+094c: c8 e2     LD   R12, R2
+094e: 56 ec f0  AND  R12, #F0h
+0951: 6b 3c     JR   Z, 098Fh
+0953: 0c 68     LD   R0, #68h
+0955: f0 ec     SWAP R12
+0957: 22 0c     SUB  R0, R12
+0959: b0 e3     CLR  R3
+095b: b0 e4     CLR  R4
+095d: cc 0f     LD   R12, #0Fh
+095f: 53 c0     AND  R12, @R0
+0961: 46 ec 20  OR   R12, #20h
+0964: 42 c4     OR   R12, R4
+0966: d6 0a 04  CALL 0A04h                  // Send serial from R12 (with IRET)
+0969: 18 ec     LD   R1, R12
+096b: 76 e1 d0  TM   R1, #D0h
+096e: eb 14     JR   NZ, 0984h
+0970: 76 e1 20  TM   R1, #20h
+0973: 6b 0f     JR   Z, 0984h
+0975: b2 1c     XOR  R1, R12
+0977: 76 e1 0f  TM   R1, #0Fh
+097a: eb 08     JR   NZ, 0984h
+097c: 0e        INC  R0
+097d: a6 e0 68  CP   R0, #68h
+0980: 7b d7     JR   C, 0959h
+0982: 8b 0b     JR   098Fh
+0984: 3e        INC  R3
+0985: a6 e3 09  CP   R3, #09h
+0988: bb 67     JR   UGT, 09F1h
+098a: 46 e4 10  OR   R4, #10h
+098d: 8b ce     JR   095Dh
+098f: cc 60     LD   R12, #60h
+0991: d6 0a 04  CALL 0A04h                  // Send serial from R12 (with IRET)
+0994: b6 ec 60  XOR  R12, #60h
+0997: eb 4e     JR   NZ, 09E7h
+0999: a6 e8 06  CP   R8, #06h
+099c: eb 14     JR   NZ, 09B2h
+099e: a6 ef b4  CP   R15, #B4h
+09a1: 6b 1e     JR   Z, 09C1h
+09a3: d6 08 a5  CALL 08A5h
+09a6: 70 fb     PUSH IMR
+09a8: b0 fb     CLR  IMR
+09aa: d6 09 0c  CALL 090Ch
+09ad: 8f        DI   
+09ae: 50 fb     POP  IMR
+09b0: 8b 2f     JR   09E1h
+09b2: a6 e8 09  CP   R8, #09h
+09b5: eb 0a     JR   NZ, 09C1h
+09b7: a6 ee 12  CP   R14, #12h
+09ba: 6b 05     JR   Z, 09C1h
+09bc: d6 08 ff  CALL 08FFh
+09bf: 8b e5     JR   09A6h
+09c1: cf        RCF  
+09c2: c8 e8     LD   R12, R8
+09c4: dc ff     LD   R13, #FFh
+09c6: 10 ed     RLC  R13
+09c8: ca fc     DJNZ R12, 09C6h
+09ca: 56 e9 ef  AND  R9, #EFh
+09cd: a6 e8 08  CP   R8, #08h
+09d0: bb 04     JR   UGT, 09D6h
+09d2: 52 ad     AND  R10, R13
+09d4: 8b 04     JR   09DAh
+09d6: 10 ed     RLC  R13
+09d8: 52 bd     AND  R11, R13
+09da: 56 e9 9f  AND  R9, #9Fh       // called after detect of GPIB?? (RP=0x50)
+09dd: 6c 0a     LD   R6, #0Ah       // setup @RR56 to be 180a
+09df: 7c 18     LD   R7, #18h
+09e1: d6 07 a7  CALL 07A7h
+09e4: 50 fd     POP  RP
+09e6: bf        IRET 
+09e7: 46 e4 10  OR   R4, #10h
+09ea: 3e        INC  R3
+09eb: a6 e3 09  CP   R3, #09h
+09ee: 3d 09 16  JP   ULE, 0916h
+09f1: e6 09 50  LD   09h, #50h
+09f4: d6 07 07  CALL 0707h
+09f7: 56 e9 9f  AND  R9, #9Fh
+09fa: 6c 0a     LD   R6, #0Ah
+09fc: 7c 18     LD   R7, #18h
+09fe: e6 ff 80  LD   SPL, #80h
+0a01: 8d 04 7d  JP   047Dh
+0a04: 76 fa 10  TM   IRQ, #10h              // looks like waiting until it can send
+0a07: 6b fb     JR   Z, 0A04h               // a byte via serial
+0a09: 56 fa ef  AND  IRQ, #EFh              // and then clears it.
+0a0c: c9 f0     LD   SIO, R12               // sends whatever is in R12
+0a0e: 50 e6     POP  R6                     // this drops the return address
+0a10: 50 e7     POP  R7                     // so it effectively double returns
+0a12: 50 fd     POP  RP                     // 
+0a14: bf        IRET 
+0a15: d6 0a 04  CALL 0A04h                  // Send serial from R12 (with IRET)
+0a18: 18 ec     LD   R1, R12
+0a1a: 46 e9 a0  OR   R9, #A0h
+0a1d: b0 e3     CLR  R3
+0a1f: b0 e4     CLR  R4
+0a21: 76 ec a0  TM   R12, #A0h
+0a24: eb 17     JR   NZ, 0A3Dh
+0a26: 66 ec 40  TCM  R12, #40h
+0a29: eb 12     JR   NZ, 0A3Dh
+0a2b: 76 ec 10  TM   R12, #10h
+0a2e: 6b 17     JR   Z, 0A47h
+0a30: b2 c5     XOR  R12, R5
+0a32: 76 ec 0f  TM   R12, #0Fh
+0a35: c8 e1     LD   R12, R1
+0a37: eb 0e     JR   NZ, 0A47h
+0a39: cc 60     LD   R12, #60h
+0a3b: 8b 08     JR   0A45h
+0a3d: 56 e1 7f  AND  R1, #7Fh
+0a40: 46 e1 10  OR   R1, #10h
+0a43: c8 e1     LD   R12, R1
+0a45: 8b ce     JR   0A15h
+0a47: 58 ec     LD   R5, R12
+0a49: 56 e1 6f  AND  R1, #6Fh
+0a4c: d6 0a a0  CALL 0AA0h
+0a4f: c8 e1     LD   R12, R1
+0a51: d6 0a 04  CALL 0A04h                  // Send serial from R12 (with IRET)
+0a54: 76 ec a0  TM   R12, #A0h
+0a57: eb 20     JR   NZ, 0A79h
+0a59: 76 ec 40  TM   R12, #40h
+0a5c: eb 23     JR   NZ, 0A81h
+0a5e: 42 00     OR   R0, R0
+0a60: 6b 17     JR   Z, 0A79h
+0a62: 76 ec 10  TM   R12, #10h
+0a65: eb 06     JR   NZ, 0A6Dh
+0a67: 0e        INC  R0
+0a68: a6 e0 68  CP   R0, #68h
+0a6b: fb 0a     JR   NC, 0A77h
+0a6d: f3 0c     LD   @R0, R12
+0a6f: 57 e0 0f  AND  @R0, #0Fh
+0a72: 56 ec ef  AND  R12, #EFh
+0a75: 8b 05     JR   0A7Ch
+0a77: b0 e0     CLR  R0
+0a79: 46 ec 10  OR   R12, #10h
+0a7c: 56 ec 7f  AND  R12, #7Fh
+0a7f: 8b d0     JR   0A51h
+0a81: 76 ec 1f  TM   R12, #1Fh
+0a84: 6b 06     JR   Z, 0A8Ch
+0a86: 5c 00     LD   R5, #00h
+0a88: 18 ec     LD   R1, R12
+0a8a: 8b bb     JR   0A47h
+0a8c: 18 ec     LD   R1, R12
+0a8e: d6 0a cb  CALL 0ACBh
+0a91: 31 50     SRP  #50h
+0a93: 76 fa 10  TM   IRQ, #10h          // wait until we can set a serial byte
+0a96: 6b fb     JR   Z, 0A93h
+0a98: 56 fa ef  AND  IRQ, #EFh          // turn off the IRQ flag
+0a9b: 19 f0     LD   SIO, R1            // send the byte
+0a9d: 8d 09 da  JP   09DAh
+0aa0: d6 0a b3  CALL 0AB3h
+0aa5: 00 04     DEC  04h
+0aa7: 01 01     DEC  @01h
+0aa9: 00 00     DEC  P0
+0aab: 00 00     DEC  P0
+0aad: 01 04     DEC  @04h
+0aaf: 00 07     DEC  07h
+0ab1: 08 01     LD   R0, P1
+0ab3: 08 e1     LD   R0, R1
+0ab5: 56 e0 0f  AND  R0, #0Fh
+0ab8: 50 ec     POP  R12
+0aba: 50 ed     POP  R13
+0abc: 02 d0     ADD  R13, R0
+0abe: c2 dc     LDC  R13, @RR12
+0ac0: b0 e0     CLR  R0
+0ac2: 42 dd     OR   R13, R13
+0ac4: 6b 04     JR   Z, 0ACAh
+0ac6: 0c 67     LD   R0, #67h
+0ac8: 22 0d     SUB  R0, R13
+0aca: af        RET  
+0acb: d8 e5     LD   R13, R5
+0acd: 56 ed 0f  AND  R13, #0Fh
+0ad0: a6 ed 0e  CP   R13, #0Eh
+0ad3: 6b 03     JR   Z, 0AD8h
+0ad5: 56 e9 ef  AND  R9, #EFh
+0ad8: 76 4f 04  TM   4Fh, #04h
+0adb: 6b 5b     JR   Z, 0B38h
+0add: a6 ed 05  CP   R13, #05h
+0ae0: fb 05     JR   NC, 0AE7h
+0ae2: e6 09 52  LD   09h, #52h
+0ae5: 8b 6d     JR   0B54h
+0ae7: 70 3b     PUSH 3Bh
+0ae9: a6 ed 0b  CP   R13, #0Bh
+0aec: 7b 03     JR   C, 0AF1h
+0aee: d6 0e 39  CALL 0E39h		// clear P2 (exc. AC) and setup for address mode
+0af1: a6 ed 0f  CP   R13, #0Fh
+0af4: eb 12     JR   NZ, 0B08h
+0af6: 44 67 67  OR   67h, 67h
+0af9: eb 0d     JR   NZ, 0B08h
+0afb: 76 fe 04  TM   SPH, #04h
+0afe: 6b 08     JR   Z, 0B08h
+0b00: 31 30     SRP  #30h
+0b02: d6 17 8b  CALL 178Bh
+0b05: 8d 0c 90  JP   0C90h
+0b08: 56 fb d1  AND  IMR, #D1h
+0b0b: a6 ed 05  CP   R13, #05h
+0b0e: 6b 0b     JR   Z, 0B1Bh
+0b10: 56 fe fb  AND  SPH, #FBh
+0b13: 76 fe 08  TM   SPH, #08h
+0b16: eb 03     JR   NZ, 0B1Bh
+0b18: d6 07 3c  CALL 073Ch
+0b1b: d6 0b 5a  CALL 0B5Ah
+0b1e: 8f        DI   
+0b1f: 46 fb 0e  OR   IMR, #0Eh
+0b22: 50 5c     POP  5Ch
+0b24: 76 fe 08  TM   SPH, #08h
+0b27: 6d 0e 49  JP   Z, 0E49h
+0b2a: 56 3b f7  AND  3Bh, #F7h
+0b2d: 76 5c 08  TM   5Ch, #08h
+0b30: 6b 03     JR   Z, 0B35h
+0b32: 46 3b 08  OR   3Bh, #08h
+0b35: 8d 0c c0  JP   0CC0h                  // potentially zero p1
+0b38: 76 4d 08  TM   4Dh, #08h
+0b3b: 6b 0f     JR   Z, 0B4Ch
+0b3d: a6 ed 05  CP   R13, #05h
+0b40: 6b 18     JR   Z, 0B5Ah
+0b42: a6 ed 0a  CP   R13, #0Ah
+0b45: 6b 13     JR   Z, 0B5Ah
+0b47: e6 09 60  LD   09h, #60h
+0b4a: 8b 08     JR   0B54h
+0b4c: a6 ed 0b  CP   R13, #0Bh
+0b4f: 3b 09     JR   ULE, 0B5Ah
+0b51: e6 09 51  LD   09h, #51h
+0b54: d6 07 07  CALL 0707h
+0b57: 8d 0c 90  JP   0C90h
+0b5a: a6 ed 0f  CP   R13, #0Fh
+0b5d: eb 03     JR   NZ, 0B62h
+0b5f: 04 67 ed  ADD  R13, 67h
+0b62: 90 ed     RL   R13
+0b64: 06 ed ba  ADD  R13, #BAh
+0b67: cc 0f     LD   R12, #0Fh
+0b69: 70 ee     PUSH R14
+0b6b: c2 ec     LDC  R14, @RR12
+0b6d: a0 ec     INCW RR12
+0b6f: c2 dc     LDC  R13, @RR12
+0b71: c8 ee     LD   R12, R14
+0b73: 50 ee     POP  R14
+0b75: 30 ec     JP   @RR12
+0b77: 76 4f 80  TM   4Fh, #80h
+0b7a: 6b 04     JR   Z, 0B80h
+0b7c: 46 fe 10  OR   SPH, #10h
+0b7f: af        RET  
+0b80: 31 00     SRP  #00h
+0b82: 8d 05 04  JP   0504h
+0b85: 56 e9 f0  AND  R9, #F0h
+0b88: 44 67 e9  OR   R9, 67h
+0b8b: 76 4f 40  TM   4Fh, #40h
+0b8e: 6b 03     JR   Z, 0B93h
+0b90: 56 59 f1  AND  59h, #F1h
+0b93: 56 28 0f  AND  28h, #0Fh
+0b96: d8 e9     LD   R13, R9
+0b98: 56 ed 0f  AND  R13, #0Fh
+0b9b: f0 ed     SWAP R13
+0b9d: 44 ed 28  OR   28h, R13
+0ba0: cc 18     LD   R12, #18h
+0ba2: dc 01     LD   R13, #01h
+0ba4: d6 0e 3f  CALL 0E3Fh                  // setup bus
+0ba7: ec 90     LD   R14, #90h
+0ba9: 92 ec     LDE  @RR12, R14
+0bab: dc 00     LD   R13, #00h
+0bad: e8 28     LD   R14, 28h
+0baf: 92 ec     LDE  @RR12, R14
+0bb1: 8d 0c c0  JP   0CC0h                  // potentially zero p1
+0bb4: a6 64 08  CP   64h, #08h
+0bb7: 7b 2c     JR   C, 0BE5h
+0bb9: 6b 16     JR   Z, 0BD1h
+0bbb: 76 65 01  TM   65h, #01h
+0bbe: 6b 54     JR   Z, 0C14h
+0bc0: e7 ff 67  LD   @FFh, #67h
+0bc3: 00 ff     DEC  SPL
+0bc5: e7 ff 04  LD   @FFh, #04h
+0bc8: 00 ff     DEC  SPL
+0bca: 00 ff     DEC  SPL
+0bcc: b0 fb     CLR  IMR
+0bce: 8d 0a 93  JP   0A93h
+0bd1: 56 4f bf  AND  4Fh, #BFh
+0bd4: 76 65 01  TM   65h, #01h
+0bd7: 6b 06     JR   Z, 0BDFh
+0bd9: 46 4f 40  OR   4Fh, #40h
+0bdc: 56 59 f1  AND  59h, #F1h
+0bdf: d6 06 4e  CALL 064Eh
+0be2: 8d 0c 90  JP   0C90h
+0be5: d6 07 50  CALL 0750h
+0be8: 54 64 2d  AND  2Dh, 64h
+0beb: 54 65 2e  AND  2Eh, 65h
+0bee: 46 28 10  OR   28h, #10h
+0bf1: 76 64 04  TM   64h, #04h
+0bf4: 6b 06     JR   Z, 0BFCh
+0bf6: 56 2d fb  AND  2Dh, #FBh
+0bf9: 56 29 0b  AND  29h, #0Bh
+0bfc: d6 07 59  CALL 0759h
+0bff: 8d 0c 8d  JP   0C8Dh
+0c02: 44 67 67  OR   67h, 67h
+0c05: eb 05     JR   NZ, 0C0Ch
+0c07: d6 05 e1  CALL 05E1h
+0c0a: 8b 03     JR   0C0Fh
+0c0c: d6 05 e5  CALL 05E5h
+0c0f: 8b ee     JR   0BFFh
+0c11: 46 ea 20  OR   R10, #20h
+0c14: af        RET  
+0c15: 46 ea 02  OR   R10, #02h
+0c18: af        RET  
+0c19: e4 67 09  LD   09h, 67h
+0c1c: 46 09 70  OR   09h, #70h
+0c1f: d6 07 0d  CALL 070Dh
+0c22: 8b 69     JR   0C8Dh
+0c24: 76 4f 04  TM   4Fh, #04h
+0c27: ed 19 1e  JP   NZ, 191Eh
+0c2a: 31 00     SRP  #00h
+0c2c: 56 64 0f  AND  64h, #0Fh
+0c2f: 6b 07     JR   Z, 0C38h
+0c31: 58 64     LD   R5, 64h
+0c33: 00 e5     DEC  R5
+0c35: d6 04 d9  CALL 04D9h
+0c38: 56 65 0f  AND  65h, #0Fh
+0c3b: 6b 20     JR   Z, 0C5Dh
+0c3d: 00 65     DEC  65h
+0c3f: eb 08     JR   NZ, 0C49h
+0c41: 56 08 7f  AND  08h, #7Fh
+0c44: d6 06 14  CALL 0614h
+0c47: 8b 14     JR   0C5Dh
+0c49: a6 65 07  CP   65h, #07h
+0c4c: eb 08     JR   NZ, 0C56h
+0c4e: 46 08 80  OR   08h, #80h
+0c51: d6 06 14  CALL 0614h
+0c54: 8b 07     JR   0C5Dh
+0c56: 58 65     LD   R5, 65h
+0c58: 00 e5     DEC  R5
+0c5a: d6 04 b3  CALL 04B3h
+0c5d: 56 66 03  AND  66h, #03h
+0c60: 6b 0b     JR   Z, 0C6Dh
+0c62: 00 66     DEC  66h
+0c64: 56 4f fc  AND  4Fh, #FCh
+0c67: 44 66 4f  OR   4Fh, 66h
+0c6a: d6 05 b1  CALL 05B1h
+0c6d: 76 67 0f  TM   67h, #0Fh
+0c70: 6b 1b     JR   Z, 0C8Dh
+0c72: 76 67 02  TM   67h, #02h
+0c75: 6b 10     JR   Z, 0C87h
+0c77: 56 4f f7  AND  4Fh, #F7h
+0c7a: d6 05 77  CALL 0577h
+0c7d: 76 67 01  TM   67h, #01h
+0c80: 6b 0b     JR   Z, 0C8Dh
+0c82: 56 4f df  AND  4Fh, #DFh
+0c85: 8b 06     JR   0C8Dh
+0c87: 56 4f f7  AND  4Fh, #F7h
+0c8a: d6 05 9f  CALL 059Fh
+0c8d: d6 07 31  CALL 0731h
+0c90: 31 50     SRP  #50h
+0c92: 56 08 fe  AND  08h, #FEh
+0c95: 8f        DI   
+0c96: 46 ea 02  OR   R10, #02h
+0c99: 46 fb 0e  OR   IMR, #0Eh
+0c9c: d6 0c d3  CALL 0CD3h
+0c9f: d6 0e 49  CALL 0E49h
+0ca2: 66 4f 88  TCM  4Fh, #88h
+0ca5: eb 03     JR   NZ, 0CAAh
+0ca7: d6 05 63  CALL 0563h
+0caa: e6 7f 33  LD   7Fh, #33h
+0cad: e6 7e 00  LD   7Eh, #00h
+0cb0: e6 ff 7c  LD   SPL, #7Ch
+0cb3: 8d 0a 93  JP   0A93h
+0cb6: 46 eb 01  OR   R11, #01h
+0cb9: af        RET  
+0cba: 80 22     DECW 22h                // delay by word at 22h
+0cbc: ff        NOP  
+0cbd: eb fb     JR   NZ, 0CBAh
+0cbf: af        RET  
+0cc0: 76 3b 08  TM   3Bh, #08h          // If reg 3B bit 3 ...
+0cc3: eb 0d     JR   NZ, 0CD2h          // is not zero
+0cc5: 56 3b f7  AND  3Bh, #F7h          // clear it
+0cc8: 70 fb     PUSH IMR
+0cca: 8f        DI   
+0ccb: e6 f8 06  LD   P01M, #06h         // A8-A11 addressing, internal stack, P04-P07 outputs, P1 byte output
+0cce: b0 01     CLR  P1                 // zero P1
+0cd0: 50 fb     POP  IMR
+0cd2: af        RET  
+0cd3: 70 fd     PUSH RP                 // entry of some kind
+0cd5: 70 fb     PUSH IMR
+0cd7: 8f        DI   
+0cd8: 31 00     SRP  #00h               // potential to write to ports
+0cda: d8 4d     LD   R13, 4Dh
+0cdc: 90 ed     RL   R13
+0cde: 06 ed 34  ADD  R13, #34h
+0ce1: cc 0f     LD   R12, #0Fh
+0ce3: c2 ac     LDC  R10, @RR12         // load R10 from 0f34 (plus whatever is in 4d)
+0ce5: a0 ec     INCW RR12
+0ce7: c2 bc     LDC  R11, @RR12         // load R11 from 0f35 (plus...)
+0ce9: 76 4d 04  TM   4Dh, #04h
+0cec: eb 08     JR   NZ, 0CF6h
+0cee: e8 4e     LD   R14, 4Eh
+0cf0: 90 ee     RL   R14
+0cf2: 90 ee     RL   R14
+0cf4: 02 be     ADD  R11, R14
+0cf6: c2 ea     LDC  R14, @RR10         // load something from where the above pointed to
+0cf8: 76 4d 08  TM   4Dh, #08h
+0cfb: eb 1f     JR   NZ, 0D1Ch
+0cfd: 76 3b 04  TM   3Bh, #04h
+0d00: eb 17     JR   NZ, 0D19h
+0d02: 76 4f 03  TM   4Fh, #03h
+0d05: eb 15     JR   NZ, 0D1Ch
+0d07: 46 ee 20  OR   R14, #20h
+0d0a: a6 4d 00  CP   4Dh, #00h
+0d0d: 6b 0d     JR   Z, 0D1Ch
+0d0f: 76 4d 02  TM   4Dh, #02h
+0d12: 6b 05     JR   Z, 0D19h
+0d14: a6 4e 03  CP   4Eh, #03h
+0d17: 5b 03     JR   MI, 0D1Ch
+0d19: 56 ee df  AND  R14, #DFh
+0d1c: 08 ee     LD   R0, R14            // this is a write to Port 0
+0d1e: f0 ee     SWAP R14
+0d20: 46 ee 04  OR   R14, #04h
+0d23: 46 e2 f0  OR   R2, #F0h           // this is a write to Port 2
+0d26: 52 2e     AND  R2, R14
+0d28: a0 ea     INCW RR10
+0d2a: cc 1a     LD   R12, #1Ah
+0d2c: c2 ea     LDC  R14, @RR10
+0d2e: 76 4d 08  TM   4Dh, #08h
+0d31: eb 1e     JR   NZ, 0D51h
+0d33: a6 4e 00  CP   4Eh, #00h
+0d36: eb 07     JR   NZ, 0D3Fh
+0d38: 76 4f 01  TM   4Fh, #01h
+0d3b: 6b 14     JR   Z, 0D51h
+0d3d: 8b 0f     JR   0D4Eh
+0d3f: 76 4d 02  TM   4Dh, #02h
+0d42: 6b 0d     JR   Z, 0D51h
+0d44: a6 4e 03  CP   4Eh, #03h
+0d47: eb 08     JR   NZ, 0D51h
+0d49: 76 4f 02  TM   4Fh, #02h
+0d4c: eb 03     JR   NZ, 0D51h
+0d4e: 46 ee 02  OR   R14, #02h
+0d51: d6 0e 3f  CALL 0E3Fh                  // setup bus
+0d54: 92 ec     LDE  @RR12, R14
+0d56: ce        INC  R12
+0d57: a0 ea     INCW RR10
+0d59: c2 ea     LDC  R14, @RR10
+0d5b: 92 ec     LDE  @RR12, R14
+0d5d: ce        INC  R12
+0d5e: a0 ea     INCW RR10
+0d60: c2 ea     LDC  R14, @RR10
+0d62: 76 4d 08  TM   4Dh, #08h
+0d65: eb 21     JR   NZ, 0D88h
+0d67: 76 fe 08  TM   SPH, #08h
+0d6a: eb 05     JR   NZ, 0D71h
+0d6c: 76 fe 20  TM   SPH, #20h
+0d6f: eb 11     JR   NZ, 0D82h
+0d71: ac 11     LD   R10, #11h
+0d73: bc 7c     LD   R11, #7Ch
+0d75: 04 4e eb  ADD  R11, 4Eh
+0d78: 82 fa     LDE  R15, @RR10
+0d7a: 56 ef f0  AND  R15, #F0h
+0d7d: b6 ef 80  XOR  R15, #80h
+0d80: 8b 04     JR   0D86h
+0d82: f8 3e     LD   R15, 3Eh
+0d84: f0 ef     SWAP R15
+0d86: 42 ef     OR   R14, R15
+0d88: 92 ec     LDE  @RR12, R14
+0d8a: d6 0c c0  CALL 0CC0h                  // potentially zero p1
+0d8d: 56 08 fd  AND  08h, #FDh
+0d90: 50 fb     POP  IMR
+0d92: 50 fd     POP  RP
+0d94: d6 06 24  CALL 0624h
+0d97: b0 1a     CLR  1Ah
+0d99: b0 1b     CLR  1Bh
+0d9b: b0 1c     CLR  1Ch
+0d9d: b0 1d     CLR  1Dh
+0d9f: 76 fe 28  TM   SPH, #28h
+0da2: eb 03     JR   NZ, 0DA7h
+0da4: b0 4b     CLR  4Bh
+0da6: af        RET  
+0da7: 76 4f 03  TM   4Fh, #03h
+0daa: eb 04     JR   NZ, 0DB0h
+0dac: e6 4b 20  LD   4Bh, #20h
+0daf: af        RET  
+0db0: 76 4f 01  TM   4Fh, #01h
+0db3: 6b 04     JR   Z, 0DB9h
+0db5: e6 4b 04  LD   4Bh, #04h
+0db8: af        RET  
+0db9: e6 4b 01  LD   4Bh, #01h
+0dbc: af        RET  
+0dbd: fc 06     LD   R15, #06h
+0dbf: f1 ec     SWAP @R12
+0dc1: e3 ec     LD   R14, @R12
+0dc3: 56 ee 0f  AND  R14, #0Fh
+0dc6: 57 ed f0  AND  @R13, #F0h
+0dc9: 43 ed     OR   R14, @R13
+0dcb: f3 de     LD   @R13, R14
+0dcd: de        INC  R13
+0dce: 76 ef 01  TM   R15, #01h
+0dd1: 6b 01     JR   Z, 0DD4h
+0dd3: ce        INC  R12
+0dd4: fa e9     DJNZ R15, 0DBFh
+0dd6: af        RET  
+0dd7: e6 0f 08  LD   0Fh, #08h
+0dda: f5 0e 0d  LD   @0Dh, 0Eh
+0ddd: 20 0d     INC  0Dh
+0ddf: 00 0f     DEC  0Fh
+0de1: eb f7     JR   NZ, 0DDAh
+0de3: af        RET  
+0de4: df        SCF  
+0de5: 61 e1     COM  @R1
+0de7: 17 e1 00  ADC  @R1, #00h
+0dea: 00 e1     DEC  R1
+0dec: 0a f7     DJNZ R0, 0DE5h
+0dee: af        RET  
+0def: d6 0c d3  CALL 0CD3h
+0df2: d6 07 74  CALL 0774h
+0df5: d6 0e 49  CALL 0E49h
+0df8: 31 10     SRP  #10h
+0dfa: d6 05 18  CALL 0518h
+0dfd: 8f        DI   
+0dfe: 46 fb 04  OR   IMR, #04h
+0e01: 9f        EI   
+0e02: 76 4f 80  TM   4Fh, #80h
+0e05: eb fa     JR   NZ, 0E01h
+0e07: 8f        DI   
+0e08: 31 30     SRP  #30h
+0e0a: 8d 0e 39  JP   0E39h
+0e0d: 0c 03     LD   R0, #03h
+0e0f: cf        RCF  
+0e10: 5c 99     LD   R5, #99h
+0e12: 33 51     SBC  R5, @R1
+0e14: 40 e5     DA   R5
+0e16: f3 15     LD   @R1, R5
+0e18: 00 e1     DEC  R1
+0e1a: 0a f4     DJNZ R0, 0E10h
+0e1c: af        RET  
+0e1d: 70 fb     PUSH IMR                    // ENTRY
+0e1f: 8f        DI   
+0e20: 70 fd     PUSH RP
+0e22: 31 10     SRP  #10h
+0e24: 0c 30     LD   R0, #30h               // looks like a load of 5 bytes from 0x1f00 (the ADC)
+0e26: 4c 05     LD   R4, #05h               // storing the result in 30h onwards
+0e28: 6c 1f     LD   R6, #1Fh               // there is extended bus timing enabled for at least
+0e2a: 82 86     LDE  R8, @RR6               // one of the jumps here
+0e2c: 56 e8 3f  AND  R8, #3Fh
+0e2f: f3 08     LD   @R0, R8
+0e31: 0e        INC  R0
+0e32: 4a f6     DJNZ R4, 0E2Ah
+0e34: 50 fd     POP  RP
+0e36: 50 fb     POP  IMR
+0e38: af        RET  
+0e39: 56 02 fb  AND  P2, #FBh               // CALLED during startup ... (zero P2 except AC sense)
+0e3c: 46 3b 08  OR   3Bh, #08h              // set bit 3 in 3Bh
+0e3f: 70 fb     PUSH IMR                   // setup P01M for address/data
+0e41: 8f        DI   
+0e42: e6 f8 16  LD   P01M, #16h            // A0-A11 addressing, internal stack, P04-P07 outputs, P1 Addr/Data
+0e45: ff        NOP  
+0e46: 50 fb     POP  IMR
+0e48: af        RET  
+0e49: 46 02 04  OR   P2, #04h
+0e4c: 8d 0c c5  JP   0CC5h
+0e4f: 76 4f 10  TM   4Fh, #10h
+0e52: 6b 07     JR   Z, 0E5Bh
+0e54: a4 4d 3e  CP   3Eh, 4Dh
+0e57: eb 02     JR   NZ, 0E5Bh
+0e59: df        SCF  
+0e5a: af        RET  
+0e5b: cf        RCF  
+0e5c: af        RET  
+0e5d: 46 5a 40  OR   5Ah, #40h
+0e60: 8d 07 a7  JP   07A7h
+0e63: 42 bb     OR   R11, R11
+0e65: db 09     JR   PL, 0E70h
+0e67: 1c 1d     LD   R1, #1Dh
+0e69: 0c 03     LD   R0, #03h
+0e6b: d6 0d e4  CALL 0DE4h
+0e6e: 60 26     COM  26h
+0e70: 76 35 80  TM   35h, #80h
+0e73: 6b 09     JR   Z, 0E7Eh
+0e75: 1c 37     LD   R1, #37h
+0e77: 0c 03     LD   R0, #03h
+0e79: d6 0d e4  CALL 0DE4h
+0e7c: 60 26     COM  26h
+0e7e: b0 ee     CLR  R14
+0e80: b0 38     CLR  38h
+0e82: b0 32     CLR  32h
+0e84: b0 33     CLR  33h
+0e86: b0 34     CLR  34h
+0e88: 1c 15     LD   R1, #15h
+0e8a: 0c 09     LD   R0, #09h
+0e8c: cf        RCF  
+0e8d: 10 34     RLC  34h
+0e8f: 10 33     RLC  33h
+0e91: 10 32     RLC  32h
+0e93: 0a 15     DJNZ R0, 0EAAh
+0e95: b8 ec     LD   R11, R12
+0e97: c8 ed     LD   R12, R13
+0e99: d8 ee     LD   R13, R14
+0e9b: b0 ee     CLR  R14
+0e9d: e4 36 35  LD   35h, 36h
+0ea0: e4 37 36  LD   36h, 37h
+0ea3: e4 38 37  LD   37h, 38h
+0ea6: b0 38     CLR  38h
+0ea8: 0c 08     LD   R0, #08h
+0eaa: a4 35 eb  CP   R11, 35h
+0ead: bb 15     JR   UGT, 0EC4h
+0eaf: 7b 29     JR   C, 0EDAh
+0eb1: a4 36 ec  CP   R12, 36h
+0eb4: bb 0e     JR   UGT, 0EC4h
+0eb6: 7b 22     JR   C, 0EDAh
+0eb8: a4 37 ed  CP   R13, 37h
+0ebb: bb 07     JR   UGT, 0EC4h
+0ebd: 7b 1b     JR   C, 0EDAh
+0ebf: a4 38 ee  CP   R14, 38h
+0ec2: 7b 16     JR   C, 0EDAh
+0ec4: 24 38 ee  SUB  R14, 38h
+0ec7: 34 37 ed  SBC  R13, 37h
+0eca: 34 36 ec  SBC  R12, 36h
+0ecd: 34 35 eb  SBC  R11, 35h
+0ed0: 20 34     INC  34h
+0ed2: 16 33 00  ADC  33h, #00h
+0ed5: 16 32 00  ADC  32h, #00h
+0ed8: 8b d0     JR   0EAAh
+0eda: cf        RCF  
+0edb: c0 35     RRC  35h
+0edd: c0 36     RRC  36h
+0edf: c0 37     RRC  37h
+0ee1: c0 38     RRC  38h
+0ee3: 1a a7     DJNZ R1, 0E8Ch
+0ee5: 76 26 80  TM   26h, #80h
+0ee8: 6b 07     JR   Z, 0EF1h
+0eea: 1c 34     LD   R1, #34h
+0eec: 0c 03     LD   R0, #03h
+0eee: d6 0d e4  CALL 0DE4h
+0ef1: af        RET  
+0ef2: 8c 04     LD   R8, #04h               // Test Routine
+0ef4: 7c c1     LD   R7, #C1h
+0ef6: 3c 67     LD   R3, #67h
+0ef8: 2c fa     LD   R2, #FAh
+0efa: 1c 8e     LD   R1, #8Eh
+0efc: 31 00     SRP  #00h
+0efe: 0c 55     LD   R0, #55h               // output to port0
+0f00: 1c 55     LD   R1, #55h               // output to port1
+0f02: 2c 55     LD   R2, #55h               // output to port2
+0f04: 3c 55     LD   R3, #55h               // output to port3
+0f06: e6 23 45  LD   23h, #45h              // short delay (0CBAh) -- 0x0045
+0f09: 60 e0     COM  R0                     // compliment port 0
+0f0b: 60 e1     COM  R1                     // compliment port 1
+0f0d: b6 e3 20  XOR  R3, #20h               // xor port 3
+0f10: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+0f13: e6 f0 55  LD   SIO, #55h          // serial output
+0f16: 8b ee     JR   0F06h              // permament loop
+0f18: 01 00     DEC  @00h
+0f1a: 0b 06     JR   F, 0F22h
+0f1c: 0f        Illegal
+0f1d: 0d 0f 0d  JP   F, 0F0Dh
+0f20: 0c 0b     LD   R0, #0Bh
+0f22: 8a 9a     DJNZ R8, 0EBEh
+0f24: 02 05     ADD  R0, R5
+0f26: 06 10 06  ADD  10h, #06h
+0f29: 0c 05     LD   R0, #05h
+0f2b: a7 05 dc  CP   @05h, #DCh
+0f2e: 06 14 05  ADD  14h, #05h
+0f31: 04 05 77  ADD  77h, 05h
+0f34: 0f        Illegal
+0f35: 46 0f 5a  OR   0Fh, #5Ah
+0f38: 0f        Illegal
+0f39: 6e        INC  R6
+0f3a: 0f        Illegal
+0f3b: 86        Illegal
+0f3c: 0f        Illegal
+0f3d: 9e        INC  R9
+0f3e: 0f        Illegal
+0f3f: a2 1f     CP   R1, R15
+0f41: 10 1f     RLC  1Fh
+0f43: 10 1f     RLC  1Fh
+0f45: 10 8e     RLC  8Eh
+0f47: 54 56 0e  AND  0Eh, 56h
+0f4a: 8e        INC  R8
+0f4b: 64 56 0e  TCM  0Eh, 56h
+0f4e: 0e        INC  R0
+0f4f: 65 56 0e  TCM  0Eh, @56h
+0f52: 8f        DI   
+0f53: 64 56 0e  TCM  0Eh, 56h
+0f56: 0f        Illegal
+0f57: 65 56 0e  TCM  0Eh, @56h
+0f5a: 07 e4 56  ADD  @R4, #56h
+0f5d: 03 07     ADD  R0, @R7
+0f5f: e4 56 0d  LD   0Dh, 56h
+0f62: 07 e4 56  ADD  @R4, #56h
+0f65: 0e        INC  R0
+0f66: 03 e4     ADD  R14, @R4
+0f68: 56 0d 03  AND  0Dh, #03h
+0f6b: e4 56 0e  LD   0Eh, 56h
+0f6e: 8c 54     LD   R8, #54h
+0f70: 53 0e     AND  R0, @R14
+0f72: 8c 64     LD   R8, #64h
+0f74: 53 0e     AND  R0, @R14
+0f76: 8c 64     LD   R8, #64h
+0f78: 56 0e 8c  AND  0Eh, #8Ch
+0f7b: 64 5a 0e  TCM  0Eh, 5Ah
+0f7e: 0c 65     LD   R0, #65h
+0f80: 9a 0e     DJNZ R9, 0F90h
+0f82: 0c 65     LD   R0, #65h
+0f84: a0 0e     INCW 0Eh
+0f86: 9c 14     LD   R9, #14h
+0f88: 53 0e     AND  R0, @R14
+0f8a: 9c 24     LD   R9, #24h
+0f8c: 53 0e     AND  R0, @R14
+0f8e: 9c 24     LD   R9, #24h
+0f90: 56 0e 9c  AND  0Eh, #9Ch
+0f93: 24 5a 0e  SUB  0Eh, 5Ah
+0f96: 1c 65     LD   R1, #65h
+0f98: 9a 0e     DJNZ R9, 0FA8h
+0f9a: 1c 65     LD   R1, #65h
+0f9c: a0 0e     INCW 0Eh
+0f9e: 0f        Illegal
+0f9f: 5c 56     LD   R5, #56h
+0fa1: 06 03 e4  ADD  P3, #E4h
+0fa4: 56 0b 07  AND  0Bh, #07h
+0fa7: f9 07     LD   07h, R15
+0fa9: ef        CCF  
+0faa: 07 fa 08  ADD  @FAh, #08h
+0fad: 62 08     TCM  R0, R8
+0faf: 65 08 68  TCM  68h, @08h
+0fb2: 08 a5     LD   R0, A5h
+0fb4: 08 da     LD   R0, DAh
+0fb6: 08 dd     LD   R0, DDh
+0fb8: 08 ff     LD   R0, SPL
+0fba: 0c 14     LD   R0, #14h
+0fbc: 0b 77     JR   F, 1035h
+0fbe: 0c 14     LD   R0, #14h
+0fc0: 0b b4     JR   F, 0F76h
+0fc2: 0c 02     LD   R0, #02h
+0fc4: 0b 85     JR   F, 0F4Bh
+0fc6: 0c 11     LD   R0, #11h
+0fc8: 0c b6     LD   R0, #B6h
+0fca: 0c 14     LD   R0, #14h
+0fcc: 0c 15     LD   R0, #15h
+0fce: 0c 19     LD   R0, #19h
+0fd0: 0c 24     LD   R0, #24h
+0fd2: 19 78     LD   78h, R1
+0fd4: 19 81     LD   81h, R1
+0fd6: 1a 20     DJNZ R1, 0FF8h
+0fd8: 1a 52     DJNZ R1, 102Ch
+0fda: 1a 5d     DJNZ R1, 1039h
+0fdc: 1a 63     DJNZ R1, 1041h
+0fde: 1a 6a     DJNZ R1, 104Ah
+0fe0: 55 04 02  AND  P2, @04h
+0fe3: 00 89     DEC  89h
+0fe5: 89 89     LD   89h, R8
+0fe7: 00 5a     DEC  5Ah
+0fe9: 50 55     POP  55h
+0feb: 23 23     SUB  R2, @R3
+0fed: fe        INC  R15
+0fee: 00 00     DEC  P0
+0ff0: 16 04 04  ADC  04h, #04h
+0ff3: 1e        INC  R1
+0ff4: 19 f0     LD   SIO, R1
+0ff6: 00 00     DEC  P0
+0ff8: 03 03     ADD  R0, @R3
+0ffa: 03 05     ADD  R0, @R5
+0ffc: 14 b4 99  ADC  99h, B4h
+0fff: 7a 06     DJNZ R7, 1007h
+1001: ff        NOP  
+1002: 03 56     ADD  R5, @R6
+1004: fb f9     JR   NC, 0FFFh
+1006: 9f        EI   
+1007: 44 4b 4b  OR   4Bh, 4Bh
+100a: eb 03     JR   NZ, 100Fh
+100c: d6 0c d3  CALL 0CD3h
+100f: a6 4b 01  CP   4Bh, #01h
+1012: eb 1f     JR   NZ, 1033h
+1014: 76 08 80  TM   08h, #80h
+1017: eb 0d     JR   NZ, 1026h
+1019: 76 fe 08  TM   SPH, #08h
+101c: 6b 08     JR   Z, 1026h
+101e: 76 4d 08  TM   4Dh, #08h
+1021: eb 03     JR   NZ, 1026h
+1023: d6 0e 5d  CALL 0E5Dh
+1026: 76 4f 08  TM   4Fh, #08h
+1029: 6b 08     JR   Z, 1033h
+102b: b0 22     CLR  22h
+102d: e6 23 01  LD   23h, #01h
+1030: d6 05 8b  CALL 058Bh
+1033: 31 20     SRP  #20h
+1035: 1c 64     LD   R1, #64h
+1037: 76 fe 08  TM   SPH, #08h
+103a: 6b 10     JR   Z, 104Ch
+103c: 1c 10     LD   R1, #10h
+103e: 76 4f 03  TM   4Fh, #03h
+1041: 6b 09     JR   Z, 104Ch
+1043: 1c 03     LD   R1, #03h
+1045: 76 4f 01  TM   4Fh, #01h
+1048: eb 02     JR   NZ, 104Ch
+104a: 8b 05     JR   1051h
+104c: a4 e1 4b  CP   4Bh, R1
+104f: fb 03     JR   NC, 1054h
+1051: 56 29 1f  AND  29h, #1Fh
+1054: d6 06 4e  CALL 064Eh
+1057: 8f        DI   
+1058: e6 f8 36  LD   P01M, #36h   // A0-A11 addressing, internal stack, P04-P07 outputs, P1 Addr/Data (EXTBUS)
+105b: ff        NOP  
+105c: d6 0e 1d  CALL 0E1Dh        // reads 5 bytes from the AD
+105f: d6 0e 3c  CALL 0E3Ch        // puts the port back in normal (non extended mode)
+1062: 9f        EI   
+1063: 31 10     SRP  #10h
+1065: b0 ee     CLR  R14
+1067: b0 ef     CLR  R15
+1069: b0 25     CLR  25h
+106b: e6 26 ff  LD   26h, #FFh
+106e: 0c 25     LD   R0, #25h
+1070: e6 24 34  LD   24h, #34h
+1073: 26 ed 20  SUB  R13, #20h
+1076: 36 ec 22  SBC  R12, #22h
+1079: 36 eb 22  SBC  R11, #22h
+107c: 33 a0     SBC  R10, @R0
+107e: 2c 11     LD   R2, #11h
+1080: 3c c0     LD   R3, #C0h
+1082: 76 4f 04  TM   4Fh, #04h
+1085: 6b 07     JR   Z, 108Eh
+1087: 76 3b 40  TM   3Bh, #40h
+108a: 6b 02     JR   Z, 108Eh
+108c: 3c e0     LD   R3, #E0h
+108e: 3e        INC  R3
+108f: 82 12     LDE  R1, @RR2
+1091: 02 d1     ADD  R13, R1
+1093: 00 e3     DEC  R3
+1095: 82 12     LDE  R1, @RR2
+1097: 12 c1     ADC  R12, R1
+1099: 76 e1 80  TM   R1, #80h
+109c: 6b 02     JR   Z, 10A0h
+109e: 0c 26     LD   R0, #26h
+10a0: 13 b0     ADC  R11, @R0
+10a2: 13 a0     ADC  R10, @R0
+10a4: 06 e3 0e  ADD  R3, #0Eh
+10a7: 4c 05     LD   R4, #05h
+10a9: 3e        INC  R3
+10aa: 3e        INC  R3
+10ab: 82 12     LDE  R1, @RR2
+10ad: 58 e1     LD   R5, R1
+10af: 00 e3     DEC  R3
+10b1: 82 12     LDE  R1, @RR2
+10b3: 68 e1     LD   R6, R1
+10b5: 00 e3     DEC  R3
+10b7: 82 12     LDE  R1, @RR2
+10b9: 78 e1     LD   R7, R1
+10bb: 26 e3 0c  SUB  R3, #0Ch
+10be: e5 24 e8  LD   R8, @24h
+10c1: 00 24     DEC  24h
+10c3: 0c 25     LD   R0, #25h
+10c5: 02 d8     ADD  R13, R8
+10c7: 13 c0     ADC  R12, @R0
+10c9: 13 b0     ADC  R11, @R0
+10cb: 13 a0     ADC  R10, @R0
+10cd: e6 21 20  LD   21h, #20h
+10d0: 74 21 e8  TM   R8, 21h
+10d3: eb 37     JR   NZ, 110Ch
+10d5: 98 e4     LD   R9, R4
+10d7: 00 e9     DEC  R9
+10d9: 6b 15     JR   Z, 10F0h
+10db: 0c 25     LD   R0, #25h
+10dd: 22 f5     SUB  R15, R5
+10df: 32 e6     SBC  R14, R6
+10e1: 32 d7     SBC  R13, R7
+10e3: 72 77     TM   R7, R7
+10e5: db 01     JR   PL, 10E8h
+10e7: 0e        INC  R0
+10e8: 33 c0     SBC  R12, @R0
+10ea: 33 b0     SBC  R11, @R0
+10ec: 33 a0     SBC  R10, @R0
+10ee: 9a eb     DJNZ R9, 10DBh
+10f0: 0c 25     LD   R0, #25h
+10f2: 3e        INC  R3
+10f3: 82 12     LDE  R1, @RR2
+10f5: 22 f1     SUB  R15, R1
+10f7: 00 e3     DEC  R3
+10f9: 82 12     LDE  R1, @RR2
+10fb: 32 e1     SBC  R14, R1
+10fd: 62 41     TCM  R4, R1
+10ff: db 01     JR   PL, 1102h
+1101: 0e        INC  R0
+1102: 33 d0     SBC  R13, @R0
+1104: 33 c0     SBC  R12, @R0
+1106: 33 b0     SBC  R11, @R0
+1108: 33 a0     SBC  R10, @R0
+110a: 8b 00     JR   110Ch
+110c: 3e        INC  R3
+110d: 3e        INC  R3
+110e: e6 27 05  LD   27h, #05h
+1111: d0 e7     SRA  R7
+1113: c0 e6     RRC  R6
+1115: c0 e5     RRC  R5
+1117: e0 21     RR   21h
+1119: 64 21 e8  TCM  R8, 21h
+111c: eb 37     JR   NZ, 1155h
+111e: 98 e4     LD   R9, R4
+1120: 00 e9     DEC  R9
+1122: 6b 15     JR   Z, 1139h
+1124: 0c 25     LD   R0, #25h
+1126: 02 f5     ADD  R15, R5
+1128: 12 e6     ADC  R14, R6
+112a: 12 d7     ADC  R13, R7
+112c: 72 77     TM   R7, R7
+112e: db 01     JR   PL, 1131h
+1130: 0e        INC  R0
+1131: 13 c0     ADC  R12, @R0
+1133: 13 b0     ADC  R11, @R0
+1135: 13 a0     ADC  R10, @R0
+1137: 9a eb     DJNZ R9, 1124h
+1139: 0c 25     LD   R0, #25h
+113b: 3e        INC  R3
+113c: 82 12     LDE  R1, @RR2
+113e: 02 f1     ADD  R15, R1
+1140: 00 e3     DEC  R3
+1142: 82 12     LDE  R1, @RR2
+1144: 12 e1     ADC  R14, R1
+1146: 62 41     TCM  R4, R1
+1148: db 01     JR   PL, 114Bh
+114a: 0e        INC  R0
+114b: 13 d0     ADC  R13, @R0
+114d: 13 c0     ADC  R12, @R0
+114f: 13 b0     ADC  R11, @R0
+1151: 13 a0     ADC  R10, @R0
+1153: 8b 00     JR   1155h
+1155: 3e        INC  R3
+1156: 3e        INC  R3
+1157: 00 27     DEC  27h
+1159: eb b6     JR   NZ, 1111h
+115b: a6 e4 01  CP   R4, #01h
+115e: 2b 11     JR   LE, 1171h
+1160: 8c 04     LD   R8, #04h
+1162: cf        RCF  
+1163: c0 ea     RRC  R10
+1165: c0 eb     RRC  R11
+1167: c0 ec     RRC  R12
+1169: c0 ed     RRC  R13
+116b: c0 ee     RRC  R14
+116d: c0 ef     RRC  R15
+116f: 8a f1     DJNZ R8, 1162h
+1171: 00 e4     DEC  R4
+1173: ed 10 a9  JP   NZ, 10A9h
+1176: a8 ec     LD   R10, R12
+1178: b8 ed     LD   R11, R13
+117a: c8 ee     LD   R12, R14
+117c: d8 ef     LD   R13, R15
+117e: 76 fe 08  TM   SPH, #08h
+1181: 6b 1a     JR   Z, 119Dh
+1183: 76 4f 02  TM   4Fh, #02h
+1186: 6b 15     JR   Z, 119Dh
+1188: 8f        DI   
+1189: 31 20     SRP  #20h
+118b: 46 e9 80  OR   R9, #80h
+118e: 4c 18     LD   R4, #18h
+1190: 5c 01     LD   R5, #01h
+1192: 1c 91     LD   R1, #91h
+1194: 92 14     LDE  @RR4, R1
+1196: 5c 00     LD   R5, #00h
+1198: 92 94     LDE  @RR4, R9
+119a: 31 10     SRP  #10h
+119c: 9f        EI   
+119d: 00 4b     DEC  4Bh
+119f: 76 fe 08  TM   SPH, #08h
+11a2: 6b 05     JR   Z, 11A9h
+11a4: 76 4d 08  TM   4Dh, #08h
+11a7: 6b 18     JR   Z, 11C1h
+11a9: 44 4b 4b  OR   4Bh, 4Bh
+11ac: eb 10     JR   NZ, 11BEh
+11ae: 8f        DI   
+11af: 76 4d 08  TM   4Dh, #08h
+11b2: ed 1d bf  JP   NZ, 1DBFh
+11b5: 9f        EI   
+11b6: 56 4f 7f  AND  4Fh, #7Fh
+11b9: 76 fe 20  TM   SPH, #20h
+11bc: eb 1d     JR   NZ, 11DBh
+11be: 8d 03 c4  JP   03C4h
+11c1: 04 ed 38  ADD  38h, R13
+11c4: 14 ec 37  ADC  37h, R12
+11c7: 14 eb 36  ADC  36h, R11
+11ca: 14 ea 35  ADC  35h, R10
+11cd: 44 4b 4b  OR   4Bh, 4Bh
+11d0: ed 00 c4  JP   NZ, 00C4h
+11d3: a8 35     LD   R10, 35h
+11d5: b8 36     LD   R11, 36h
+11d7: c8 37     LD   R12, 37h
+11d9: d8 38     LD   R13, 38h
+11db: d6 1b af  CALL 1BAFh
+11de: 76 4f 04  TM   4Fh, #04h
+11e1: 6b 06     JR   Z, 11E9h
+11e3: 76 3b 80  TM   3Bh, #80h
+11e6: 6d 00 c4  JP   Z, 00C4h
+11e9: 8d 00 86  JP   0086h
+11ec: 31 30     SRP  #30h
+11ee: e6 4f 24  LD   4Fh, #24h
+11f1: d6 05 77  CALL 0577h
+11f4: b0 08     CLR  08h
+11f6: 56 eb 0b  AND  R11, #0Bh
+11f9: b0 ef     CLR  R15
+11fb: b0 fe     CLR  SPH
+11fd: b0 4d     CLR  4Dh
+11ff: e6 4e 01  LD   4Eh, #01h
+1202: d6 12 56  CALL 1256h
+1205: a7 ff 00  CP   @FFh, #00h
+1208: eb 06     JR   NZ, 1210h
+120a: e6 22 ff  LD   22h, #FFh
+120d: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+1210: 46 5a 02  OR   5Ah, #02h
+1213: 56 fa f9  AND  IRQ, #F9h
+1216: 46 fb 0e  OR   IMR, #0Eh
+1219: d6 06 4e  CALL 064Eh
+121c: 8d 0e 1d  JP   0E1Dh
+121f: 76 4f 80  TM   4Fh, #80h
+1222: 6b 01     JR   Z, 1225h
+1224: af        RET  
+1225: e6 fe 08  LD   SPH, #08h
+1228: d6 07 74  CALL 0774h
+122b: d6 0c d3  CALL 0CD3h
+122e: b0 4f     CLR  4Fh
+1230: d6 05 9f  CALL 059Fh
+1233: 8b d0     JR   1205h
+1235: a6 e5 07  CP   R5, #07h
+1238: ab 11     JR   GT, 124Bh
+123a: 4c 1f     LD   R4, #1Fh
+123c: 90 e5     RL   R5
+123e: 06 e5 a1  ADD  R5, #A1h
+1241: c2 64     LDC  R6, @RR4
+1243: a0 e4     INCW RR4
+1245: c2 74     LDC  R7, @RR4
+1247: 31 30     SRP  #30h
+1249: 30 06     JP   @06h
+124b: 76 e5 10  TM   R5, #10h
+124e: 31 30     SRP  #30h
+1250: ed 13 e3  JP   NZ, 13E3h
+1253: 8d 14 34  JP   1434h
+1256: 31 30     SRP  #30h
+1258: d6 06 70  CALL 0670h
+125b: 0c 1f     LD   R0, #1Fh
+12e7: a6 ef 0c  CP   R15, #0Ch
+12ea: 1b f2     JR   LT, 12DEh
+12ec: 31 10     SRP  #10h
+12ee: 0c 11     LD   R0, #11h
+12f0: 2c 11     LD   R2, #11h
+12f2: 3c e0     LD   R3, #E0h
+12f4: d6 18 e1  CALL 18E1h
+12f7: 3c e0     LD   R3, #E0h
+12f9: d6 18 fe  CALL 18FEh
+12fc: 46 fe 08  OR   SPH, #08h
+12ff: d6 0c d3  CALL 0CD3h
+1302: 56 4f f7  AND  4Fh, #F7h
+1305: d6 07 74  CALL 0774h
+1308: 8d 05 9f  JP   059Fh
+130b: d6 16 22  CALL 1622h
+130e: d6 16 2b  CALL 162Bh
+1311: d6 16 5b  CALL 165Bh
+1314: d6 16 92  CALL 1692h
+1317: fe        INC  R15
+1318: af        RET  
+1319: dc 02     LD   R13, #02h
+131b: d6 16 22  CALL 1622h
+131e: d6 16 2b  CALL 162Bh
+1321: 5c 00     LD   R5, #00h
+1323: d6 16 76  CALL 1676h
+1326: d6 16 32  CALL 1632h
+1329: b0 e0     CLR  R0
+132b: cf        RCF  
+132c: 10 e8     RLC  R8
+132e: 10 e7     RLC  R7
+1330: 10 e6     RLC  R6
+1332: 16 e0 00  ADC  R0, #00h
+1335: a6 e0 00  CP   R0, #00h
+1338: eb 07     JR   NZ, 1341h
+133a: 76 e6 80  TM   R6, #80h
+133d: eb 39     JR   NZ, 1378h
+133f: 8b 0a     JR   134Bh
+1341: a6 e0 01  CP   R0, #01h
+1344: eb 32     JR   NZ, 1378h
+1346: 76 e6 80  TM   R6, #80h
+1349: 6b 2d     JR   Z, 1378h
+134b: 2c 11     LD   R2, #11h
+134d: 3c f0     LD   R3, #F0h
+134f: 82 42     LDE  R4, @RR2
+1351: 02 84     ADD  R8, R4
+1353: 80 e2     DECW RR2
+1355: 82 42     LDE  R4, @RR2
+1357: 12 74     ADC  R7, R4
+1359: 80 e2     DECW RR2
+135b: 82 42     LDE  R4, @RR2
+135d: 12 64     ADC  R6, R4
+135f: 31 10     SRP  #10h
+1361: d6 16 c7  CALL 16C7h
+1364: 0c 03     LD   R0, #03h
+1366: 1c 36     LD   R1, #36h
+1368: d6 18 c7  CALL 18C7h
+136b: 31 30     SRP  #30h
+136d: 00 ed     DEC  R13
+136f: 6b 05     JR   Z, 1376h
+1371: d6 0d ef  CALL 0DEFh
+1374: 8b a5     JR   131Bh
+1376: fe        INC  R15
+1377: af        RET  
+1378: e6 09 40  LD   09h, #40h
+137b: 8d 07 07  JP   0707h
+137e: fe        INC  R15
+137f: d6 16 22  CALL 1622h
+1382: d6 16 2b  CALL 162Bh
+1385: 5c 01     LD   R5, #01h
+1387: d6 16 76  CALL 1676h
+138a: d6 16 5b  CALL 165Bh
+138d: 8d 16 92  JP   1692h
+1390: 00 ef     DEC  R15
+1392: d6 16 22  CALL 1622h
+1395: 5c 02     LD   R5, #02h
+1397: d6 16 76  CALL 1676h
+139a: d6 16 5b  CALL 165Bh
+139d: d6 16 92  CALL 1692h
+13a0: fe        INC  R15
+13a1: fe        INC  R15
+13a2: af        RET  
+13a3: fe        INC  R15
+13a4: 76 ef 01  TM   R15, #01h
+13a7: 6b 0d     JR   Z, 13B6h
+13a9: e4 1a 43  LD   43h, 1Ah
+13ac: e4 1b 44  LD   44h, 1Bh
+13af: e4 1c 45  LD   45h, 1Ch
+13b2: e4 1d 49  LD   49h, 1Dh
+13b5: af        RET  
+13b6: 98 49     LD   R9, 49h
+13b8: 88 45     LD   R8, 45h
+13ba: 78 44     LD   R7, 44h
+13bc: 68 43     LD   R6, 43h
+13be: 04 1d e9  ADD  R9, 1Dh
+13c1: 14 1c e8  ADC  R8, 1Ch
+13c4: 14 1b e7  ADC  R7, 1Bh
+13c7: 14 1a e6  ADC  R6, 1Ah
+13ca: d0 e6     SRA  R6
+13cc: c0 e7     RRC  R7
+13ce: c0 e8     RRC  R8
+13d0: c0 e9     RRC  R9
+13d2: d6 16 2b  CALL 162Bh
+13d5: d6 16 5b  CALL 165Bh
+13d8: 8d 16 92  JP   1692h
+13db: e6 06 db  LD   06h, #DBh
+13de: e6 05 01  LD   05h, #01h
+13e1: 8b 03     JR   13E6h
+13e3: e6 06 e3  LD   06h, #E3h
+13e6: 31 00     SRP  #00h
+13e8: d6 04 d9  CALL 04D9h
+13eb: a4 05 4d  CP   4Dh, 05h
+13ee: 6b 01     JR   Z, 13F1h
+13f0: af        RET  
+13f1: b0 4e     CLR  4Eh
+13f3: d6 04 ba  CALL 04BAh
+13f6: 31 30     SRP  #30h
+13f8: 56 fe d1  AND  SPH, #D1h
+13fb: 46 fe 01  OR   SPH, #01h
+13fe: a6 06 db  CP   06h, #DBh
+1401: eb 03     JR   NZ, 1406h
+1403: 46 fe 20  OR   SPH, #20h
+1406: 56 3b cf  AND  3Bh, #CFh
+1409: 46 3b 10  OR   3Bh, #10h
+140c: 56 4f f4  AND  4Fh, #F4h
+140f: d6 05 77  CALL 0577h
+1412: fc 0c     LD   R15, #0Ch
+1414: a6 4d 01  CP   4Dh, #01h
+1417: 6b 05     JR   Z, 141Eh
+1419: a6 4d 05  CP   4Dh, #05h
+141c: eb 10     JR   NZ, 142Eh
+141e: fc 11     LD   R15, #11h
+1420: 76 fe 20  TM   SPH, #20h
+1423: 6b 09     JR   Z, 142Eh
+1425: fc 0e     LD   R15, #0Eh
+1427: a6 4e 04  CP   4Eh, #04h
+142a: eb 02     JR   NZ, 142Eh
+142c: fc 0f     LD   R15, #0Fh
+142e: 46 3b 80  OR   3Bh, #80h
+1431: 8d 12 56  JP   1256h
+1434: 56 05 07  AND  05h, #07h
+1437: 76 3b 20  TM   3Bh, #20h
+143a: ed 17 c9  JP   NZ, 17C9h
+143d: 66 fe 09  TCM  SPH, #09h
+1440: eb 0b     JR   NZ, 144Dh
+1442: 31 00     SRP  #00h
+1444: d6 04 b3  CALL 04B3h
+1447: d6 07 74  CALL 0774h
+144a: 8d 0c d3  JP   0CD3h
+144d: 76 3b 80  TM   3Bh, #80h
+1450: eb 01     JR   NZ, 1453h
+1452: af        RET  
+1453: e4 05 4e  LD   4Eh, 05h
+1456: d6 04 ba  CALL 04BAh
+1459: 56 fe f4  AND  SPH, #F4h
+145c: 8d 14 06  JP   1406h
+145f: 76 fe 08  TM   SPH, #08h
+1462: ed 05 a7  JP   NZ, 05A7h
+1465: af        RET  
+1466: 76 3b 20  TM   3Bh, #20h
+1469: 6b 06     JR   Z, 1471h
+146b: e6 05 06  LD   05h, #06h
+146e: 8d 17 c9  JP   17C9h
+1471: af        RET  
+1472: 76 fe 08  TM   SPH, #08h
+1475: 6b 01     JR   Z, 1478h
+1477: af        RET  
+1478: d6 18 9f  CALL 189Fh
+147b: d6 18 1a  CALL 181Ah
+147e: 59 04     LD   04h, R5
+1480: 69 05     LD   05h, R6
+1482: 79 06     LD   06h, R7
+1484: 76 3b 80  TM   3Bh, #80h
+1487: 6d 12 a3  JP   Z, 12A3h
+148a: 76 fe 20  TM   SPH, #20h
+148d: 6b 13     JR   Z, 14A2h
+148f: 8d 1a 6f  JP   1A6Fh
+1492: 76 fe 01  TM   SPH, #01h
+1495: 6d 15 86  JP   Z, 1586h
+1498: a6 4e 04  CP   4Eh, #04h
+149b: 6d 15 86  JP   Z, 1586h
+149e: 20 4e     INC  4Eh
+14a0: 8b 67     JR   1509h
+14a2: 76 fe 02  TM   SPH, #02h
+14a5: eb 70     JR   NZ, 1517h
+14a7: d6 0d ef  CALL 0DEFh
+14aa: 31 10     SRP  #10h
+14ac: 3c 02     LD   R3, #02h
+14ae: 76 4d 03  TM   4Dh, #03h
+14b1: 6b 02     JR   Z, 14B5h
+14b3: 3c 04     LD   R3, #04h
+14b5: d6 1a e5  CALL 1AE5h
+14b8: 5d 12 bd  JP   MI, 12BDh
+14bb: d6 1b 23  CALL 1B23h
+14be: 29 44     LD   44h, R2
+14c0: 39 45     LD   45h, R3
+14c2: 31 30     SRP  #30h
+14c4: d6 18 1a  CALL 181Ah
+14c7: 31 10     SRP  #10h
+14c9: d6 1b 23  CALL 1B23h
+14cc: 0c 03     LD   R0, #03h
+14ce: 1c 1a     LD   R1, #1Ah
+14d0: d6 18 c7  CALL 18C7h
+14d3: 06 e3 03  ADD  R3, #03h
+14d6: 16 e2 00  ADC  R2, #00h
+14d9: 0c 03     LD   R0, #03h
+14db: 1c 35     LD   R1, #35h
+14dd: d6 18 c7  CALL 18C7h
+14e0: d6 1b 23  CALL 1B23h
+14e3: 0c 09     LD   R0, #09h
+14e5: d6 18 e1  CALL 18E1h
+14e8: d6 15 b7  CALL 15B7h
+14eb: 7b ba     JR   C, 14A7h
+14ed: 76 fe 01  TM   SPH, #01h
+14f0: 6b 17     JR   Z, 1509h
+14f2: a6 4d 01  CP   4Dh, #01h
+14f5: 6b 12     JR   Z, 1509h
+14f7: 58 4e     LD   R5, 4Eh
+14f9: 20 4e     INC  4Eh
+14fb: d6 04 ba  CALL 04BAh
+14fe: a4 4e e5  CP   R5, 4Eh
+1501: ed 15 a1  JP   NZ, 15A1h
+1504: b0 4e     CLR  4Eh
+1506: d6 04 ba  CALL 04BAh
+1509: d6 0e 5d  CALL 0E5Dh
+150c: 31 30     SRP  #30h
+150e: d6 15 fa  CALL 15FAh
+1511: 56 3b df  AND  3Bh, #DFh
+1514: 8d 12 56  JP   1256h
+1517: d6 0d ef  CALL 0DEFh
+151a: 31 10     SRP  #10h
+151c: 3c 02     LD   R3, #02h
+151e: 76 4d 03  TM   4Dh, #03h
+1521: 6b 02     JR   Z, 1525h
+1523: 3c 04     LD   R3, #04h
+1525: d6 1a e5  CALL 1AE5h
+1528: 5d 12 bd  JP   MI, 12BDh
+152b: d6 1b 23  CALL 1B23h
+152e: 29 44     LD   44h, R2
+1530: 39 45     LD   45h, R3
+1532: 06 e3 02  ADD  R3, #02h
+1535: 1c 1c     LD   R1, #1Ch
+1537: d6 18 08  CALL 1808h
+153a: 31 30     SRP  #30h
+153c: d6 18 1a  CALL 181Ah
+153f: 31 10     SRP  #10h
+1541: 06 e3 09  ADD  R3, #09h
+1544: 16 e2 00  ADC  R2, #00h
+1547: 1c 37     LD   R1, #37h
+1549: d6 18 08  CALL 1808h
+154c: e6 26 ff  LD   26h, #FFh
+154f: d8 ec     LD   R13, R12
+1551: c8 eb     LD   R12, R11
+1553: b8 ea     LD   R11, R10
+1555: d6 0e 63  CALL 0E63h
+1558: 26 e3 02  SUB  R3, #02h
+155b: 0c 03     LD   R0, #03h
+155d: 1c 32     LD   R1, #32h
+155f: 76 4d 02  TM   4Dh, #02h
+1562: 6b 0a     JR   Z, 156Eh
+1564: a6 4e 04  CP   4Eh, #04h
+1567: 7b 05     JR   C, 156Eh
+1569: 26 32 08  SUB  32h, #08h
+156c: 8b 03     JR   1571h
+156e: 26 32 10  SUB  32h, #10h
+1571: d6 18 c7  CALL 18C7h
+1574: d6 1b 23  CALL 1B23h
+1577: 0c 09     LD   R0, #09h
+1579: d6 18 e1  CALL 18E1h
+157c: d6 15 b7  CALL 15B7h
+157f: 7b 96     JR   C, 1517h
+1581: 76 fe 01  TM   SPH, #01h
+1584: eb 09     JR   NZ, 158Fh
+1586: d6 0e 5d  CALL 0E5Dh
+1589: 56 3b cf  AND  3Bh, #CFh
+158c: 8d 12 fc  JP   12FCh
+158f: 58 4e     LD   R5, 4Eh
+1591: 20 4e     INC  4Eh
+1593: d6 04 ba  CALL 04BAh
+1596: a4 4e e5  CP   R5, 4Eh
+1599: 6b eb     JR   Z, 1586h
+159b: a6 4d 01  CP   4Dh, #01h
+159e: ed 15 09  JP   NZ, 1509h
+15a1: 0c 04     LD   R0, #04h
+15a3: cf        RCF  
+15a4: c0 46     RRC  46h
+15a6: c0 47     RRC  47h
+15a8: c0 48     RRC  48h
+15aa: 0a f7     DJNZ R0, 15A3h
+15ac: b6 46 11  XOR  46h, #11h
+15af: 31 30     SRP  #30h
+15b1: 56 fe fd  AND  SPH, #FDh
+15b4: 8d 14 7b  JP   147Bh
+15b7: d6 05 a7  CALL 05A7h
+15ba: 76 4f 03  TM   4Fh, #03h
+15bd: 6b 0d     JR   Z, 15CCh
+15bf: d6 1b 23  CALL 1B23h
+15c2: a4 e3 45  CP   45h, R3
+15c5: eb 0d     JR   NZ, 15D4h
+15c7: a4 e2 44  CP   44h, R2
+15ca: eb 08     JR   NZ, 15D4h
+15cc: 56 4f fc  AND  4Fh, #FCh
+15cf: d6 05 b1  CALL 05B1h
+15d2: cf        RCF  
+15d3: af        RET  
+15d4: df        SCF  
+15d5: af        RET  
+15d6: 76 3b 10  TM   3Bh, #10h
+15d9: eb 01     JR   NZ, 15DCh
+15db: af        RET  
+15dc: 46 3b 20  OR   3Bh, #20h
+15df: 0c 2e     LD   R0, #2Eh
+15e1: 1c 05     LD   R1, #05h
+15e3: e3 50     LD   R5, @R0
+15e5: 56 e5 0f  AND  R5, #0Fh
+15e8: a6 e5 09  CP   R5, #09h
+15eb: 3b 03     JR   ULE, 15F0h
+15ed: 57 e0 f0  AND  @R0, #F0h
+15f0: 00 e0     DEC  R0
+15f2: 1a ef     DJNZ R1, 15E3h
+15f4: d6 18 9f  CALL 189Fh
+15f7: 8d 06 4e  JP   064Eh
+15fa: 46 fe 02  OR   SPH, #02h
+15fd: fc 0d     LD   R15, #0Dh
+15ff: a6 4d 00  CP   4Dh, #00h
+1602: 6b 08     JR   Z, 160Ch
+1604: fc 0e     LD   R15, #0Eh
+1606: a6 4d 01  CP   4Dh, #01h
+1609: 6b 01     JR   Z, 160Ch
+160b: af        RET  
+160c: a6 4e 04  CP   4Eh, #04h
+160f: eb 10     JR   NZ, 1621h
+1611: fc 0e     LD   R15, #0Eh
+1613: a6 4d 00  CP   4Dh, #00h
+1616: 6b 09     JR   Z, 1621h
+1618: fc 10     LD   R15, #10h
+161a: 76 fe 20  TM   SPH, #20h
+161d: 6b 02     JR   Z, 1621h
+161f: fc 0f     LD   R15, #0Fh
+1621: af        RET  
+1622: 68 1a     LD   R6, 1Ah
+1624: 78 1b     LD   R7, 1Bh
+1626: 88 1c     LD   R8, 1Ch
+1628: 98 1d     LD   R9, 1Dh
+162a: af        RET  
+162b: 0c 04     LD   R0, #04h
+162d: 1c 39     LD   R1, #39h
+162f: 8d 0d e4  JP   0DE4h
+1632: 89 1d     LD   1Dh, R8
+1634: 79 1c     LD   1Ch, R7
+1636: 69 1b     LD   1Bh, R6
+1638: b0 e0     CLR  R0
+163a: 1c 18     LD   R1, #18h
+163c: 04 1d e8  ADD  R8, 1Dh
+163f: 14 1c e7  ADC  R7, 1Ch
+1642: 14 1b e6  ADC  R6, 1Bh
+1645: 16 e0 00  ADC  R0, #00h
+1648: 1a f2     DJNZ R1, 163Ch
+164a: a6 e0 00  CP   R0, #00h
+164d: 6b 0b     JR   Z, 165Ah
+164f: a6 e0 18  CP   R0, #18h
+1652: 6b 06     JR   Z, 165Ah
+1654: e6 09 40  LD   09h, #40h
+1657: 8d 07 07  JP   0707h
+165a: af        RET  
+165b: d6 16 c7  CALL 16C7h
+165e: 3e        INC  R3
+165f: 82 42     LDE  R4, @RR2
+1661: 02 84     ADD  R8, R4
+1663: 00 e3     DEC  R3
+1665: 82 42     LDE  R4, @RR2
+1667: 12 74     ADC  R7, R4
+1669: 76 e4 80  TM   R4, #80h
+166c: 6b 04     JR   Z, 1672h
+166e: 16 e6 ff  ADC  R6, #FFh
+1671: af        RET  
+1672: 16 e6 00  ADC  R6, #00h
+1675: af        RET  
+1676: 2c 1f     LD   R2, #1Fh
+1678: 38 e5     LD   R3, R5
+167a: 90 e3     RL   R3
+167c: 02 35     ADD  R3, R5
+167e: 06 e3 b1  ADD  R3, #B1h
+1681: c2 42     LDC  R4, @RR2
+1683: 02 84     ADD  R8, R4
+1685: 80 e2     DECW RR2
+1687: c2 42     LDC  R4, @RR2
+1689: 12 74     ADC  R7, R4
+168b: 80 e2     DECW RR2
+168d: c2 42     LDC  R4, @RR2
+168f: 12 64     ADC  R6, R4
+1691: af        RET  
+1692: 42 66     OR   R6, R6
+1694: 6b 20     JR   Z, 16B6h
+1696: a6 e6 ff  CP   R6, #FFh
+1699: eb 05     JR   NZ, 16A0h
+169b: 76 e7 80  TM   R7, #80h
+169e: eb 18     JR   NZ, 16B8h
+16a0: 06 ff 02  ADD  SPL, #02h
+16a3: a6 ef 03  CP   R15, #03h
+16a6: eb 02     JR   NZ, 16AAh
+16a8: 00 ef     DEC  R15
+16aa: a6 ef 02  CP   R15, #02h
+16ad: eb 01     JR   NZ, 16B0h
+16af: fe        INC  R15
+16b0: e6 09 40  LD   09h, #40h
+16b3: 8d 07 07  JP   0707h
+16b6: 5b e8     JR   MI, 16A0h
+16b8: 31 10     SRP  #10h
+16ba: d6 16 c7  CALL 16C7h
+16bd: 0c 02     LD   R0, #02h
+16bf: 1c 37     LD   R1, #37h
+16c1: d6 18 c7  CALL 18C7h
+16c4: 31 30     SRP  #30h
+16c6: af        RET  
+16c7: 2c 11     LD   R2, #11h
+16c9: a6 3f 01  CP   3Fh, #01h
+16cc: eb 03     JR   NZ, 16D1h
+16ce: 3c ee     LD   R3, #EEh
+16d0: af        RET  
+16d1: 38 3f     LD   R3, 3Fh
+16d3: a6 3f 00  CP   3Fh, #00h
+16d6: 6b 0a     JR   Z, 16E2h
+16d8: 00 e3     DEC  R3
+16da: a6 3f 03  CP   3Fh, #03h
+16dd: 3b 03     JR   ULE, 16E2h
+16df: 3e        INC  R3
+16e0: 8b 02     JR   16E4h
+16e2: 90 e3     RL   R3
+16e4: 06 e3 e0  ADD  R3, #E0h
+16e7: af        RET  
+16e8: 46 fe 04  OR   SPH, #04h
+16eb: d6 12 56  CALL 1256h
+16ee: 76 59 01  TM   59h, #01h
+16f1: 6b 01     JR   Z, 16F4h
+16f3: af        RET  
+16f4: dc 64     LD   R13, #64h
+16f6: 2c 18     LD   R2, #18h
+16f8: 3c 01     LD   R3, #01h
+16fa: 82 02     LDE  R0, @RR2
+16fc: 76 e0 07  TM   R0, #07h
+16ff: eb 0e     JR   NZ, 170Fh
+1701: d6 18 db  CALL 18DBh
+1704: d6 0e 1d  CALL 0E1Dh
+1707: da ed     DJNZ R13, 16F6h
+1709: 56 fe fb  AND  SPH, #FBh
+170c: 8d 07 3c  JP   073Ch
+170f: 56 fe fb  AND  SPH, #FBh
+1712: 3c 01     LD   R3, #01h
+1714: 0c 40     LD   R0, #40h
+1716: 92 02     LDE  @RR2, R0
+1718: 3c 00     LD   R3, #00h
+171a: 82 02     LDE  R0, @RR2
+171c: b0 e6     CLR  R6
+171e: 76 e0 10  TM   R0, #10h
+1721: eb 2d     JR   NZ, 1750h
+1723: a6 e0 05  CP   R0, #05h
+1726: 6b 63     JR   Z, 178Bh
+1728: a6 e0 01  CP   R0, #01h
+172b: 6b 10     JR   Z, 173Dh
+172d: a6 e0 06  CP   R0, #06h
+1730: eb d7     JR   NZ, 1709h
+1732: d6 11 ec  CALL 11ECh
+1735: 2c 11     LD   R2, #11h
+1737: 3c c0     LD   R3, #C0h
+1739: 7c 12     LD   R7, #12h
+173b: 8b 59     JR   1796h
+173d: d6 13 db  CALL 13DBh
+1740: 31 30     SRP  #30h
+1742: a4 05 4d  CP   4Dh, 05h
+1745: 6b 01     JR   Z, 1748h
+1747: af        RET  
+1748: 2c 11     LD   R2, #11h
+174a: 3c 7c     LD   R3, #7Ch
+174c: 7c 0a     LD   R7, #0Ah
+174e: 8b 46     JR   1796h
+1750: 56 e0 07  AND  R0, #07h
+1753: 09 05     LD   05h, R0
+1755: d6 13 e3  CALL 13E3h
+1758: 31 30     SRP  #30h
+175a: a4 05 4d  CP   4Dh, 05h
+175d: 6b 01     JR   Z, 1760h
+175f: af        RET  
+1760: d6 1b 23  CALL 1B23h
+1763: 0c 17     LD   R0, #17h
+1765: 18 4d     LD   R1, 4Dh
+1767: 90 e1     RL   R1
+1769: 90 e1     RL   R1
+176b: 06 e1 73  ADD  R1, #73h
+176e: 16 e0 00  ADC  R0, #00h
+1771: 30 e0     JP   @RR0
+1773: 7c 6e     LD   R7, #6Eh
+1775: 8b 1f     JR   1796h
+1777: 7c 32     LD   R7, #32h
+1779: 8b 1b     JR   1796h
+177b: 7c 64     LD   R7, #64h
+177d: 8b 17     JR   1796h
+177f: 7c 64     LD   R7, #64h
+1781: 8b 13     JR   1796h
+1783: 7c 0a     LD   R7, #0Ah
+1785: 8b 0f     JR   1796h
+1787: 7c 0a     LD   R7, #0Ah
+1789: 8b 0b     JR   1796h
+178b: d6 11 ec  CALL 11ECh
+178e: 2c 10     LD   R2, #10h
+1790: 3c 00     LD   R3, #00h
+1792: 6c 02     LD   R6, #02h
+1794: b0 e7     CLR  R7
+1796: d6 07 74  CALL 0774h
+1799: cc 1f     LD   R12, #1Fh
+179b: 82 02     LDE  R0, @RR2
+179d: 42 00     OR   R0, R0
+179f: 6b 10     JR   Z, 17B1h
+17a1: b0 e0     CLR  R0
+17a3: 92 02     LDE  @RR2, R0
+17a5: d6 18 db  CALL 18DBh
+17a8: 82 0c     LDE  R0, @RR12
+17aa: 82 02     LDE  R0, @RR2
+17ac: 42 00     OR   R0, R0
+17ae: ed 17 ba  JP   NZ, 17BAh
+17b1: a0 e2     INCW RR2
+17b3: 80 e6     DECW RR6
+17b5: eb e4     JR   NZ, 179Bh
+17b7: 8d 17 09  JP   1709h
+17ba: f8 49     LD   R15, 49h
+17bc: a6 ef 08  CP   R15, #08h
+17bf: fb 02     JR   NC, 17C3h
+17c1: 00 ef     DEC  R15
+17c3: e6 09 42  LD   09h, #42h
+17c6: 8d 07 07  JP   0707h
+17c9: a6 05 01  CP   05h, #01h
+17cc: bb 21     JR   UGT, 17EFh
+17ce: 6b 12     JR   Z, 17E2h
+17d0: 76 4d 03  TM   4Dh, #03h
+17d3: eb 30     JR   NZ, 1805h
+17d5: b6 29 0a  XOR  29h, #0Ah
+17d8: 76 29 01  TM   29h, #01h
+17db: eb 28     JR   NZ, 1805h
+17dd: b6 29 0c  XOR  29h, #0Ch
+17e0: 8b 23     JR   1805h
+17e2: b6 29 01  XOR  29h, #01h
+17e5: 76 29 02  TM   29h, #02h
+17e8: 6b 1b     JR   Z, 1805h
+17ea: b6 29 0c  XOR  29h, #0Ch
+17ed: 8b 16     JR   1805h
+17ef: 2c 28     LD   R2, #28h
+17f1: 04 05 e2  ADD  R2, 05h
+17f4: e3 12     LD   R1, @R2
+17f6: 06 e1 01  ADD  R1, #01h
+17f9: 40 e1     DA   R1
+17fb: 56 e1 0f  AND  R1, #0Fh
+17fe: 57 e2 f0  AND  @R2, #F0h
+1801: 43 12     OR   R1, @R2
+1803: f3 21     LD   @R2, R1
+1805: 8d 15 f4  JP   15F4h
+1808: 0c 03     LD   R0, #03h
+180a: cf        RCF  
+180b: 82 52     LDE  R5, @RR2
+180d: e3 71     LD   R7, @R1
+180f: 32 75     SBC  R7, R5
+1811: f3 17     LD   @R1, R7
+1813: 00 e1     DEC  R1
+1815: 80 e2     DECW RR2
+1817: 0a f2     DJNZ R0, 180Bh
+1819: af        RET  
+181a: e4 46 40  LD   40h, 46h
+181d: e4 47 41  LD   41h, 47h
+1820: e4 48 42  LD   42h, 48h
+1823: 38 40     LD   R3, 40h
+1825: ac 03     LD   R10, #03h
+1827: cc 40     LD   R12, #40h
+1829: e3 0c     LD   R0, @R12
+182b: 06 e0 55  ADD  R0, #55h
+182e: fb 03     JR   NC, 1833h
+1830: 57 ec 0f  AND  @R12, #0Fh
+1833: 76 fc 04  TM   FLAGS, #04h
+1836: 6b 03     JR   Z, 183Bh
+1838: 57 ec f0  AND  @R12, #F0h
+183b: ce        INC  R12
+183c: aa eb     DJNZ R10, 1829h
+183e: dc 35     LD   R13, #35h
+1840: cc 40     LD   R12, #40h
+1842: 1c 03     LD   R1, #03h
+1844: b1 ed     CLR  @R13
+1846: de        INC  R13
+1847: 1a fb     DJNZ R1, 1844h
+1849: 00 ed     DEC  R13
+184b: ac 14     LD   R10, #14h
+184d: 57 ec 0f  AND  @R12, #0Fh
+1850: 06 ec 03  ADD  R12, #03h
+1853: cf        RCF  
+1854: 1c 03     LD   R1, #03h
+1856: 11 ed     RLC  @R13
+1858: 00 ed     DEC  R13
+185a: 1a fa     DJNZ R1, 1856h
+185c: cf        RCF  
+185d: 1c 03     LD   R1, #03h
+185f: 00 ec     DEC  R12
+1861: e3 0c     LD   R0, @R12
+1863: 13 0c     ADC  R0, @R12
+1865: 40 e0     DA   R0
+1867: f3 c0     LD   @R12, R0
+1869: 1a f4     DJNZ R1, 185Fh
+186b: 06 ed 03  ADD  R13, #03h
+186e: 77 ec 10  TM   @R12, #10h
+1871: 6b 02     JR   Z, 1875h
+1873: 21 ed     INC  @R13
+1875: aa d6     DJNZ R10, 184Dh
+1877: 08 e3     LD   R0, R3
+1879: 56 e0 f0  AND  R0, #F0h
+187c: a6 e0 10  CP   R0, #10h
+187f: 6b 1d     JR   Z, 189Eh
+1881: a6 e0 00  CP   R0, #00h
+1884: 6b 05     JR   Z, 188Bh
+1886: a6 e0 d0  CP   R0, #D0h
+1889: eb 04     JR   NZ, 188Fh
+188b: 06 e5 10  ADD  R5, #10h
+188e: af        RET  
+188f: a6 e0 b0  CP   R0, #B0h
+1892: 6b 03     JR   Z, 1897h
+1894: 06 e5 10  ADD  R5, #10h
+1897: 0c 03     LD   R0, #03h
+1899: 1c 37     LD   R1, #37h
+189b: d6 0d e4  CALL 0DE4h
+189e: af        RET  
+189f: dc 2f     LD   R13, #2Fh
+18a1: 1c 03     LD   R1, #03h
+18a3: cc 49     LD   R12, #49h
+18a5: 00 ed     DEC  R13
+18a7: 00 ec     DEC  R12
+18a9: e3 0d     LD   R0, @R13
+18ab: 56 e0 0f  AND  R0, #0Fh
+18ae: f3 c0     LD   @R12, R0
+18b0: 00 ed     DEC  R13
+18b2: e3 0d     LD   R0, @R13
+18b4: 56 e0 0f  AND  R0, #0Fh
+18b7: f0 e0     SWAP R0
+18b9: 43 0c     OR   R0, @R12
+18bb: f3 c0     LD   @R12, R0
+18bd: 1a e6     DJNZ R1, 18A5h
+18bf: af        RET  
+18c0: 1c 1c     LD   R1, #1Ch
+18c2: 0c 03     LD   R0, #03h
+18c4: 8d 0d e4  JP   0DE4h
+18c7: e3 51     LD   R5, @R1
+18c9: 92 52     LDE  @RR2, R5
+18cb: d6 18 db  CALL 18DBh
+18ce: 82 52     LDE  R5, @RR2
+18d0: a3 51     CP   R5, @R1
+18d2: ed 17 bc  JP   NZ, 17BCh
+18d5: a0 e2     INCW RR2
+18d7: 1e        INC  R1
+18d8: 0a ed     DJNZ R0, 18C7h
+18da: af        RET  
+18db: e6 22 08  LD   22h, #08h
+18de: 8d 0c ba  JP   0CBAh
+18e1: b0 e1     CLR  R1
+18e3: 82 52     LDE  R5, @RR2
+18e5: 22 15     SUB  R1, R5
+18e7: a0 e2     INCW RR2
+18e9: 0a f8     DJNZ R0, 18E3h
+18eb: 92 12     LDE  @RR2, R1
+18ed: d6 18 db  CALL 18DBh
+18f0: 82 52     LDE  R5, @RR2
+18f2: a2 51     CP   R5, R1
+18f4: ed 18 f8  JP   NZ, 18F8h
+18f7: af        RET  
+18f8: e6 09 42  LD   09h, #42h
+18fb: 8d 07 07  JP   0707h
+18fe: 4c 12     LD   R4, #12h
+1900: 82 02     LDE  R0, @RR2
+1902: b6 e3 20  XOR  R3, #20h
+1905: 92 02     LDE  @RR2, R0
+1907: d6 18 db  CALL 18DBh
+190a: 82 12     LDE  R1, @RR2
+190c: a2 01     CP   R0, R1
+190e: eb 08     JR   NZ, 1918h
+1910: b6 e3 20  XOR  R3, #20h
+1913: a0 e2     INCW RR2
+1915: 4a e9     DJNZ R4, 1900h
+1917: af        RET  
+1918: e6 09 42  LD   09h, #42h
+191b: 8d 07 07  JP   0707h
+191e: 31 30     SRP  #30h
+1920: 56 67 0f  AND  67h, #0Fh
+1923: 6b 03     JR   Z, 1928h
+1925: 8d 0a e2  JP   0AE2h
+1928: 56 64 0f  AND  64h, #0Fh
+192b: 6b 0a     JR   Z, 1937h
+192d: e4 64 05  LD   05h, 64h
+1930: 00 05     DEC  05h
+1932: d6 13 e3  CALL 13E3h
+1935: 8b 3e     JR   1975h
+1937: 56 65 0f  AND  65h, #0Fh
+193a: 6b 1b     JR   Z, 1957h
+193c: 00 65     DEC  65h
+193e: 6d 0a e2  JP   Z, 0AE2h
+1941: a6 65 07  CP   65h, #07h
+1944: 6d 0a e2  JP   Z, 0AE2h
+1947: 76 3b 80  TM   3Bh, #80h
+194a: 6d 0a e2  JP   Z, 0AE2h
+194d: 00 65     DEC  65h
+194f: e4 65 05  LD   05h, 65h
+1952: d6 14 3d  CALL 143Dh
+1955: 8b 1e     JR   1975h
+1957: 56 66 0f  AND  66h, #0Fh
+195a: 6b 19     JR   Z, 1975h
+195c: 76 fe 08  TM   SPH, #08h
+195f: 6d 0a e2  JP   Z, 0AE2h
+1962: 00 66     DEC  66h
+1964: 56 4f fc  AND  4Fh, #FCh
+1967: 44 66 4f  OR   4Fh, 66h
+196a: d6 05 b1  CALL 05B1h
+196d: 8b 06     JR   1975h
+196f: e6 09 54  LD   09h, #54h
+1972: 8d 07 07  JP   0707h
+1975: 8d 0c 8d  JP   0C8Dh
+1978: 76 fe 08  TM   SPH, #08h
+197b: eb f2     JR   NZ, 196Fh
+197d: 46 ea 10  OR   R10, #10h
+1980: af        RET  
+1981: 76 fe 08  TM   SPH, #08h
+1984: eb e9     JR   NZ, 196Fh
+1986: 76 3b 10  TM   3Bh, #10h
+1989: eb 06     JR   NZ, 1991h
+198b: e6 09 56  LD   09h, #56h
+198e: 8d 07 07  JP   0707h
+1991: d6 06 70  CALL 0670h
+1994: 31 30     SRP  #30h
+1996: 1c 06     LD   R1, #06h
+1998: 0c 29     LD   R0, #29h
+199a: cc 61     LD   R12, #61h
+199c: e3 4c     LD   R4, @R12
+199e: 46 e4 f0  OR   R4, #F0h
+19a1: 53 40     AND  R4, @R0
+19a3: f3 04     LD   @R0, R4
+19a5: ce        INC  R12
+19a6: 0e        INC  R0
+19a7: 1a f3     DJNZ R1, 199Ch
+19a9: 56 29 f1  AND  29h, #F1h
+19ac: 31 60     SRP  #60h
+19ae: 08 e1     LD   R0, R1
+19b0: 56 e0 01  AND  R0, #01h
+19b3: 42 60     OR   R6, R0
+19b5: 42 62     OR   R6, R2
+19b7: 42 63     OR   R6, R3
+19b9: 42 64     OR   R6, R4
+19bb: 42 65     OR   R6, R5
+19bd: 6b 4a     JR   Z, 1A09h
+19bf: 31 20     SRP  #20h
+19c1: 78 67     LD   R7, 67h
+19c3: 76 61 04  TM   61h, #04h
+19c6: 6b 03     JR   Z, 19CBh
+19c8: 60 e7     COM  R7
+19ca: 7e        INC  R7
+19cb: 31 20     SRP  #20h
+19cd: 1c ff     LD   R1, #FFh
+19cf: 76 4d 06  TM   4Dh, #06h
+19d2: 6b 09     JR   Z, 19DDh
+19d4: 1c 02     LD   R1, #02h
+19d6: 76 4d 02  TM   4Dh, #02h
+19d9: eb 02     JR   NZ, 19DDh
+19db: 1c fc     LD   R1, #FCh
+19dd: 04 4e e1  ADD  R1, 4Eh
+19e0: 22 71     SUB  R7, R1
+19e2: ab 36     JR   GT, 1A1Ah
+19e4: 6b 23     JR   Z, 1A09h
+19e6: dd 19 ec  JP   PL, 19ECh
+19e9: 60 e7     COM  R7
+19eb: 7e        INC  R7
+19ec: 6c 2e     LD   R6, #2Eh
+19ee: 4c 2d     LD   R4, #2Dh
+19f0: 5c 05     LD   R5, #05h
+19f2: e3 14     LD   R1, @R4
+19f4: 56 e1 0f  AND  R1, #0Fh
+19f7: 57 26 f0  AND  @26h, #F0h
+19fa: 43 16     OR   R1, @R6
+19fc: f3 61     LD   @R6, R1
+19fe: 00 e6     DEC  R6
+1a00: 00 e4     DEC  R4
+1a02: 5a ee     DJNZ R5, 19F2h
+1a04: 56 e9 f0  AND  R9, #F0h
+1a07: 7a e3     DJNZ R7, 19ECh
+1a09: 31 30     SRP  #30h
+1a0b: b6 29 01  XOR  29h, #01h
+1a0e: 76 61 08  TM   61h, #08h
+1a11: 6d 18 05  JP   Z, 1805h
+1a14: 76 4d 03  TM   4Dh, #03h
+1a17: 6d 17 d5  JP   Z, 17D5h
+1a1a: e6 09 53  LD   09h, #53h
+1a1d: 8d 07 07  JP   0707h
+1a20: 76 e9 10  TM   R9, #10h
+1a23: eb 04     JR   NZ, 1A29h
+1a25: ec 11     LD   R14, #11h
+1a27: fc a0     LD   R15, #A0h
+1a29: e9 12     LD   12h, R14
+1a2b: f9 13     LD   13h, R15
+1a2d: 46 e9 10  OR   R9, #10h
+1a30: 31 30     SRP  #30h
+1a32: dc 68     LD   R13, #68h
+1a34: 1c 04     LD   R1, #04h
+1a36: cc 44     LD   R12, #44h
+1a38: d6 18 a5  CALL 18A5h
+1a3b: 31 10     SRP  #10h
+1a3d: 0c 04     LD   R0, #04h
+1a3f: 1c 40     LD   R1, #40h
+1a41: d6 18 c7  CALL 18C7h
+1a44: 26 13 04  SUB  13h, #04h
+1a47: 0c 04     LD   R0, #04h
+1a49: d6 18 e1  CALL 18E1h
+1a4c: 06 5f 05  ADD  5Fh, #05h
+1a4f: 8d 0c 90  JP   0C90h
+1a52: 76 fe 08  TM   SPH, #08h
+1a55: ed 19 6f  JP   NZ, 196Fh
+1a58: 31 30     SRP  #30h
+1a5a: 8d 14 72  JP   1472h
+1a5d: d6 11 ec  CALL 11ECh
+1a60: 8d 19 75  JP   1975h
+1a63: 31 30     SRP  #30h
+1a65: d6 13 db  CALL 13DBh
+1a68: 8b f6     JR   1A60h
+1a6a: 31 30     SRP  #30h
+1a6c: 8d 16 e8  JP   16E8h
+1a6f: 59 43     LD   43h, R5
+1a71: 69 44     LD   44h, R6
+1a73: 79 45     LD   45h, R7
+1a75: e6 3e 0f  LD   3Eh, #0Fh
+1a78: d6 0d ef  CALL 0DEFh
+1a7b: 31 10     SRP  #10h
+1a7d: a8 eb     LD   R10, R11
+1a7f: b8 ec     LD   R11, R12
+1a81: c8 ed     LD   R12, R13
+1a83: 3c 06     LD   R3, #06h
+1a85: d6 1a e5  CALL 1AE5h
+1a88: 5d 12 bd  JP   MI, 12BDh
+1a8b: d6 18 c0  CALL 18C0h
+1a8e: 24 45 ec  SUB  R12, 45h
+1a91: 34 44 eb  SBC  R11, 44h
+1a94: 34 43 ea  SBC  R10, 43h
+1a97: db 03     JR   PL, 1A9Ch
+1a99: d6 18 c0  CALL 18C0h
+1a9c: 31 40     SRP  #40h
+1a9e: a6 3e 0f  CP   3Eh, #0Fh
+1aa1: 6b 13     JR   Z, 1AB6h
+1aa3: a4 e0 1a  CP   1Ah, R0
+1aa6: bb 16     JR   UGT, 1ABEh
+1aa8: 7b 0c     JR   C, 1AB6h
+1aaa: a4 e1 1b  CP   1Bh, R1
+1aad: bb 0f     JR   UGT, 1ABEh
+1aaf: 7b 05     JR   C, 1AB6h
+1ab1: a4 e2 1c  CP   1Ch, R2
+1ab4: bb 08     JR   UGT, 1ABEh
+1ab6: 28 1c     LD   R2, 1Ch
+1ab8: 18 1b     LD   R1, 1Bh
+1aba: 08 1a     LD   R0, 1Ah
+1abc: a8 3e     LD   R10, 3Eh
+1abe: 00 3e     DEC  3Eh
+1ac0: db b6     JR   PL, 1A78h
+1ac2: f0 ea     SWAP R10
+1ac4: b6 ea 80  XOR  R10, #80h
+1ac7: 31 10     SRP  #10h
+1ac9: 0c 01     LD   R0, #01h
+1acb: 1c 4a     LD   R1, #4Ah
+1acd: 2c 11     LD   R2, #11h
+1acf: 3c 7c     LD   R3, #7Ch
+1ad1: 04 4e e3  ADD  R3, 4Eh
+1ad4: d6 18 c7  CALL 18C7h
+1ad7: 2c 11     LD   R2, #11h
+1ad9: 3c 7c     LD   R3, #7Ch
+1adb: 0c 09     LD   R0, #09h
+1add: d6 18 e1  CALL 18E1h
+1ae0: 31 30     SRP  #30h
+1ae2: 8d 14 92  JP   1492h
+1ae5: 68 04     LD   R6, 04h
+1ae7: 78 05     LD   R7, 05h
+1ae9: 88 06     LD   R8, 06h
+1aeb: a6 4e 04  CP   4Eh, #04h
+1aee: 7b 0b     JR   C, 1AFBh
+1af0: 76 4d 02  TM   4Dh, #02h
+1af3: 6b 06     JR   Z, 1AFBh
+1af5: d0 e6     SRA  R6
+1af7: c0 e7     RRC  R7
+1af9: c0 e8     RRC  R8
+1afb: 02 8c     ADD  R8, R12
+1afd: 12 7b     ADC  R7, R11
+1aff: 12 6a     ADC  R6, R10
+1b01: 42 66     OR   R6, R6
+1b03: db 07     JR   PL, 1B0Ch
+1b05: 1c 18     LD   R1, #18h
+1b07: 0c 03     LD   R0, #03h
+1b09: d6 0d e4  CALL 0DE4h
+1b0c: 06 e3 f6  ADD  R3, #F6h
+1b0f: 2c 1f     LD   R2, #1Fh
+1b11: 1c 28     LD   R1, #28h
+1b13: c3 12     LDCI @R1, @RR2
+1b15: c3 12     LDCI @R1, @RR2
+1b17: b0 2a     CLR  2Ah
+1b19: 24 e8 2a  SUB  2Ah, R8
+1b1c: 34 e7 29  SBC  29h, R7
+1b1f: 34 e6 28  SBC  28h, R6
+1b22: af        RET  
+1b23: 38 4e     LD   R3, 4Eh
+1b25: 90 e3     RL   R3
+1b27: 90 e3     RL   R3
+1b29: 04 4e e3  ADD  R3, 4Eh
+1b2c: 90 e3     RL   R3
+1b2e: 2c 10     LD   R2, #10h
+1b30: a6 4d 02  CP   4Dh, #02h
+1b33: 3b 01     JR   ULE, 1B36h
+1b35: 2e        INC  R2
+1b36: a6 4d 05  CP   4Dh, #05h
+1b39: 6b 57     JR   Z, 1B92h
+1b3b: a6 4d 04  CP   4Dh, #04h
+1b3e: 6b 4f     JR   Z, 1B8Fh
+1b40: a6 4d 03  CP   4Dh, #03h
+1b43: 6b 2c     JR   Z, 1B71h
+1b45: a6 4d 02  CP   4Dh, #02h
+1b48: 6b 22     JR   Z, 1B6Ch
+1b4a: a6 4d 01  CP   4Dh, #01h
+1b4d: 6b 19     JR   Z, 1B68h
+1b4f: 06 e3 00  ADD  R3, #00h
+1b52: 76 4f 03  TM   4Fh, #03h
+1b55: 6b 10     JR   Z, 1B67h
+1b57: 06 e3 32  ADD  R3, #32h
+1b5a: 76 4f 01  TM   4Fh, #01h
+1b5d: eb 08     JR   NZ, 1B67h
+1b5f: a6 4e 00  CP   4Eh, #00h
+1b62: eb 03     JR   NZ, 1B67h
+1b64: 06 e3 32  ADD  R3, #32h
+1b67: af        RET  
+1b68: 06 e3 6e  ADD  R3, #6Eh
+1b6b: af        RET  
+1b6c: 06 e3 a0  ADD  R3, #A0h
+1b6f: 8b 03     JR   1B74h
+1b71: 06 e3 04  ADD  R3, #04h
+1b74: a6 4e 02  CP   4Eh, #02h
+1b77: bb 15     JR   UGT, 1B8Eh
+1b79: 76 4f 03  TM   4Fh, #03h
+1b7c: 6b 10     JR   Z, 1B8Eh
+1b7e: 06 e3 3c  ADD  R3, #3Ch
+1b81: 76 4f 01  TM   4Fh, #01h
+1b84: eb 08     JR   NZ, 1B8Eh
+1b86: a6 4e 00  CP   4Eh, #00h
+1b89: eb 03     JR   NZ, 1B8Eh
+1b8b: 06 e3 1e  ADD  R3, #1Eh
+1b8e: af        RET  
+1b8f: 3c 68     LD   R3, #68h
+1b91: af        RET  
+1b92: 3c 72     LD   R3, #72h
+1b94: af        RET  
+1b95: 0c 09     LD   R0, #09h
+1b97: 1c 32     LD   R1, #32h
+1b99: 83 12     LDEI @R1, @RR2
+1b9b: 0a fc     DJNZ R0, 1B99h
+1b9d: 76 4d 02  TM   4Dh, #02h
+1ba0: 6b 09     JR   Z, 1BABh
+1ba2: a6 4e 04  CP   4Eh, #04h
+1ba5: 7b 04     JR   C, 1BABh
+1ba7: 06 35 08  ADD  35h, #08h
+1baa: af        RET  
+1bab: 06 35 10  ADD  35h, #10h
+1bae: af        RET  
+1baf: 4c 08     LD   R4, #08h
+1bb1: 76 fe 08  TM   SPH, #08h
+1bb4: eb 05     JR   NZ, 1BBBh
+1bb6: 76 fe 20  TM   SPH, #20h
+1bb9: 6b 0e     JR   Z, 1BC9h
+1bbb: 4c 05     LD   R4, #05h
+1bbd: 76 4f 03  TM   4Fh, #03h
+1bc0: 6b 07     JR   Z, 1BC9h
+1bc2: 4c 02     LD   R4, #02h
+1bc4: 76 4f 02  TM   4Fh, #02h
+1bc7: eb 0b     JR   NZ, 1BD4h
+1bc9: cf        RCF  
+1bca: d0 ea     SRA  R10
+1bcc: c0 eb     RRC  R11
+1bce: c0 ec     RRC  R12
+1bd0: c0 ed     RRC  R13
+1bd2: 4a f5     DJNZ R4, 1BC9h
+1bd4: af        RET  
+1bd5: e6 22 80  LD   22h, #80h          // SECOND HALF OF SETUP ROUTINE?
+1bd8: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+1bdb: 0c 6c     LD   R0, #6Ch
+1bdd: e6 03 00  LD   P3, #00h
+1be0: b0 fe     CLR  SPH
+1be2: d6 1c e6  CALL 1CE6h
+1be5: d6 07 6e  CALL 076Eh
+1be8: d6 0e 1d  CALL 0E1Dh
+1beb: 56 fa f7  AND  IRQ, #F7h
+1bee: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+1bf1: 31 00     SRP  #00h
+1bf3: ac 40     LD   R10, #40h
+1bf5: d6 0e 1d  CALL 0E1Dh
+1bf8: ec 55     LD   R14, #55h
+1bfa: d6 1d 35  CALL 1D35h
+1bfd: 68 ee     LD   R6, R14
+1bff: ec aa     LD   R14, #AAh
+1c01: d6 1d 35  CALL 1D35h
+1c04: a9 59     LD   59h, R10
+1c06: e6 4d 08  LD   4Dh, #08h
+1c09: b0 4f     CLR  4Fh
+1c0b: e6 fe 08  LD   SPH, #08h
+1c0e: b0 5a     CLR  5Ah
+1c10: b0 5b     CLR  5Bh
+1c12: a6 e6 55  CP   R6, #55h
+1c15: eb 05     JR   NZ, 1C1Ch
+1c17: a6 ee aa  CP   R14, #AAh
+1c1a: 6b 06     JR   Z, 1C22h
+1c1c: e6 09 25  LD   09h, #25h
+1c1f: d6 07 07  CALL 0707h
+1c22: d6 1c e6  CALL 1CE6h
+1c25: e6 fb 02  LD   IMR, #02h
+1c28: 9f        EI   
+1c29: 8f        DI   
+1c2a: e6 fb 00  LD   IMR, #00h
+1c2d: d6 1c f2  CALL 1CF2h
+1c30: a6 2f f8  CP   2Fh, #F8h
+1c33: 6b 06     JR   Z, 1C3Bh
+1c35: e6 09 26  LD   09h, #26h
+1c38: d6 07 07  CALL 0707h
+1c3b: cc 00     LD   R12, #00h
+1c3d: dc 02     LD   R13, #02h
+1c3f: 6c 0f     LD   R6, #0Fh
+1c41: 7c fc     LD   R7, #FCh
+1c43: d6 1d 13  CALL 1D13h
+1c46: a2 5f     CP   R5, R15
+1c48: eb 04     JR   NZ, 1C4Eh
+1c4a: a2 4e     CP   R4, R14
+1c4c: 6b 06     JR   Z, 1C54h
+1c4e: e6 09 27  LD   09h, #27h
+1c51: d6 07 07  CALL 0707h
+1c54: cc 10     LD   R12, #10h
+1c56: dc 00     LD   R13, #00h
+1c58: 6c 0f     LD   R6, #0Fh
+1c5a: 7c fe     LD   R7, #FEh
+1c5c: d6 1d 13  CALL 1D13h
+1c5f: a2 5f     CP   R5, R15
+1c61: eb 04     JR   NZ, 1C67h
+1c63: a2 4e     CP   R4, R14
+1c65: 6b 06     JR   Z, 1C6Dh
+1c67: e6 09 28  LD   09h, #28h
+1c6a: d6 07 07  CALL 0707h
+1c6d: cc 10     LD   R12, #10h
+1c6f: dc 00     LD   R13, #00h
+1c71: 6c 01     LD   R6, #01h
+1c73: 7c e0     LD   R7, #E0h
+1c75: b0 e5     CLR  R5
+1c77: 82 ec     LDE  R14, @RR12
+1c79: 02 5e     ADD  R5, R14
+1c7b: a0 ec     INCW RR12
+1c7d: 80 e6     DECW RR6
+1c7f: eb f6     JR   NZ, 1C77h
+1c81: a6 e5 00  CP   R5, #00h
+1c84: 6b 06     JR   Z, 1C8Ch
+1c86: e6 09 29  LD   09h, #29h
+1c89: d6 07 07  CALL 0707h
+1c8c: d6 0e 1d  CALL 0E1Dh
+1c8f: b0 4d     CLR  4Dh
+1c91: e6 4e 04  LD   4Eh, #04h
+1c94: b0 08     CLR  08h
+1c96: d6 06 14  CALL 0614h
+1c99: d6 0c d3  CALL 0CD3h
+
+// Seems to be the line frequency determining code
+// 
+
+
+1c9c: 31 00     SRP  #00h
+1c9e: b0 ea     CLR  R10
+1ca0: b0 eb     CLR  R11
+1ca2: 76 e2 01  TM   R2, #01h               // test port20 (line freq input)
+1ca5: eb fb     JR   NZ, 1CA2h              // wait for it to go high...
+1ca7: 76 e2 01  TM   R2, #01h
+1caa: 6b fb     JR   Z, 1CA7h               // then wait for it to go low...
+1cac: a0 ea     INCW RR10                   // increment the RR10 counter
+1cae: 76 e2 01  TM   R2, #01h
+1cb1: eb f9     JR   NZ, 1CACh              // loop incrementing while it stays low (i.e. count low time)
+1cb3: b0 3b     CLR  3Bh                    // default to 400Hz?
+1cb5: a6 ea 02  CP   R10, #02h
+1cb8: 1b 0c     JR   LT, 1CC6h              // if less than 0x200 counts, then it is 400Hz
+1cba: 20 3b     INC  3Bh                    // assume 60Hz
+1cbc: 26 eb 70  SUB  R11, #70h
+1cbf: 36 ea 04  SBC  R10, #04h
+1cc2: db 02     JR   PL, 1CC6h              // if more than 0x470 then...
+1cc4: 20 3b     INC  3Bh                    // must be 50Hz.
+1cc6: e6 22 01  LD   22h, #01h
+1cc9: d6 05 8b  CALL 058Bh
+1ccc: e6 f1 8e  LD   TMR, #8Eh              // enable T1 output, enable T1, load T1, enable T0.
+1ccf: 31 50     SRP  #50h
+1cd1: 46 ea 02  OR   R10, #02h
+1cd4: b0 e5     CLR  R5
+1cd6: d6 07 fa  CALL 07FAh
+1cd9: e6 58 02  LD   58h, #02h
+1cdc: d6 09 0c  CALL 090Ch
+1cdf: 8f        DI   
+1ce0: e6 fb 0e  LD   IMR, #0Eh
+1ce3: 8d 00 33  JP   0033h
+1ce6: e6 0e f8  LD   0Eh, #F8h
+1ce9: e6 0d 28  LD   0Dh, #28h
+1cec: d6 0d d7  CALL 0DD7h
+1cef: 8d 06 4e  JP   064Eh
+1cf2: d6 1d 07  CALL 1D07h
+1cf5: cc 18     LD   R12, #18h
+1cf7: dc 00     LD   R13, #00h
+1cf9: 7c 08     LD   R7, #08h
+1cfb: 82 ec     LDE  R14, @RR12
+1cfd: a4 2f ee  CP   R14, 2Fh
+1d00: 6b 02     JR   Z, 1D04h
+1d02: 20 2f     INC  2Fh
+1d04: 7a f5     DJNZ R7, 1CFBh
+1d06: af        RET  
+1d07: 31 20     SRP  #20h
+1d09: d6 06 2d  CALL 062Dh                      // KB/disp init
+1d0c: 1c 70     LD   R1, #70h
+1d0e: 92 14     LDE  @RR4, R1
+1d10: 31 00     SRP  #00h
+1d12: af        RET  
+1d13: b0 e5     CLR  R5
+1d15: b0 e4     CLR  R4
+1d17: c2 ec     LDC  R14, @RR12                 // Load R14 from the value in RR12 (Load code)
+1d19: 02 5e     ADD  R5, R14                    // Add R14 into R5
+1d1b: 16 e4 00  ADC  R4, #00h                   // Handle the carry
+1d1e: 16 e5 00  ADC  R5, #00h                   // Handle the carry
+1d21: 10 e5     RLC  R5                         // Double the value in R4/R5
+1d23: 10 e4     RLC  R4
+1d25: 16 e5 00  ADC  R5, #00h
+1d28: a0 ec     INCW RR12                       // Move to the next address
+1d2a: 80 e6     DECW RR6                        // is RR6 the count?
+1d2c: eb e9     JR   NZ, 1D17h                  // keep going until RR6 is done
+1d2e: c2 ec     LDC  R14, @RR12                 // Load the last 2 values from @RR12
+1d30: a0 ec     INCW RR12                       // .. into R14 and R15
+1d32: c2 fc     LDC  R15, @RR12
+1d34: af        RET  
+1d35: fc 60     LD   R15, #60h
+1d37: dc 10     LD   R13, #10h
+1d39: f3 de     LD   @R13, R14
+1d3b: a3 ed     CP   R14, @R13
+1d3d: 6b 01     JR   Z, 1D40h
+1d3f: ee        INC  R14
+1d40: de        INC  R13
+1d41: fa f6     DJNZ R15, 1D39h
+1d43: af        RET  
+1d44: 8f        DI   
+1d45: 56 5a 3f  AND  5Ah, #3Fh
+1d48: d6 05 9f  CALL 059Fh
+1d4b: e6 4d 08  LD   4Dh, #08h
+1d4e: b0 4e     CLR  4Eh
+1d50: b0 4f     CLR  4Fh
+1d52: b0 08     CLR  08h
+1d54: e6 ff 80  LD   SPL, #80h
+1d57: 76 02 08  TM   P2, #08h
+1d5a: 6b 0b     JR   Z, 1D67h
+1d5c: e6 4e 03  LD   4Eh, #03h
+1d5f: 76 02 02  TM   P2, #02h
+1d62: eb 03     JR   NZ, 1D67h
+1d64: e6 4e 04  LD   4Eh, #04h
+1d67: e4 4e 3a  LD   3Ah, 4Eh
+1d6a: 20 3a     INC  3Ah
+1d6c: d6 0c d3  CALL 0CD3h
+1d6f: b0 22     CLR  22h
+1d71: b0 23     CLR  23h
+1d73: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+1d76: d6 0e 1d  CALL 0E1Dh
+1d79: 56 fa f9  AND  IRQ, #F9h
+1d7c: 31 00     SRP  #00h
+1d7e: d6 06 70  CALL 0670h
+1d81: f8 3a     LD   R15, 3Ah
+1d83: 54 ef 2e  AND  2Eh, R15
+1d86: f0 ef     SWAP R15
+1d88: 54 ef 2d  AND  2Dh, R15
+1d8b: d6 06 4e  CALL 064Eh
+1d8e: e6 22 e0  LD   22h, #E0h
+1d91: b0 23     CLR  23h
+1d93: a6 4e 12  CP   4Eh, #12h
+1d96: eb 03     JR   NZ, 1D9Bh
+1d98: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+1d9b: d6 0c d3  CALL 0CD3h
+1d9e: a6 4e 14  CP   4Eh, #14h
+1da1: 6b 0d     JR   Z, 1DB0h
+1da3: a6 4e 12  CP   4Eh, #12h
+1da6: eb 0b     JR   NZ, 1DB3h
+1da8: e6 4b 02  LD   4Bh, #02h
+1dab: 46 4f 01  OR   4Fh, #01h
+1dae: 8b 06     JR   1DB6h
+1db0: e6 22 0f  LD   22h, #0Fh
+1db3: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+1db6: e6 fb 0c  LD   IMR, #0Ch
+1db9: 56 fa fb  AND  IRQ, #FBh
+1dbc: 8d 00 33  JP   0033h
+1dbf: d6 1b af  CALL 1BAFh
+1dc2: 56 4f fc  AND  4Fh, #FCh
+1dc5: 42 bb     OR   R11, R11
+1dc7: db 07     JR   PL, 1DD0h
+1dc9: 0c 03     LD   R0, #03h
+1dcb: 1c 1d     LD   R1, #1Dh
+1dcd: d6 0d e4  CALL 0DE4h
+1dd0: 31 00     SRP  #00h
+1dd2: e6 ff 80  LD   SPL, #80h
+1dd5: 4c 1e     LD   R4, #1Eh
+1dd7: 58 4e     LD   R5, 4Eh
+1dd9: 90 e5     RL   R5
+1ddb: 06 e5 e6  ADD  R5, #E6h
+1dde: 16 e4 00  ADC  R4, #00h
+1de1: c2 e4     LDC  R14, @RR4
+1de3: a0 e4     INCW RR4
+1de5: c2 f4     LDC  R15, @RR4
+1de7: c2 ae     LDC  R10, @RR14
+1de9: c2 6e     LDC  R6, @RR14
+1deb: 56 e6 40  AND  R6, #40h
+1dee: 56 ea 3f  AND  R10, #3Fh
+1df1: a0 ee     INCW RR14
+1df3: c2 be     LDC  R11, @RR14
+1df5: a0 ee     INCW RR14
+1df7: c2 ce     LDC  R12, @RR14
+1df9: 66 ec 80  TCM  R12, #80h
+1dfc: 6b 15     JR   Z, 1E13h
+1dfe: a0 ee     INCW RR14
+1e00: c2 de     LDC  R13, @RR14
+1e02: a4 ec 1b  CP   1Bh, R12
+1e05: bb 0c     JR   UGT, 1E13h
+1e07: 7b 05     JR   C, 1E0Eh
+1e09: a4 ed 1c  CP   1Ch, R13
+1e0c: bb 05     JR   UGT, 1E13h
+1e0e: 46 e6 05  OR   R6, #05h
+1e11: 8b 0f     JR   1E22h
+1e13: a4 ea 1b  CP   1Bh, R10
+1e16: bb f6     JR   UGT, 1E0Eh
+1e18: 7b 05     JR   C, 1E1Fh
+1e1a: a4 eb 1c  CP   1Ch, R11
+1e1d: fb ef     JR   NC, 1E0Eh
+1e1f: 46 e6 0a  OR   R6, #0Ah
+1e22: a6 e6 0a  CP   R6, #0Ah
+1e25: 6b 0b     JR   Z, 1E32h
+1e27: a6 e6 45  CP   R6, #45h
+1e2a: 6b 06     JR   Z, 1E32h
+1e2c: e4 3a 09  LD   09h, 3Ah
+1e2f: d6 07 07  CALL 0707h
+1e32: e6 fb 02  LD   IMR, #02h
+1e35: 9f        EI   
+1e36: 8f        DI   
+1e37: 76 02 02  TM   P2, #02h
+1e3a: eb 0b     JR   NZ, 1E47h
+1e3c: a6 4e 01  CP   4Eh, #01h
+1e3f: eb 06     JR   NZ, 1E47h
+1e41: e6 4e 03  LD   4Eh, #03h
+1e44: e6 3a 04  LD   3Ah, #04h
+1e47: 20 4e     INC  4Eh
+1e49: 06 3a 01  ADD  3Ah, #01h
+1e4c: 40 3a     DA   3Ah
+1e4e: a6 4e 15  CP   4Eh, #15h
+1e51: 5d 1d 7c  JP   MI, 1D7Ch
+1e54: d6 1c e6  CALL 1CE6h
+1e57: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+1e5a: d6 07 6e  CALL 076Eh
+1e5d: e6 fb 08  LD   IMR, #08h
+1e60: 9f        EI   
+1e61: d6 0c ba  CALL 0CBAh				// delay by word in 22h
+1e64: 8f        DI   
+1e65: 31 00     SRP  #00h
+1e67: a8 59     LD   R10, 59h
+1e69: 56 ea 0f  AND  R10, #0Fh
+1e6c: 46 ea 40  OR   R10, #40h
+1e6f: 8d 1b f5  JP   1BF5h
+1e72: 00 00     DEC  P0
+1e74: 00 00     DEC  P0
+1e76: 00 00     DEC  P0
+1e78: 00 00     DEC  P0
+1e7a: 00 00     DEC  P0
+1e7c: 00 00     DEC  P0
+1e7e: 00 00     DEC  P0
+1e80: 00 00     DEC  P0
+1e82: 00 00     DEC  P0
+1e84: 00 00     DEC  P0
+1e86: 00 00     DEC  P0
+1e88: 00 00     DEC  P0
+1e8a: 00 00     DEC  P0
+1e8c: 00 00     DEC  P0
+1e8e: 00 00     DEC  P0
+1e90: 00 00     DEC  P0
+1e92: 00 00     DEC  P0
+1e94: 00 00     DEC  P0
+1e96: 00 00     DEC  P0
+1e98: 00 00     DEC  P0
+1e9a: 00 00     DEC  P0
+1e9c: 00 00     DEC  P0
+1e9e: 00 00     DEC  P0
+1ea0: 00 00     DEC  P0
+1ea2: 00 00     DEC  P0
+1ea4: 00 00     DEC  P0
+1ea6: 00 00     DEC  P0
+1ea8: 00 00     DEC  P0
+1eaa: 00 00     DEC  P0
+1eac: 00 00     DEC  P0
+1eae: 00 00     DEC  P0
+1eb0: 00 00     DEC  P0
+1eb2: 00 00     DEC  P0
+1eb4: 00 00     DEC  P0
+1eb6: 00 00     DEC  P0
+1eb8: 00 00     DEC  P0
+1eba: 00 00     DEC  P0
+1ebc: 00 00     DEC  P0
+1ebe: 00 00     DEC  P0
+1ec0: 00 00     DEC  P0
+1ec2: 00 00     DEC  P0
+1ec4: 00 00     DEC  P0
+1ec6: 00 00     DEC  P0
+1ec8: 00 00     DEC  P0
+1eca: 00 00     DEC  P0
+1ecc: 00 00     DEC  P0
+1ece: 00 00     DEC  P0
+1ed0: 00 00     DEC  P0
+1ed2: 00 00     DEC  P0
+1ed4: 00 00     DEC  P0
+1ed6: 00 00     DEC  P0
+1ed8: 00 00     DEC  P0
+1eda: 00 00     DEC  P0
+1edc: 00 00     DEC  P0
+1ede: 00 00     DEC  P0
+1ee0: 00 00     DEC  P0
+1ee2: 00 00     DEC  P0
+1ee4: 00 00     DEC  P0
+1ee6: 1f        Illegal
+1ee7: 64 1f 66  TCM  66h, 1Fh
+1eea: 1f        Illegal
+1eeb: 68 1f     LD   R6, 1Fh
+1eed: 6a 1f     DJNZ R6, 1F0Eh
+1eef: 6c 1f     LD   R6, #1Fh
+1ef1: 6e        INC  R6
+1ef2: 1f        Illegal
+1ef3: 70 1f     PUSH 1Fh
+1ef5: 74 1f 78  TM   78h, 1Fh
+1ef8: 1f        Illegal
+1ef9: 7c 1f     LD   R7, #1Fh
+1efb: 7e        INC  R7
+1efc: 1f        Illegal
+1efd: 80 1f     DECW 1Fh
+1eff: 82 1f     LDE  R1, @RR15
+1f01: 84        Illegal
+1f02: 1f        Illegal
+1f03: 86        Illegal
+1f04: 1f        Illegal
+1f05: 8a 1f     DJNZ R8, 1F26h
+1f07: 8e        INC  R8
+1f08: 1f        Illegal
+1f09: 92 1f     LDE  @RR15, R1
+1f0b: 96        Illegal
+1f0c: 1f        Illegal
+1f0d: 9a 1f     DJNZ R9, 1F2Eh
+1f0f: 9e        INC  R9
+1f10: 4b e4     JR   OV, 1EF6h
+1f12: 56 0d 4b  AND  0Dh, #4Bh
+1f15: e4 56 0e  LD   0Eh, 56h
+1f18: 4b e4     JR   OV, 1EFEh
+1f1a: 56 0b 4f  AND  0Bh, #4Fh
+1f1d: 5c 56     LD   R5, #56h
+1f1f: 06 ef 62  ADD  R15, #62h
+1f22: 56 0e 6f  AND  0Eh, #6Fh
+1f25: 63 a0     TCM  R10, @R0
+1f27: 0e        INC  R0
+1f28: 6d 63 a0  JP   Z, 63A0h
+1f2b: 0e        INC  R0
+1f2c: 4c 63     LD   R4, #63h
+1f2e: a0 0e     INCW 0Eh
+1f30: 4c 63     LD   R4, #63h
+1f32: 9a 0e     DJNZ R9, 1F42h
+1f34: ec 62     LD   R14, #62h
+1f36: 9a 0e     DJNZ R9, 1F46h
+1f38: cc 54     LD   R12, #54h
+1f3a: 53 0e     AND  R0, @R14
+1f3c: cc 64     LD   R12, #64h
+1f3e: 53 0e     AND  R0, @R14
+1f40: cc 64     LD   R12, #64h
+1f42: 56 0e cc  AND  0Eh, #CCh
+1f45: 64 5a 0e  TCM  0Eh, 5Ah
+1f48: 6d 55 a0  JP   Z, 55A0h
+1f4b: 0e        INC  R0
+1f4c: ed 62 5a  JP   NZ, 625Ah
+1f4f: 0e        INC  R0
+1f50: ed 62 56  JP   NZ, 6256h
+1f53: 0e        INC  R0
+1f54: ed 62 53  JP   NZ, 6253h
+1f57: 0e        INC  R0
+1f58: ef        CCF  
+1f59: 62 53     TCM  R5, R3
+1f5b: 0e        INC  R0
+1f5c: cd 62 53  JP   NOV, 6253h
+1f5f: 0e        INC  R0
+1f60: cf        RCF  
+1f61: 62 53     TCM  R5, R3
+1f63: 0e        INC  R0
+1f64: 80 19     DECW 19h
+1f66: 80 19     DECW 19h
+1f68: 80 19     DECW 19h
+1f6a: 80 03     DECW 03h
+1f6c: 80 03     DECW 03h
+1f6e: 80 01     DECW 01h
+1f70: 80 17     DECW 17h
+1f72: 00 12     DEC  12h
+1f74: 94        Illegal
+1f75: cc 10     LD   R12, #10h
+1f77: 00 94     DEC  94h
+1f79: cc 10     LD   R12, #10h
+1f7b: 00 e0     DEC  R0
+1f7d: 00 e0     DEC  R0
+1f7f: 00 e0     DEC  R0
+1f81: 00 e0     DEC  R0
+1f83: 00 e0     DEC  R0
+1f85: 00 80     DEC  80h
+1f87: e2        Illegal
+1f88: 00 b8     DEC  B8h
+1f8a: 81 0b     DECW @0Bh
+1f8c: 00 b8     DEC  B8h
+1f8e: 81 0b     DECW @0Bh
+1f90: 00 bf     DEC  BFh
+1f92: 81 0b     DECW @0Bh
+1f94: 00 da     DEC  DAh
+1f96: 80 90     DECW 90h
+1f98: 00 3d     DEC  3Dh
+1f9a: 81 0b     DECW @0Bh
+1f9c: 00 da     DEC  DAh
+1f9e: 80 01     DECW 01h
+1fa0: 80 16     DECW 16h
+1fa2: e8 13     LD   R14, 13h
+1fa4: db 14     JR   PL, 1FBAh
+1fa6: 5f        Illegal
+1fa7: 15 d6 14  ADC  14h, @D6h
+1faa: 66 14 72  TCM  14h, #72h
+1fad: 11 ec     RLC  @R12
+1faf: 00 7a     DEC  7Ah
+1fb1: e2        Illegal
+1fb2: 10 28     RLC  28h
+1fb4: f6        Illegal
+1fb5: 0f        Illegal
+1fb6: d7 0b 13  LD   R11, 13h(R0)
+1fb9: 0b 13     JR   F, 1FCEh
+1fbb: 19 13     LD   13h, R1
+1fbd: 7e        INC  R7
+1fbe: 13 90     ADC  R9, @R0
+1fc0: 10 ff     RLC  SPL
+1fc2: ff        NOP  
+1fc3: b0 3f     CLR  3Fh
+1fc5: ff        NOP  
+1fc6: 60 1f     COM  1Fh
+1fc8: ff        NOP  
+1fc9: 19 9f     LD   9Fh, R1
+1fcb: ff        NOP  
+1fcc: 15 1f ff  ADC  SPL, @1Fh
+1fcf: b5 1f ff  XOR  SPL, @1Fh
+1fd2: b2 6f     XOR  R6, R15
+1fd4: ff        NOP  
+1fd5: 12 6f     ADC  R6, R15
+1fd7: ff        NOP  
+1fd8: 11 35     RLC  @35h
+1fda: ff        NOP  
+1fdb: b1 35     CLR  @35h
+1fdd: ff        NOP  
+1fde: b0 72     CLR  72h
+1fe0: 5f        Illegal
+1fe1: 10 72     RLC  72h
+1fe3: 5f        Illegal
+1fe4: 10 00     RLC  P0
+1fe6: ff        NOP  
+1fe7: 09 00     LD   P0, R0
+1fe9: ff        NOP  
+1fea: 00 00     DEC  P0
+1fec: ff        NOP  
+1fed: 12 00     ADC  R0, R0
+1fef: ff        NOP  
+1ff0: 15 00 ff  ADC  SPL, @00h
+1ff3: 11 00     RLC  @00h
+1ff5: ff        NOP  
+1ff6: 00 0a     DEC  0Ah
+1ff8: 00 14     DEC  14h
+1ffa: 00 7b     DEC  7Bh
+1ffc: 01 99     DEC  @99h
+1ffe: a3 a4     CP   R10, @R4
