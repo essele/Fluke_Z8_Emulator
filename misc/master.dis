@@ -40,7 +40,7 @@
 0054: 76 4f 80  TM   4Fh, #80h
 0057: eb 03     JR   NZ, 005Ch
 0059: d6 0e 1d  CALL 0E1Dh
-005c: 76 03 04  TM   P3, #04h
+005c: 76 03 04  TM   P3, #04h           // P32 - cal sense
 005f: eb 0e     JR   NZ, 006Fh
 0061: 76 4f 04  TM   4Fh, #04h
 0064: eb cd     JR   NZ, 0033h
