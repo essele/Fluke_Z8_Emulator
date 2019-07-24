@@ -19,9 +19,10 @@
 #define     CALL_IRQ(n)     PUSH16(pc) \
                             PUSH(FLAGS) \
                             pc = code[(n*2)] << 8 | code[(n*2)+1]; \
-                            IRQ &= ~(1 << n); \
                             IMR &= 0x7f;
 
+//                            IRQ &= ~(1 << n); \
+                            
                        
 /**
  * Globals that represent the main state of the CPU
@@ -96,6 +97,8 @@ void REG_FAIL(uint8_t __attribute__((unused)) reg, uint8_t __attribute__((unused
 // 36 -- A0-A11 addressing, internal stack, P04-P07 outputs, P1 Addr/Data (EXTBUS)
 // ----------------------------------------------------------------------
 void write_P01M(uint8_t val) {
+    
+    
     switch(val) {
         case 0x06:      
                         *(uint32_t *)CYREG_HSIOM_PORT_SEL1 = 0x00000000;    // GPIO control
@@ -104,7 +107,7 @@ void write_P01M(uint8_t val) {
             break;
         case 0x16:      
                         *(uint32_t *)CYREG_HSIOM_PORT_SEL1 = 0x22222222;    // DSI pin and OE
-                        extended_bus_timing = 0;
+                        extended_bus_timing = 0;  /* 0 */
                         bus_enabled  = 1;
             break;
         case 0x36:
@@ -199,7 +202,9 @@ void write_port3(uint8_t val) {
 }
 uint8_t read_port3() {
     // We need to read P31/2/3 (which are actually PSoC P40/1/2)
-    return (uint8_t)((P4_PS & 0x07) << 1);
+    // NEW: we can only actually read P32 (P41)
+//    return (uint8_t)((P4_PS & 0x07) << 1);
+    return (uint8_t)((P41_P32_PS & 0x07) << 1);
 }
 
 // ----------------------------------------------------------------------
@@ -232,7 +237,6 @@ void write_TMR(uint8_t val) {
     // Bit 2 load T1
     if (val & 0x04) {
         // can set values here, but how do we make it happen on reload?
-        
         Timer1_WriteCounter(0);    
     }    
     
@@ -261,6 +265,7 @@ void write_T1(uint8_t val) {
     Timer1_WriteCompare(period >> 1);
     Timer1_WriteCounter(0);
 }
+
 void write_PRE1(uint8_t val) {
     PRE1 = val;     // store for later use
     
@@ -293,13 +298,13 @@ void write_PRE1(uint8_t val) {
 int imr_tag = 0;
 
 void write_IMR(uint8_t val) {
-    IMR = val;
+    // We can only write IMR if we've previously disabled ints
+    // with DI, so bit 7 must be clear.
+    if (IMR & 0x80) return;
     
-    if (IMR & 0x80) {
- //       CyGlobalIntEnable;
-    } else {
- //       CyGlobalIntDisable;
-    }
+    // Can we enable irqs with a write, or do we need EI()
+ //   IMR = val & 0x7f;
+    IMR = val;
     
     if (IMR & 0x20) {
         IRQ_Timer1_Enable(); 
@@ -312,44 +317,23 @@ void write_IMR(uint8_t val) {
     }
     
     if (IMR & 0x08) {
-        IRQ_Serial_Enable();
+        IRQ_SRX_Enable();
     } else {
-        IRQ_Serial_Disable();
+        IRQ_SRX_Disable();
     }
     
     if (IMR & 0x04) {
-        IRQ_P4_Enable();
+        IRQ_P31_Enable();
     } else {
-        IRQ_P4_Disable();
+        IRQ_P31_Disable();
     }
     
     if (IMR & 0x02) {
-  //      IRQ_P4_Enable();
+        IRQ_P33_Enable();
     } else {
-  //      IRQ_P4_Disable();
+        IRQ_P33_Disable();
     }
     return;
-
-    // If interrupts are enabled then check if we need to run anything
-    // (in priority order.)
-    if ((IMR & 0xaf) > 0x80) {
-        imr_tag = 1;
-        /*
-        if (IMR & IRQ & 0x02) {
-            CALL_IRQ(1);
-//        } else if (IMR & IRQ & 0x10) {
-//            CALL_IRQ(4);
-        } else if (IMR & IRQ & 0x04) {
-            CALL_IRQ(2);
-//        } else if (IMR & IRQ & 0x01) {
-//            CALL_IRQ(0);
-        } else if (IMR & IRQ & 0x08) {
-            CALL_IRQ(3);
-        } else if (IMR & IRQ & 0x20) {
-            CALL_IRQ(5);
-        }
-        */
-    }
 }
 
 
@@ -383,13 +367,13 @@ void write_PRE0(uint8_t val) {
 uint8_t read_IRQ() {
     uint8_t val = 0;
     
-    if (P4_INTSTAT & 0x04) {
+    if ((*IRQ_P33_INTC_SET_PD & (uint32)IRQ_P33__INTC_MASK)) {
         val |= 0x02;
     }
-    if (P4_INTSTAT & 0x01) {
+    if ((*IRQ_P31_INTC_SET_PD & (uint32)IRQ_P31__INTC_MASK)) {
         val |= 0x04;
     }
-    if (UART_INTR_RX_REG & UART_INTR_RX_NOT_EMPTY) {
+    if((*IRQ_SRX_INTC_SET_PD & (uint32)IRQ_SRX__INTC_MASK)) {
         val |= 0x08;
     }
     if (UART_INTR_TX_REG & UART_INTR_TX_UART_DONE) {
@@ -404,20 +388,21 @@ uint8_t read_IRQ() {
 void write_IRQ(uint8_t val) {
     
     if (!(val & 0x02)) {
-        P4_INTSTAT = 0x04;
+        IRQ_P33_ClearPending();
     }
     if (!(val & 0x04)) {
-        P4_INTSTAT = 0x01;
+        IRQ_P31_ClearPending();
     }
     if (!(val & 0x08)) {
-  //      UART_INTR_RX_REG = UART_INTR_RX_NOT_EMPTY;
-  //      IRQ_Serial_ClearPending();
+        IRQ_SRX_ClearPending();
     }
     if (!(val & 0x10)) {
         UART_INTR_TX_REG = UART_INTR_TX_UART_DONE;
+        IRQ_Serial_ClearPending();
     }
     if (!(val & 0x20)) {
         Timer1_INTERRUPT_REQ_REG = Timer1_INTR_MASK_CC_MATCH;
+        IRQ_Timer1_ClearPending();
     }
 }
 
@@ -433,21 +418,10 @@ void write_SIO(uint8_t val) {
 }
 
 uint8_t read_SIO() {
-    uint8_t n = UART_RX_FIFO_STATUS_REG & 0x1f;
-    uint8_t val = 0;
+
+    uint8_t val = SR1_Read();
     
-    // Read all, keep the last one...
-    for(int i=0; i < n; i++) {
-        val = UART_RX_FIFO_RD_REG;
-    }
-    UART_INTR_RX_REG = UART_INTR_RX_NOT_EMPTY;
-    IRQ_Serial_ClearPending();
-    
-    // Handle parity...
-    if(UART_INTR_RX_REG & UART_INTR_RX_PARITY_ERROR) {
-        val |= 0x80;
-        UART_INTR_RX_REG = UART_INTR_RX_PARITY_ERROR;
-    }
+    val &= 0x7f;        // TODO: proper parity (here we just strip it)
     return val;
 }
 
@@ -549,48 +523,24 @@ void (*reg_write[256])(uint8_t) = {
  * order (ADC first!)
  */
 
+CY_ISR(Handle_IRQ_P33) {
+    CyGlobalIntDisable;
+    IRQ_P33_ClearPending();
+    CALL_IRQ(1);
+}
+CY_ISR(Handle_IRQ_P31) {
+    CyGlobalIntDisable;
+    IRQ_P31_ClearPending();
+    CALL_IRQ(2);
+}
+CY_ISR(Handle_IRQ_SRX) {
+    CyGlobalIntDisable;
+    IRQ_SRX_ClearPending();
+    CALL_IRQ(3);
+}
+
 uint32_t p4count = 0;
 
-
-CY_ISR(Handle_IRQ_P4) {
-    CyGlobalIntDisable;
-
-    p4count++;
-    
-    if (P4_INTSTAT & 0x04) {    // IRQ 1
-        P4_INTSTAT = 0x04;
-        CALL_IRQ(1);
-    }
-    
-    if (P4_INTSTAT & 0x01) {    // IRQ 2
-        P4_INTSTAT = 0x01;
-        CALL_IRQ(2);
-    }
-    
-    
-    
-    /*
-    if (P4_INTSTAT & 0x01) {
-        P4_INTSTAT = 0x01;
-        IRQ |= 0x04;            // IRQ 2
-    }
-    if (P4_INTSTAT & 0x04) {
-        P4_INTSTAT = 0x04;
-        IRQ |= 0x02;            // IRQ 1
-    }
-    
-    // Now see if we need to run an ISR
-    if ((IMR & 0x80)) {
-        if (IMR & IRQ & 0x02) {
-            //CALL_IRQ(1);
-            imr_tag=1;
-        } else if (IMR & IRQ & 0x04) {
-            //CALL_IRQ(2);
-            imr_tag=1;
-        }
-    }
-    */
-}
 
 /**
  * The timer IRQ simply sets the relevant IRQ bit and then calls the ISR if it's
@@ -607,16 +557,6 @@ CY_ISR(Handle_IRQ_Timer1) {     // IRQ 5
   
     Timer1_INTERRUPT_REQ_REG = Timer1_INTR_MASK_CC_MATCH;
     CALL_IRQ(5);
-    
-//    Timer1_ClearInterrupt(Timer1_INTR_MASK_CC_MATCH);
-//    IRQ_Timer1_ClearPending();
-    
-//    IRQ |= 0x20;
-    
-//    if ((IMR & 0xa0) == 0xa0) {
-        //CALL_IRQ(5);
-//        imr_tag=1;
-//    }
 }
 
 
@@ -633,53 +573,7 @@ CY_ISR(Handle_IRQ_Timer1) {     // IRQ 5
 uint32_t    sicount = 0;
 int         serial_rx_pending = 0;
 
-CY_ISR(Handle_IRQ_Serial) {
-    CyGlobalIntDisable;
-    
-    sicount++;
-    
-    if (UART_INTR_RX_REG & UART_INTR_RX_NOT_EMPTY) {
-        IRQ_Serial_ClearPending();
-        CALL_IRQ(3);
-    } else {       
-        uint32_t cause = UART_INTR_CAUSE_REG;
-        uint32_t rx = UART_INTR_RX_REG;
-        uint32_t rxmask = UART_INTR_RX_MASK_REG;
-        uint32_t tx = UART_INTR_TX_REG;
-        uint32_t txmask = UART_INTR_TX_MASK_REG;
-        asm("nop");
-    }
 
-
-    
-    return;
-    // Process the TX stuff...
-//    if (UART_INTR_TX_REG & UART_INTR_TX_UART_DONE) {
-//        IRQ |= 0x10;
-//        UART_INTR_TX_REG = UART_INTR_TX_UART_DONE;
-//    }
-
-    // If we receive a byte we must read it, even if we don't use it, otherwise
-    // the fifo will just fill and we'll get chars behind.
-    if (UART_INTR_RX_REG & UART_INTR_RX_NOT_EMPTY) {
-        uint8_t val = UART_RX_FIFO_RD_REG;
-        
-        if(UART_INTR_RX_REG & UART_INTR_RX_PARITY_ERROR) {
-            val |= 0x80;
-        }
-        UART_INTR_RX_REG = UART_INTR_RX_NOT_EMPTY | UART_INTR_RX_PARITY_ERROR;
-
-        SIO = val;
-        IRQ |= 0x08;
-        
-        // Now see if we need to call the ISR, we can do it in here since we know
-        // that TX is not used.
-        if ((IMR & 0x88) == 0x88) {
-            //CALL_IRQ(3);
-            imr_tag = 1;
-        }
-    }
-}
 
 void setup_emulator() {
     pc = 0x0c;
@@ -691,13 +585,17 @@ void setup_emulator() {
     
     // PORT 2 SETUP
     
+    IRQ_SRX_Disable();
+    IRQ_SRX_SetVector(&Handle_IRQ_SRX);
+    IRQ_SRX_SetPriority((uint8)IRQ_SRX_INTC_PRIOR_NUMBER);
+    IRQ_SRX_ClearPending();
+    
     
     // Setup the serial port IRQ... 
-    IRQ_Serial_Disable();
-    IRQ_Serial_SetVector(&Handle_IRQ_Serial);
-    IRQ_Serial_SetPriority((uint8)IRQ_Serial_INTC_PRIOR_NUMBER);
-    IRQ_Serial_ClearPending();
-//    IRQ_Serial_Enable();
+//    IRQ_Serial_Disable();
+//    IRQ_Serial_SetVector(&Handle_IRQ_Serial);
+//    IRQ_Serial_SetPriority((uint8)IRQ_Serial_INTC_PRIOR_NUMBER);
+//    IRQ_Serial_ClearPending();
     
     // So we can send the first char...
     UART_SetTxInterrupt(UART_INTR_TX_UART_DONE);
@@ -707,33 +605,20 @@ void setup_emulator() {
     IRQ_Timer1_SetVector(&Handle_IRQ_Timer1);
     IRQ_Timer1_SetPriority((uint8)IRQ_Timer1_INTC_PRIOR_NUMBER);
     IRQ_Timer1_ClearPending();
-//    IRQ_Timer1_Enable();
     
-    // Setup IRQ's for Port 3 (mapped to Port4 PSoC)...
-    IRQ_P4_Disable();
-    IRQ_P4_SetVector(&Handle_IRQ_P4);
-    IRQ_P4_SetPriority((uint8)IRQ_P4_INTC_PRIOR_NUMBER);
+    IRQ_P31_Disable();
+    IRQ_P31_SetVector(&Handle_IRQ_P31);
+    IRQ_P31_SetPriority((uint8)IRQ_P31_INTC_PRIOR_NUMBER);
 
-    // Make sure they all start with no interrupts enabled
-    P4_SetInterruptMode(P4_P31_INTR, P4_INTR_FALLING);
-    P4_SetInterruptMode(P4_P32_INTR, P4_INTR_NONE);
-    P4_SetInterruptMode(P4_P33_INTR, P4_INTR_FALLING);
-    
-    // Ensure there are no pending interrupts on the port itself
-    P4_ClearInterrupt();
-
-    // Then we can clear the overall pending flag for P4
-    IRQ_P4_ClearPending();
-    
-    // Now we can enable the IRQ for this group of three pins
-//    IRQ_P4_Enable();
+    IRQ_P33_Disable();
+    IRQ_P33_SetVector(&Handle_IRQ_P33);
+    IRQ_P33_SetPriority((uint8)IRQ_P33_INTC_PRIOR_NUMBER);
     
     write_IMR(0x00);                // Disable everything at the start
 
     extended_bus_timing = 1;        // Default is to start with extended bus timing
     bus_enabled = 1;                // We start with bus enabled
     
- //   IRQ |= 0x10;                    // TX UART DONE (so we can send)
 }
 
 
@@ -749,13 +634,39 @@ int32_t ticks = 0;
 
 void execute() {
     for (;;) {
+        while(IMR & 0x80) {
+            CyGlobalIntEnable;
+            CyGlobalIntDisable;
+            // Execute the instruction...
+            map[code[pc++]]();
+        }
+        while(!(IMR & 0x80)) {
+            CyGlobalIntDisable;
+            CyGlobalIntDisable;
+            // Execute the instruction...
+            
+            if (pc == 0x079f) {
+                uint16_t addr = (reg[0x56] << 8) | reg[0x57];
+                ppc[ccc++] = addr;
+                if (ccc == 200) {
+                    asm("nop");
+                    ccc = 0;
+                }
+            }
+            
+            
+            
+            map[code[pc++]]();
+        }
+
+        /*
         // Allow the IRQ's to run...
         if (IMR & 0x80) CyGlobalIntEnable;
         CyGlobalIntDisable;
         
         // Execute the instruction...
         map[code[pc++]]();
-        
+        */
     }
 }
 

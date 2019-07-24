@@ -17,6 +17,7 @@
 // Special macros to work with working registers...
 #define ARG_r(n)    (RP|n)
 #define ARG_Ir(n)   (reg[ARG_r(n)])
+//#define ARG_Ir(n)   (regE0map((reg[ARG_r(n)])))
 
 // NOTE: these assume we are clear of control registers etc.
 #define LOAD_VAL_FROM_REGPAIR(r)    ((reg[r]<<8) | (reg[r+1]))

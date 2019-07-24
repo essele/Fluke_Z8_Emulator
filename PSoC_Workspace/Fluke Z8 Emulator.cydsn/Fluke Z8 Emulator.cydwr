@@ -18,6 +18,9 @@
       <Data key="ca8017be-e214-4c46-840d-ff8e00fa6eb5" value="Clock_1" />
     </Group>
     <Group key="Interrupt">
+      <Data key="0c0f0209-c7e1-4c7b-98eb-b6fc625f4bca" value="IRQ_SRX" />
+      <Data key="0cd26f2a-31cb-4806-8944-aaba32678b2e" value="IRQ_P31" />
+      <Data key="2a0b92d0-e82f-4557-95fc-902636bb35ef" value="IRQ_P33" />
       <Data key="149ba66b-421e-41ce-9e03-0cc6fe05f839" value="IRQ_Serial" />
       <Data key="bfd183fd-4e06-4fea-a6ef-95cd142838d6" value="IRQ_Timer1" />
       <Data key="f0239c4a-537f-46dd-ac72-29b68d02d3f7" value="IRQ_P4" />
@@ -27,6 +30,7 @@
       <Data key="7a0f187b-e290-4950-8917-b0c8b2e20cca" value="P36" />
       <Data key="8a8de7bf-4cbf-4079-b9d8-156bc902888b" value="P4" />
       <Data key="8d318d8b-cf7b-4b6b-b02c-ab1c5c49d0ba" value="P30" />
+      <Data key="8f9b13a6-d655-4036-8bd1-738f2be030cd" value="P41_P32" />
       <Data key="9f8c95d8-8113-4f6d-a37c-abf15c223506" value="Pin_1" />
       <Data key="9fd6557e-fe1e-4fe0-8636-fac9dcc78274" value="P1" />
       <Data key="15e4c29c-979d-47eb-890d-1aaa8c69800e" value="P35" />
@@ -38,13 +42,14 @@
       <Data key="665ad3a3-8094-4e04-921a-093a399de194" value="P2" />
       <Data key="19960d46-d25c-4d57-9926-b4f6bb38c62e" value="Pin_1" />
       <Data key="80043ab8-f828-4cb0-a293-4b3762043465" value="RW" />
+      <Data key="476000a9-d620-4a87-9724-3edfe973e620" value="P31" />
       <Data key="1425177d-0d0e-4468-8bcc-e638e5509a9b" value="Rx_1" />
       <Data key="bdd1eb8d-28f2-42b4-8942-672c97aa3893" value="P31_P37" />
       <Data key="cd8d1cd8-2431-43e6-ac51-823c151453df" value="DS" />
       <Data key="d472aa4a-e0ce-4d61-97fd-542d9bf026a7" value="DM" />
       <Data key="e851a3b9-efb8-48be-bbb8-b303b216c393" value="XTAL2" />
       <Data key="ed092b9b-d398-4703-be89-cebf998501f6" value="Tx_1" />
-      <Data key="f733411c-77db-41ee-ba3e-921e3e745f3b" value="P31" />
+      <Data key="f733411c-77db-41ee-ba3e-921e3e745f3b" value="P33" />
     </Group>
   </Group>
   <Group key="FlashSecurity">
@@ -3127,6 +3132,27 @@
     </Group>
   </Group>
   <Group key="Interrupt">
+    <Group key="0c0f0209-c7e1-4c7b-98eb-b6fc625f4bca">
+      <Group key="CortexM0">
+        <Data key="Assigned" value="True" />
+        <Data key="Priority" value="2" />
+        <Data key="Vector" value="-1" />
+      </Group>
+    </Group>
+    <Group key="0cd26f2a-31cb-4806-8944-aaba32678b2e">
+      <Group key="CortexM0">
+        <Data key="Assigned" value="True" />
+        <Data key="Priority" value="1" />
+        <Data key="Vector" value="-1" />
+      </Group>
+    </Group>
+    <Group key="2a0b92d0-e82f-4557-95fc-902636bb35ef">
+      <Group key="CortexM0">
+        <Data key="Assigned" value="True" />
+        <Data key="Priority" value="2" />
+        <Data key="Vector" value="-1" />
+      </Group>
+    </Group>
     <Group key="149ba66b-421e-41ce-9e03-0cc6fe05f839">
       <Group key="CortexM0">
         <Data key="Assigned" value="True" />
@@ -3818,6 +3844,11 @@
         <Data key="Port Format" value="3,0" />
       </Group>
     </Group>
+    <Group key="8f9b13a6-d655-4036-8bd1-738f2be030cd">
+      <Group key="0">
+        <Data key="Port Format" value="4,1" />
+      </Group>
+    </Group>
     <Group key="9f8c95d8-8113-4f6d-a37c-abf15c223506">
       <Group key="0">
         <Data key="Port Format" value="7,1" />
@@ -3933,6 +3964,11 @@
         <Data key="Port Format" value="5,1" />
       </Group>
     </Group>
+    <Group key="476000a9-d620-4a87-9724-3edfe973e620">
+      <Group key="0">
+        <Data key="Port Format" value="4,0" />
+      </Group>
+    </Group>
     <Group key="1425177d-0d0e-4468-8bcc-e638e5509a9b">
       <Group key="0">
         <Data key="Port Format" value="3,0" />
@@ -3965,7 +4001,7 @@
     </Group>
     <Group key="f733411c-77db-41ee-ba3e-921e3e745f3b">
       <Group key="0">
-        <Data key="Port Format" value="4,0" />
+        <Data key="Port Format" value="4,2" />
       </Group>
     </Group>
     <Group key="UnAssigned Pins" />

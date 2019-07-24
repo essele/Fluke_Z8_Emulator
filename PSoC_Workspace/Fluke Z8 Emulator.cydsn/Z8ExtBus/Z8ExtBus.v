@@ -123,7 +123,6 @@ always @(posedge CLK) begin
         
         // DELAY -- simply delay by one cycle
         3'b110: begin   // DELAY CYCLE
-                    //ds <= ds;  -- ds=0 costs 1
                     state <= 3'b111;
                 end
 
