@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name Z8_Lib)(type Legacy)(uri ${KIPRJMOD}/Z8_Lib.lib)(options "")(descr ""))
+)
