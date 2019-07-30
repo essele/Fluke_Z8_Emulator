@@ -20,9 +20,9 @@ Some known issues:
 
 I'm fairly sure the outstanding issue is one of three things:
 
-a. A mis-implemented instruction
-b. Still something wrong with interrupts and masking
-c. A timing thing
+- A mis-implemented instruction
+- Still something wrong with interrupts and masking
+- A timing thing
 
 Basic Description:
 
