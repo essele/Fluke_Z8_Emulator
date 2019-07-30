@@ -17,7 +17,7 @@
 
 
 
-#define USE_UART            1
+#undef USE_UART            
 
 
 // Generic IRQ calling macro
@@ -480,7 +480,8 @@ uint8_t read_SIO() {
         val &= 0x7f;
         return val;
     #else
-        uint8_t val = SR1_Read();
+    //    uint8_t val = SR1_Read();
+        uint8_t val = SerialDRX_Read();
         
         val &= 0x7f;        // TODO: proper parity (here we just strip it)
         return val;
@@ -664,9 +665,9 @@ void setup_emulator() {
         IRQ_Serial_ClearPending();
     #else
         
-        #define AUX_REG (* (reg8 *)SerialRX_1_RxBitCounter__CONTROL_AUX_CTL_REG)
-    
-        AUX_REG |= (1<<5);
+//        #define AUX_REG (* (reg8 *)SerialRX_1_RxBitCounter__CONTROL_AUX_CTL_REG)    
+//        AUX_REG |= (1<<5);
+        SerialDRX_Init();
 
         IRQ_SRX_Disable();
         IRQ_SRX_SetVector(&Handle_IRQ_SRX);

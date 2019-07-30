@@ -27,6 +27,7 @@
     </Group>
     <Group key="Pin">
       <Data key="4e956c07-c747-4bfc-9936-9e2c3319cbe7" value="P51" />
+      <Data key="5f32ebed-5805-4b20-93da-12fb5948166e" value="Rx_2" />
       <Data key="7a0f187b-e290-4950-8917-b0c8b2e20cca" value="P36" />
       <Data key="8a8de7bf-4cbf-4079-b9d8-156bc902888b" value="P4" />
       <Data key="8d318d8b-cf7b-4b6b-b02c-ab1c5c49d0ba" value="P30" />
@@ -3821,6 +3822,11 @@
     <Group key="4e956c07-c747-4bfc-9936-9e2c3319cbe7">
       <Group key="0">
         <Data key="Port Format" value="5,0" />
+      </Group>
+    </Group>
+    <Group key="5f32ebed-5805-4b20-93da-12fb5948166e">
+      <Group key="0">
+        <Data key="Port Format" value="3,0" />
       </Group>
     </Group>
     <Group key="7a0f187b-e290-4950-8917-b0c8b2e20cca">

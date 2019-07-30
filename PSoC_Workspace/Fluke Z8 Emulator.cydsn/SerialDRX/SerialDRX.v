@@ -12,7 +12,7 @@
 // ========================================
 `include "cypress.v"
 //`#end` -- edit above this line, do not edit this line
-// Generated on 07/29/2019 at 18:21
+// Generated on 07/30/2019 at 13:19
 // Component: SerialDRX
 module SerialDRX (
 	output  irq,
@@ -22,122 +22,117 @@ module SerialDRX (
 
 //`#start body` -- edit after this line, do not edit this line
 
-//        Your code goes here
+wire    timer_is_zero;
+wire    timer_says_shift;
+wire    timer_says_save;
+reg     half_clk;
+reg     running;
 
-reg running;
+wire    a2;
+wire    a1;
+wire    a0;
 
-wire count_enable;
-wire count_load;
-wire count_zero;
-wire [6:0] count;
+assign irq = timer_is_zero;
 
-wire do_shift;
+assign  a2 = half_clk;
+assign  a1 = running;
+assign  a0 = timer_says_shift;
 
-assign irq = count_zero;
-
-assign count_enable = 1;
-assign count_load = !running;
-
-assign do_shift = (count[2:0] == 3'b100);
-
-
+//
+// Run a half speed clock for instruction multiplexing
+//
 always @(posedge clk) begin
-       
+    half_clk <= !half_clk;
+end
+
+//
+// Control the running flag
+//
+always @(posedge clk) begin
     case (running)
     
     1'b0:   begin
-                if (rx == 0) begin
+                if (!rx)
                     running <= 1;
-                end else begin
+                else
                     running <= 0;
-                end
             end
-
+            
     1'b1:   begin
-                if (count_zero) begin
+                if (timer_is_zero)
                     running <= 0;
-                end
+                else
+                    running <= 1;
             end
-
+    endcase
 end
 
-// 7 bit down counter, we set it appropriately to easily map into DP signals
 
-        cy_psoc3_count7 #(.cy_period(7'b1001111),.cy_route_ld(1),.cy_route_en(1)) RxBitCounter
-        (
-            /*  input             */  .clock(clk),
-            /*  input             */  .reset(1'b0),
-            /*  input             */  .load(count_load),
-            /*  input             */  .enable(count_enable),
-            /*  output  [06:00]   */  .count(count),
-            /*  output            */  .tc(count_zero)
-        );
-
-cy_psoc3_dp #(.d0_init(0xff), 
+cy_psoc3_dp #(.d0_init(8'h04), .d1_init(8'b00001101), 
 .cy_dpconfig(
 {
     `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
-    `CS_SHFT_OP_PASS, `CS_A0_SRC_NONE, `CS_A1_SRC_NONE,
+    `CS_SHFT_OP_PASS, `CS_A0_SRC___F0, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM0:    Idle*/
-    `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
-    `CS_SHFT_OP___SL, `CS_A0_SRC__ALU, `CS_A1_SRC_NONE,
-    `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM1:   Shift In*/
+    `CS_CMP_SEL_CFGA, /*CFGRAM0:         000 - idle / reload*/
     `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
     `CS_SHFT_OP_PASS, `CS_A0_SRC_NONE, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM2: Idle*/
-    `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
-    `CS_SHFT_OP_PASS, `CS_A0_SRC___D0, `CS_A1_SRC_NONE,
+    `CS_CMP_SEL_CFGA, /*CFGRAM1:         001 - (impossible)*/
+    `CS_ALU_OP__DEC, `CS_SRCA_A0, `CS_SRCB_D0,
+    `CS_SHFT_OP_PASS, `CS_A0_SRC__ALU, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM3:   Reset - load D0 in A0*/
-    `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
+    `CS_CMP_SEL_CFGA, /*CFGRAM2:         010 - dec*/
+    `CS_ALU_OP__DEC, `CS_SRCA_A0, `CS_SRCB_D0,
+    `CS_SHFT_OP_PASS, `CS_A0_SRC__ALU, `CS_A1_SRC_NONE,
+    `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
+    `CS_CMP_SEL_CFGA, /*CFGRAM3:         011 - dec*/
+    `CS_ALU_OP_PASS, `CS_SRCA_A1, `CS_SRCB_D0,
     `CS_SHFT_OP_PASS, `CS_A0_SRC_NONE, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM4: Idle*/
-    `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
+    `CS_CMP_SEL_CFGA, /*CFGRAM4:         100 - idle*/
+    `CS_ALU_OP_PASS, `CS_SRCA_A1, `CS_SRCB_D0,
     `CS_SHFT_OP_PASS, `CS_A0_SRC_NONE, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM5: Idle*/
-    `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
+    `CS_CMP_SEL_CFGA, /*CFGRAM5:         101 - idle*/
+    `CS_ALU_OP_PASS, `CS_SRCA_A1, `CS_SRCB_D0,
     `CS_SHFT_OP_PASS, `CS_A0_SRC_NONE, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM6: Idle*/
-    `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
-    `CS_SHFT_OP_PASS, `CS_A0_SRC_NONE, `CS_A1_SRC_NONE,
+    `CS_CMP_SEL_CFGA, /*CFGRAM6:         110 - idle*/
+    `CS_ALU_OP_PASS, `CS_SRCA_A1, `CS_SRCB_D0,
+    `CS_SHFT_OP___SR, `CS_A0_SRC_NONE, `CS_A1_SRC__ALU,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM7: Idle*/
-    8'hFF, 8'h00,  /*CFG9:    */
-    8'hFF, 8'hFF,  /*CFG11-10:    */
-    `SC_CMPB_A1_D1, `SC_CMPA_A1_D1, `SC_CI_B_ARITH,
-    `SC_CI_A_ARITH, `SC_C1_MASK_DSBL, `SC_C0_MASK_DSBL,
+    `CS_CMP_SEL_CFGA, /*CFGRAM7:         111 - shift*/
+    8'hFF, 8'h00,  /*CFG9:         */
+    8'hFF, 8'h07,  /*CFG11-10:        */
+    `SC_CMPB_A0_D1, `SC_CMPA_A0_D1, `SC_CI_B_ARITH,
+    `SC_CI_A_ARITH, `SC_C1_MASK_DSBL, `SC_C0_MASK_ENBL,
     `SC_A_MASK_DSBL, `SC_DEF_SI_0, `SC_SI_B_DEFSI,
-    `SC_SI_A_DEFSI, /*CFG13-12:    */
-    `SC_A0_SRC_ACC, `SC_SHIFT_SL, 1'h0,
-    1'h0, `SC_FIFO1_BUS, `SC_FIFO0_BUS,
+    `SC_SI_A_ROUTE, /*CFG13-12:         */
+    `SC_A0_SRC_ACC, `SC_SHIFT_SR, 1'h0,
+    1'h0, `SC_FIFO1__A1, `SC_FIFO0_BUS,
     `SC_MSB_DSBL, `SC_MSB_BIT0, `SC_MSB_NOCHN,
     `SC_FB_NOCHN, `SC_CMP1_NOCHN,
-    `SC_CMP0_NOCHN, /*CFG15-14:    */
+    `SC_CMP0_NOCHN, /*CFG15-14:         */
     10'h00, `SC_FIFO_CLK__DP,`SC_FIFO_CAP_AX,
     `SC_FIFO_LEVEL,`SC_FIFO__SYNC,`SC_EXTCRC_DSBL,
-    `SC_WRK16CAT_DSBL /*CFG17-16:    */
+    `SC_WRK16CAT_DSBL /*CFG17-16:         */
 }
-)) DPShifter(
+)) shifter(
         /*  input                   */  .reset(1'b0),
         /*  input                   */  .clk(clk),
-        /*  input   [02:00]         */  .cs_addr({ 1'b0, count_zero, do_shift }),
-        /*  input                   */  .route_si(1'b0),
+        /*  input   [02:00]         */  .cs_addr({a2, a1, a0}),
+        /*  input                   */  .route_si(rx),
         /*  input                   */  .route_ci(1'b0),
         /*  input                   */  .f0_load(1'b0),
-        /*  input                   */  .f1_load(1'b0),
+        /*  input                   */  .f1_load(timer_says_save),
         /*  input                   */  .d0_load(1'b0),
         /*  input                   */  .d1_load(1'b0),
-        /*  output                  */  .ce0(),
+        /*  output                  */  .ce0(timer_says_shift),
         /*  output                  */  .cl0(),
-        /*  output                  */  .z0(),
+        /*  output                  */  .z0(timer_is_zero),
         /*  output                  */  .ff0(),
-        /*  output                  */  .ce1(),
+        /*  output                  */  .ce1(timer_says_save),
         /*  output                  */  .cl1(),
         /*  output                  */  .z1(),
         /*  output                  */  .ff1(),
@@ -152,7 +147,7 @@ cy_psoc3_dp #(.d0_init(0xff),
         
         /* input                    */  .ci(1'b0),     // Carry in from previous stage
         /* output                   */  .co(),         // Carry out to next stage
-        /* input                    */  .sir(rx),    // Shift in from right side
+        /* input                    */  .sir(1'b0),    // Shift in from right side
         /* output                   */  .sor(),        // Shift out to right side
         /* input                    */  .sil(1'b0),    // Shift in from left side
         /* output                   */  .sol(),        // Shift out to left side
@@ -173,11 +168,10 @@ cy_psoc3_dp #(.d0_init(0xff),
         /* input [07:00]            */  .pi(8'b0),     // Parallel data port
         /* output [07:00]           */  .po()          // Parallel data port
 );
+
 //`#end` -- edit above this line, do not edit this line
 endmodule
 //`#start footer` -- edit after this line, do not edit this line
 //`#end` -- edit above this line, do not edit this line
-
-
 
 
