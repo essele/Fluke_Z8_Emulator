@@ -34,7 +34,7 @@ static inline uint8_t regE0map(uint8_t r) {
  * in some way
  */
 static inline uint8_t LOAD_VAL_FROM_REG(uint8_t r) {
-    if ((r & 0xf0) == 0xe0) BKPT;
+//    if ((r & 0xf0) == 0xe0) BKPT;
     if (reg_read[r]) {
         return reg_read[r]();
     } else {
@@ -42,7 +42,7 @@ static inline uint8_t LOAD_VAL_FROM_REG(uint8_t r) {
     }
 }
 static inline void STORE_VAL_IN_REG(uint8_t r, uint8_t val) {
-    if ((r & 0xf0) == 0xe0) BKPT;
+//    if ((r & 0xf0) == 0xe0) BKPT;
     if (reg_write[r]) {
         reg_write[r](val);
     } else {
@@ -199,7 +199,7 @@ void EI() { IMR |= 0x80; }
 // ----------------------------------------------------------------------
 void RET() { 
     pc = (reg[SPL] << 8) | reg[SPL+1]; 
-    if (pc > 0x2000) BKPT;
+//    if (pc > 0x2000) BKPT;
     SPL += 2; 
 }
 // ----------------------------------------------------------------------

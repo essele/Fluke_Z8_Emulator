@@ -15,6 +15,11 @@
 #include <stdlib.h>
 #include "emulator.h"
 
+
+
+#define USE_UART            1
+
+
 // Generic IRQ calling macro
 #define     CALL_IRQ(n)     PUSH16(pc) \
                             PUSH(FLAGS) \
@@ -203,8 +208,7 @@ void write_port3(uint8_t val) {
 uint8_t read_port3() {
     // We need to read P31/2/3 (which are actually PSoC P40/1/2)
     // NEW: we can only actually read P32 (P41)
-//    return (uint8_t)((P4_PS & 0x07) << 1);
-    return (uint8_t)((P41_P32_PS & 0x07) << 1);
+    return (uint8_t)((P41_P32_PS & 0x02) << 1);
 }
 
 // ----------------------------------------------------------------------
@@ -220,9 +224,11 @@ void write_TMR(uint8_t val) {
     switch((val & 0xc0) >> 6) {
         case 0x00:      // no output, disconnect pin (GPIO mode)
                         *(uint32_t *)CYREG_HSIOM_PORT_SEL3 &= 0xf0ffffff;
+                        //P36_Write(0x01);
                         break;
         case 0x02:      // T1 out, reconect pin .. 0x08 is ACT_0 (TCPWM)
-                        *(uint32_t *)CYREG_HSIOM_PORT_SEL3 |= 0x08000000;
+   //                     *(uint32_t *)CYREG_HSIOM_PORT_SEL3 |= 0x08000000;
+                        *(uint32_t *)CYREG_HSIOM_PORT_SEL3 |= 0x02000000;       // DSI
                         break;
         case 0x01:      // T0 out, we don't support this
         case 0x03:      // Internal clock out, we don't support this
@@ -234,17 +240,22 @@ void write_TMR(uint8_t val) {
         default:        REG_FAIL(TMR, val);
     }
 
-    // Bit 2 load T1
+    // Bit 2 load T1 (this becomes a reload event)
     if (val & 0x04) {
         // can set values here, but how do we make it happen on reload?
-        Timer1_WriteCounter(0);    
+        //Timer1_WriteCounter(0);
+        Timer1_TriggerCommand(Timer1_MASK, Timer1_CMD_RELOAD);        
+        SP1_Write(1);
     }    
     
     // Bit 3 enable (1) or disable (0) T1
     if (val & 0x08) {
-        Timer1_Enable();
+        Timer1_TriggerCommand(Timer1_MASK, Timer1_CMD_START);
+//        Timer1_Enable();
     } else {
-        Timer1_Stop();
+        Timer1_TriggerCommand(Timer1_MASK, Timer1_CMD_STOP);
+     //   SP1_Write(1);
+//        Timer1_Stop();
     }
     // Bit 1 and 0 we will ignore because T0 is not used separately
     TMR = val & 0xfa;       // clear the load bits
@@ -258,12 +269,22 @@ void write_TMR(uint8_t val) {
 // ----------------------------------------------------------------------
 void write_T1(uint8_t val) {
     T1 = val;       // store for later use
+
+    // zero actually means 64 here!
+    uint8_t pre1 = (PRE1 & 0xfc) >> 2;
+    if (pre1 == 0) pre1 = 64;
+
+    uint32_t period = pre1 * T1;
     
-    uint32_t period = ((PRE1 & 0xfc) >> 2) * T1;
+    int running = ((Timer1_STATUS_REG & (1<<31)) != 0);
     
+    Timer1_TriggerCommand(Timer1_MASK, Timer1_CMD_STOP);
     Timer1_WritePeriod(period);
-    Timer1_WriteCompare(period >> 1);
-    Timer1_WriteCounter(0);
+    if (running)
+        Timer1_TriggerCommand(Timer1_MASK, Timer1_CMD_START);
+}
+uint8_t read_T1() {
+    BKPT;
 }
 
 void write_PRE1(uint8_t val) {
@@ -272,11 +293,19 @@ void write_PRE1(uint8_t val) {
     // We don't do single shot...
     if(!(val&0x01)) REG_FAIL(PRE1, val);
 
-    uint32_t period = ((PRE1 & 0xfc) >> 2) * T1;
+    // zero actually means 64 here!
+    uint8_t pre1 = (PRE1 & 0xfc) >> 2;
+    if (pre1 == 0) pre1 = 64;
     
+    uint32_t period = pre1 * T1;
+
+    int running = ((Timer1_STATUS_REG & (1<<31)) != 0);
+    
+    Timer1_TriggerCommand(Timer1_MASK, Timer1_CMD_STOP);
     Timer1_WritePeriod(period);
-    Timer1_WriteCompare(period >> 1);
-    Timer1_WriteCounter(0);
+    
+    if (running)
+        Timer1_TriggerCommand(Timer1_MASK, Timer1_CMD_START);
 }
 
 // ----------------------------------------------------------------------
@@ -303,8 +332,8 @@ void write_IMR(uint8_t val) {
     if (IMR & 0x80) return;
     
     // Can we enable irqs with a write, or do we need EI()
- //   IMR = val & 0x7f;
-    IMR = val;
+    IMR = val & 0x7f;
+ //   IMR = val;
     
     if (IMR & 0x20) {
         IRQ_Timer1_Enable(); 
@@ -316,12 +345,20 @@ void write_IMR(uint8_t val) {
     } else {
     }
     
-    if (IMR & 0x08) {
-        IRQ_SRX_Enable();
-    } else {
-        IRQ_SRX_Disable();
-    }
-    
+    #ifdef USE_UART
+        if (IMR & 0x08) {
+            IRQ_Serial_Enable();
+        } else {
+            IRQ_Serial_Disable();
+        }
+    #else
+        if (IMR & 0x08) {
+            IRQ_SRX_Enable();
+        } else {
+            IRQ_SRX_Disable();
+        }
+    #endif
+       
     if (IMR & 0x04) {
         IRQ_P31_Enable();
     } else {
@@ -373,9 +410,15 @@ uint8_t read_IRQ() {
     if ((*IRQ_P31_INTC_SET_PD & (uint32)IRQ_P31__INTC_MASK)) {
         val |= 0x04;
     }
-    if((*IRQ_SRX_INTC_SET_PD & (uint32)IRQ_SRX__INTC_MASK)) {
-        val |= 0x08;
-    }
+    #ifdef USE_UART
+        if (UART_INTR_RX_REG & UART_INTR_RX_NOT_EMPTY) {
+            val |= 0x08;
+        }
+    #else
+        if((*IRQ_SRX_INTC_SET_PD & (uint32)IRQ_SRX__INTC_MASK)) {
+            val |= 0x08;
+        }
+    #endif
     if (UART_INTR_TX_REG & UART_INTR_TX_UART_DONE) {
         val |= 0x10;
     }
@@ -393,9 +436,16 @@ void write_IRQ(uint8_t val) {
     if (!(val & 0x04)) {
         IRQ_P31_ClearPending();
     }
-    if (!(val & 0x08)) {
-        IRQ_SRX_ClearPending();
-    }
+    #ifdef USE_UART
+        if (!(val & 0x08)) {
+            UART_INTR_RX_REG = UART_INTR_RX_NOT_EMPTY;
+            IRQ_Serial_ClearPending();
+        }
+    #else
+        if (!(val & 0x08)) {
+            IRQ_SRX_ClearPending();
+        }
+    #endif
     if (!(val & 0x10)) {
         UART_INTR_TX_REG = UART_INTR_TX_UART_DONE;
         IRQ_Serial_ClearPending();
@@ -418,11 +468,23 @@ void write_SIO(uint8_t val) {
 }
 
 uint8_t read_SIO() {
-
-    uint8_t val = SR1_Read();
-    
-    val &= 0x7f;        // TODO: proper parity (here we just strip it)
-    return val;
+    #ifdef USE_UART
+        int n = UART_RX_FIFO_STATUS_REG & 0x1f;
+        uint8_t val;
+        
+        for(int i=0; i<n; i++) {
+            val = UART_RX_FIFO_RD_REG;
+        }
+        UART_INTR_RX_REG = UART_INTR_RX_NOT_EMPTY;
+        IRQ_Serial_ClearPending();
+        val &= 0x7f;
+        return val;
+    #else
+        uint8_t val = SR1_Read();
+        
+        val &= 0x7f;        // TODO: proper parity (here we just strip it)
+        return val;
+    #endif
 }
 
 
@@ -468,7 +530,7 @@ uint8_t (*reg_read[256])() = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                                 // 0xe0 - 0xef
     read_SIO,           // 240 - SIO
     0,                  // 241 - TMR (read is ok)
-    0,                  // 242 - T1 (read is not used by 8840)
+    read_T1,                  // 242 - T1 (read is not used by 8840)
     0,                  // 243 - PRE1 (read is ok)
     0,                  // 244 - T0
     0,                  // 245 - PRE0
@@ -533,12 +595,21 @@ CY_ISR(Handle_IRQ_P31) {
     IRQ_P31_ClearPending();
     CALL_IRQ(2);
 }
-CY_ISR(Handle_IRQ_SRX) {
-    CyGlobalIntDisable;
-    IRQ_SRX_ClearPending();
-    CALL_IRQ(3);
-}
 
+#ifdef USE_UART
+    CY_ISR(Handle_IRQ_Serial) {
+        CyGlobalIntDisable;
+        IRQ_Serial_ClearPending();
+        CALL_IRQ(3);
+    }
+#else
+    CY_ISR(Handle_IRQ_SRX) {
+        CyGlobalIntDisable;
+        IRQ_SRX_ClearPending();
+        CALL_IRQ(3);
+    }
+#endif
+    
 uint32_t p4count = 0;
 
 
@@ -585,17 +656,24 @@ void setup_emulator() {
     
     // PORT 2 SETUP
     
-    IRQ_SRX_Disable();
-    IRQ_SRX_SetVector(&Handle_IRQ_SRX);
-    IRQ_SRX_SetPriority((uint8)IRQ_SRX_INTC_PRIOR_NUMBER);
-    IRQ_SRX_ClearPending();
+    // Setup the serial port IRQ...     
+    #ifdef USE_UART
+        IRQ_Serial_Disable();
+        IRQ_Serial_SetVector(&Handle_IRQ_Serial);
+        IRQ_Serial_SetPriority((uint8)IRQ_Serial_INTC_PRIOR_NUMBER);
+        IRQ_Serial_ClearPending();
+    #else
+        
+        #define AUX_REG (* (reg8 *)SerialRX_1_RxBitCounter__CONTROL_AUX_CTL_REG)
     
+        AUX_REG |= (1<<5);
+
+        IRQ_SRX_Disable();
+        IRQ_SRX_SetVector(&Handle_IRQ_SRX);
+        IRQ_SRX_SetPriority((uint8)IRQ_SRX_INTC_PRIOR_NUMBER);
+        IRQ_SRX_ClearPending();
+    #endif    
     
-    // Setup the serial port IRQ... 
-//    IRQ_Serial_Disable();
-//    IRQ_Serial_SetVector(&Handle_IRQ_Serial);
-//    IRQ_Serial_SetPriority((uint8)IRQ_Serial_INTC_PRIOR_NUMBER);
-//    IRQ_Serial_ClearPending();
     
     // So we can send the first char...
     UART_SetTxInterrupt(UART_INTR_TX_UART_DONE);
@@ -641,21 +719,10 @@ void execute() {
             map[code[pc++]]();
         }
         while(!(IMR & 0x80)) {
-            CyGlobalIntDisable;
-            CyGlobalIntDisable;
+//            CyGlobalIntDisable;
+//            CyDelayCycles(180);
+//            CyGlobalIntDisable;
             // Execute the instruction...
-            
-            if (pc == 0x079f) {
-                uint16_t addr = (reg[0x56] << 8) | reg[0x57];
-                ppc[ccc++] = addr;
-                if (ccc == 200) {
-                    asm("nop");
-                    ccc = 0;
-                }
-            }
-            
-            
-            
             map[code[pc++]]();
         }
 

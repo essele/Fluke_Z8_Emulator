@@ -28,10 +28,9 @@ uint8_t bus_read(uint16_t addr, int dm, int ex) {
     uint8_t hn;
     uint8_t rc;
     
-    if (addr == 0x1f00) {
-        if (IMR & 0x80) BKPT;
+//    if (addr == 0x1f00) {
         //if (ex != 1) BKPT;
-    }
+//    }
         
     
     hn = (uint8_t)((addr & 0x0f00) >> 8);
@@ -108,6 +107,8 @@ int main(void)
     
     // Setup timer1 (as per Z8 timer1)
     Timer1_Init();
+    Timer1_Enable();
+    Timer1_TriggerCommand(Timer1_MASK, Timer1_CMD_STOP);
     
     // Setup the UART with the default 8840A settings...
     UART_Start();
@@ -118,12 +119,6 @@ int main(void)
     //IRQ_SRX_Start();
     
   
-    #define AUX_REG (* (reg8 *)SerialRX_1_RxBitCounter__CONTROL_AUX_CTL_REG)
-    
-//    CY_SET_REG8(SerialRX_1_RxBitCounter__CONTROL_AUX_CTL_REG, 
-//        CY_GET_REG8(SerialRX_1_RxBitCounter__CONTROL_AUX_CTL_REG | 0x20));
-
-    AUX_REG |= (1<<5);
     
     int c;
     uint8_t vals[16];
